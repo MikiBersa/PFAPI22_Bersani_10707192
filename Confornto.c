@@ -2,14 +2,18 @@
 
 #include <stdio.h>
 
-#define N 16
+#define N 6
 
 int main(void){
     char str1[N];
     char str2[N];
     char out[N];
+    int j;
 
-    scanf("%s %s", str2,str1);
+    scanf("%s %d", str2,&j);
+
+    while(!feof(stdin)){
+    scanf("%s", str1);
 
     for(int i = 0; i<N-1;i++){
         if(str1[i] == str2[i]) out[i] = '+';
@@ -39,5 +43,8 @@ int main(void){
         }
     }
     printf("%s\n", out);
+    }
+
+    return 0;
 
 }

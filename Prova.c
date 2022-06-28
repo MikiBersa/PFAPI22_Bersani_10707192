@@ -67,6 +67,38 @@ void scrittura_ordinata(elemento *x){
     }
 }
 
+void confronto(char* str2,char* str1){
+    char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
+    for(int i = 0; i<=k-1;i++){
+        if(str1[i] == str2[i]) out[i] = '+';
+        else{
+            for(int j = 0; j<=k-1;j++){
+                if(str1[i] == str2[j] && i!=j) { out[i] = '|'; break;}
+            }
+            if(out[i] != '|') out[i] = '/';
+        }
+    }
+
+    for(int i = 0; i<=k-1; i++){
+        if(out[i]=='|'){
+            int cont = 0;
+            int giu = 0;
+            char c = str1[i];
+            for(int j = 0; j<=k-1;j++){
+                if(str2[j]== str1[i]) cont ++;
+                if(str1[j] == c && out[j] == '+') giu ++;
+            }
+            cont = cont - giu;
+            giu = 0;
+            for(int l = i-1; l>=0; l--){
+                if(str1[l] == c && out[l] == '|') giu ++;
+            }
+            if(giu >= cont || cont == 0) out[i] = '/';
+        }
+    }
+    out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
+    printf("%s\n", out);
+}
 
 int main(void){
     elemento * lista = NULL;
@@ -107,7 +139,9 @@ int main(void){
             }
             else{
                 //Qui dovrebbe partire algoritmo 
-                printf("Stringhe da confrontare %s\n", stringa);
+                //printf("Stringhe da confrontare %s\n", stringa);
+                confronto(rif,stringa);
+
             }
         }
     }
