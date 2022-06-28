@@ -67,6 +67,20 @@ void scrittura_ordinata(elemento *x){
     }
 }
 
+int uguale(char *c, char *p){
+    for(int i = 0;i<k;i++)
+        if(c[i] != p[i]) return 0;
+    return 1;
+}
+
+int controllo(elemento *x, char * parola){
+    if(x!=NULL){   
+        if(uguale(x->str,parola)) return 1;
+        else return (controllo(x->sx, parola) || controllo(x->dx,parola));
+    }
+    else return 0;
+}
+
 void confronto(char* str2,char* str1){
     char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
     for(int i = 0; i<=k-1;i++){
@@ -140,8 +154,13 @@ int main(void){
             else{
                 //Qui dovrebbe partire algoritmo 
                 //printf("Stringhe da confrontare %s\n", stringa);
-                confronto(rif,stringa);
-
+                //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
+                if(controllo(lista,stringa)){
+                    confronto(rif,stringa);
+                }else{
+                    printf("not_exists\n");
+                }
+                
             }
         }
     }

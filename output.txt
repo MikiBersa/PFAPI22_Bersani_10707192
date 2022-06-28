@@ -1,10 +1,9 @@
 INIZIO_PARTITA
 ////+
-+||//
+not_exists
 |+///
 +///+
 ++///
-|++|/
 |++|/
 AAAAA
 AAAAC
