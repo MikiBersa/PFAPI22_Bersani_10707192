@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+//#include <time.h>
 
 int k;
 
@@ -115,6 +116,7 @@ void confronto(char* str2,char* str1){
 }
 
 int main(void){
+    //clock_t begin = clock();
     elemento * lista = NULL;
     scanf("%d", &k);
     char stringa[k];
@@ -168,6 +170,11 @@ int main(void){
     scrittura_ordinata(lista);
     printf("Parola di riferminto %s\n", rif);
     printf("CONTEGGIO: %d", conteggio);
-
+    /*
+    clock_t end = clock();
+    double time_spent=0.0;
+    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("tempo: %.3f", time_spent);
+    */
     return 0;
 }
