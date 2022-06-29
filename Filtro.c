@@ -5,11 +5,23 @@ int k = N;
 
 typedef struct{
     int ex;
-    int *per;
-    int *no;
+    char *per;
+    char *no;
     int esatto;
     int min;
 }filtro;
+
+filtro diz[64];
+
+void init(){
+    for(int i = 0; i<64;i++){
+        diz[i].esatto=0;
+        diz[i].min=0;
+        diz[i].ex = -1;
+        diz[i].per = malloc(sizeof(char)*k);
+        diz[i].no = malloc(sizeof(char)*k);
+    }
+}
 
 int posizione (char c){
     if(c==45) return 0;
@@ -25,9 +37,11 @@ int posizione (char c){
 }
 
 int main(void){
-    filtro diz[64];
     char c;
     scanf("%c",&c);
+    init();
+
+    
     //diz[posizione(c)] = 23;
     printf("Posizione %d" ,posizione(c));
     return 0;
