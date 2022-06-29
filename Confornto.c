@@ -136,9 +136,15 @@ int main(void){
             
             for(int j = i+1; j<f;j++){
                 if(str1[j]==str1[i]) {
-                    if((out[j]!='/')) { pos = 1; max++;}
+                    if((out[j]!='/')) { 
+                        pos = 1; //mi dice che escludo il non appartenere
+                        max++;
+                    }
                     if(out[j]=='|') diz[posizione(str1[i])].no[j]=str1[j];
-                    if(out[j]=='/') {sl = 1; diz[posizione(str1[i])].no[j]=str1[j];}
+                    if(out[j]=='/') {
+                        sl = 1; //mi dice che ho dei valori esatti
+                        diz[posizione(str1[i])].no[j]=str1[j];
+                    }
                     if(out[j]=='+') {
                         //printf("Dentro a +\n");
                         //printf("Carattere %c, posizione %d diz %d\n", str1[i], i,posizione(str1[i]));
