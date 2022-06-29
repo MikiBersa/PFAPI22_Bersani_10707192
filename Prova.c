@@ -250,7 +250,7 @@ int main(void){
 
     while(!feof(stdin)){
         scanf("%s", stringa);
-        printf("Letto %s\n",stringa);
+        //printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){

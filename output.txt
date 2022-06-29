@@ -1,45 +1,13 @@
-Letto 8adfs
-Letto 5sjaH
-Letto KS06l
-Letto Hi23a
-Letto laj74
-Letto -s9k0
-Letto sm_ks
-Letto okauE
-Letto +nuova_partita
-Letto KS06l
 /////
-Letto had7s
 not_exists
-Letto okauE
 //|//
-Letto +stampa_filtrate
 S
-Letto +inserisci_inizio
-Letto PsjW5
-Letto asHdd
-Letto paF7s
-Letto +inserisci_fine
-Letto -s9k0
 /+///
-Letto sghks
 |////
 ko
-Letto +stampa_filtrate
 S
-Letto sn_ks
-Letto +inserisci_inizio
-Letto _fah-
-Letto 0D7dj
-Letto +inserisci_fine
-Letto +nuova_partita
-Letto laj74
 /|///
-Letto +stampa_filtrate
 S
-Letto sm_ks
 ///|/
-Letto okauE
 ok
-Letto okauE
 tempo: 0.000
