@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 16
+#define N 6
 
 int f = N-1;
 
@@ -53,8 +53,8 @@ int main(void){
     char out[N];
 
     scanf("%s", str2);
-
-    //while(!feof(stdin)){
+    init(); 
+    while(!feof(stdin)){
     scanf("%s", str1);
 
     for(int i = 0; i<N-1;i++){
@@ -85,44 +85,6 @@ int main(void){
         }
     }
     printf("%s\n", out);
-    init(); 
-    /*
-    //arrivati alla codifica
-    init();
-    //ALGORITMO DI RICORDO
-    
-    for(int i = 0; i<k;k++){
-        if(out[i]=='/' && !diz[posizione(str1[i])].letto){
-            int pos = 0;
-            int max = 0;
-            diz[posizione(str1[i])].letto = 1;
-
-            for(int j = i+1; j<k;j++){
-                if(str1[j]==str1[i]) {
-                    if((out[j]!='/')) {pos = 1; max++;}
-                    if(out[j]=='+') *((diz[posizione(str1[i])].per)+i)=str1;
-                }
-            }
-            if(pos != 0){
-                //esiste ma in posizione sbagliata
-                diz[posizione(str1[i])].ex=1;
-                *((diz[posizione(str1[i])].no)+i)=str1;
-                //elemento max
-                diz[posizione(str1[i])].esatto=max;
-            }else{
-                diz[posizione(str1[i])].ex=0;
-            }
-        }else if(!diz[posizione(str1[i])].letto){
-            if(out[i]=='+'){
-                diz[posizione(str1[i])].ex=1;
-                *((diz[posizione(str1[i])].per)+i)=str1;
-            }else if(out[i]=='|'){
-                diz[posizione(str1[i])].ex=1;
-                *((diz[posizione(str1[i])].no)+i)=str1;
-            }
-        }
-    }
-    */
    // / -> non esiste o è in di più
    // | -> essite ma non li 
    // + -> esiste, li 
@@ -168,7 +130,9 @@ int main(void){
                 }else diz[posizione(str1[i])].ex = 0;
             }else if(out[i]=='|'){
                 diz[posizione(str1[i])].ex = 1;
-                if(!sl) {diz[posizione(str1[i])].min = max+1;}
+                if(!sl) {
+                    if((max+1) > diz[posizione(str1[i])].min) diz[posizione(str1[i])].min = max+1; //aggiorno dopo altre letture
+                }
                 else {diz[posizione(str1[i])].esatto = max+1;}
                 diz[posizione(str1[i])].no[i]=str1[i];
             }
@@ -196,6 +160,8 @@ int main(void){
             printf("\n");
             printf("_________________\n");
         }
+    }
+
     }
     return 0;
 
