@@ -134,14 +134,14 @@ int main(void){
             if(stringa[1] == 'n'){
                 nuova = 1;
                 inserimento = 0;
-                printf("INIZIO_PARTITA in +\n");
+                //printf("INIZIO_PARTITA in +\n");
                 
                 //inserisco i nuovi elementi 
                 scanf("%s", stringa);
                 scrittura(stringa,rif);
                 scanf("%s", stringa);
                 conteggio = atoi(&stringa[0]);
-                printf("CONTEGGIO %d\n", conteggio);
+                //printf("CONTEGGIO %d\n", conteggio);
             }
             if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
@@ -150,6 +150,9 @@ int main(void){
                 else if(stringa[11] == 'f'){
                     inserimento = 0;
                 }
+            }
+            if(stringa[1] == 's'){
+                continue;
             }
         }else if(nuova){
             if(inserimento) {
@@ -171,13 +174,12 @@ int main(void){
                 //Qui dovrebbe partire algoritmo 
                 //printf("Stringhe da confrontare %s\n", stringa);
                 //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
-                
-                if(conteggio != 0){ 
-                    if(uguale(rif,stringa)){
+                if(uguale(rif,stringa)){
                         printf("ok\n");
                         nuova = 0; //FINSICE LA PARTITA
                         //rif[0] = '&';
-                    }else if(controllo(lista,stringa)){
+                }else if(conteggio != 1){ 
+                    if(controllo(lista,stringa)){
                         confronto(rif,stringa);
                         conteggio --;
                     }else{
