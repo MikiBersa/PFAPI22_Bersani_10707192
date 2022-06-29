@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <time.h>
+#include <time.h>
 
 int k;
 
@@ -20,7 +20,7 @@ int posizione(char* c1, char *c2){ //c2 la testa
     return 0;
 }
 
-void scrittura(char* c1, char *c2){
+void scrittura(char* c1, char *c2){ //da c1 a c2
     for(int i = 0; i<k;i++){
         c2[i] = c1[i];
     }
@@ -116,7 +116,7 @@ void confronto(char* str2,char* str1){
 }
 
 int main(void){
-    //clock_t begin = clock();
+    clock_t begin = clock();
     elemento * lista = NULL;
     scanf("%d", &k);
     char stringa[k];
@@ -134,47 +134,76 @@ int main(void){
             if(stringa[1] == 'n'){
                 nuova = 1;
                 inserimento = 0;
+                printf("INIZIO_PARTITA in +\n");
+                
+                //inserisco i nuovi elementi 
+                scanf("%s", stringa);
+                scrittura(stringa,rif);
+                scanf("%s", stringa);
+                conteggio = atoi(&stringa[0]);
+                printf("CONTEGGIO %d\n", conteggio);
             }
             if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
                     inserimento = 1;
                 }
-                else{
+                else if(stringa[11] == 'f'){
                     inserimento = 0;
                 }
             }
-        }
-        else if(!nuova || inserimento) inserimento_tree(&lista,stringa);
-        else if(nuova){
+        }else if(nuova){
+            if(inserimento) {
+                inserimento_tree(&lista,stringa);
+                //printf("Inserito nuove stringhe\n");
+            }/*
             //QUI SIAMO DENTRO ALLA PARTITA
-            if(rif[0] == '&'){ //inserimento di una nuova parola -> DA METTERE QUANDO FINISCE UNA PARTITA A RIF[0] = '&'
+            else if(rif[0] == '&'){ //inserimento di una nuova parola -> DA METTERE QUANDO FINISCE UNA PARTITA A RIF[0] = '&'
+                
                 scrittura(stringa,rif);
                 scanf("%s", stringa);
                 conteggio = atoi(&stringa[0]);
-                printf("INIZIO_PARTITA\n");
-            }
+                printf("INIZIO_PARTITA\n"); //L'HO MESSO IO POI VA TOLTO
+                printf("Parola di riferminto %s\n", rif);
+                printf("CONTEGGIO: %d\n", conteggio);
+                
+            }*/
             else{
                 //Qui dovrebbe partire algoritmo 
                 //printf("Stringhe da confrontare %s\n", stringa);
                 //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
-                if(controllo(lista,stringa)){
-                    confronto(rif,stringa);
+                
+                if(conteggio != 0){ 
+                    if(uguale(rif,stringa)){
+                        printf("ok\n");
+                        nuova = 0; //FINSICE LA PARTITA
+                        //rif[0] = '&';
+                    }else if(controllo(lista,stringa)){
+                        confronto(rif,stringa);
+                        conteggio --;
+                    }else{
+                        printf("not_exists\n");
+                    }
                 }else{
-                    printf("not_exists\n");
+                    confronto(rif,stringa);
+                    printf("ko\n");
+                    nuova = 0; //FINSICE LA PARTITA
+                    //rif[0] = '&';
                 }
                 
             }
+        }else if(inserimento) {
+            inserimento_tree(&lista,stringa);
+            //printf("Inserito nuove stringhe\n");
         }
     }
 
-    scrittura_ordinata(lista);
-    printf("Parola di riferminto %s\n", rif);
-    printf("CONTEGGIO: %d", conteggio);
-    /*
+    //scrittura_ordinata(lista);
+    
+    
     clock_t end = clock();
     double time_spent=0.0;
     time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
     printf("tempo: %.3f", time_spent);
-    */
+    
     return 0;
 }
