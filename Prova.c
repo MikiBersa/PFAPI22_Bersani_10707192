@@ -12,6 +12,123 @@ typedef struct el{
     struct el *p;
 } elemento;
 
+typedef struct{
+    int ex;
+    char *per;
+    char *no;
+    int esatto;
+    int min;
+    int letto;
+}filtro;
+
+filtro diz[64];
+
+void init(){
+    
+    for(int i = 0; i<64;i++){
+        diz[i].esatto=0;
+        diz[i].letto=0;
+        diz[i].min=0;
+        diz[i].ex = -1;
+        diz[i].per = malloc(sizeof(char)*k);
+        diz[i].no = malloc(sizeof(char)*k);
+        for(int j = 0; j<k;j++){
+            diz[i].per[j] = '.';
+            diz[i].no[j] = '.';
+        }
+    }
+}
+
+int posizione_diz (char c){
+    if(c==45) return 0;
+    else if(c==95) return 1;
+    else if(c>=48 && c<= 57){
+        return c-46;
+    }else if(c>= 65 && c<= 90){
+        return c-53;
+    }else if(c>= 97 && c<= 122){
+        return c-59;
+    }
+    return -1;
+}
+
+void filtrato(char * str1, char * out){
+    for(int i = 0; i<k;i++){
+        if(!diz[posizione_diz(str1[i])].letto){
+            //printf("Dentro a letto\n");
+            int pos = 0;
+            int max = 0;
+            int sl = 0;
+            diz[posizione_diz(str1[i])].letto = 1;
+            
+            for(int j = i+1; j<k;j++){
+                if(str1[j]==str1[i]) {
+                    if((out[j]!='/')) { 
+                        pos = 1; //mi dice che escludo il non appartenere
+                        max++;
+                    }
+                    if(out[j]=='|') diz[posizione_diz(str1[i])].no[j]=str1[j];
+                    if(out[j]=='/') {
+                        sl = 1; //mi dice che ho dei valori esatti
+                        diz[posizione_diz(str1[i])].no[j]=str1[j];
+                    }
+                    if(out[j]=='+') {
+                        //printf("Dentro a +\n");
+                        //printf("Carattere %c, posizione %d diz %d\n", str1[i], i,posizione(str1[i]));
+                        diz[posizione_diz(str1[i])].per[j]=str1[j];
+                        //printf("Fine a +\n");
+                    }
+                }
+            }
+            if(out[i]=='+') {
+                diz[posizione_diz(str1[i])].per[i]=str1[i];
+                diz[posizione_diz(str1[i])].ex = 1;
+                if(sl && pos){
+                    diz[posizione_diz(str1[i])].esatto = max+1;
+                }
+            }
+            else if(out[i]=='/'){
+                if(pos) {
+                    diz[posizione_diz(str1[i])].no[i]=str1[i];
+                    diz[posizione_diz(str1[i])].esatto = max;
+                    diz[posizione_diz(str1[i])].ex = 1;
+                }else diz[posizione_diz(str1[i])].ex = 0;
+            }else if(out[i]=='|'){
+                diz[posizione_diz(str1[i])].ex = 1;
+                if(!sl) {
+                    if((max+1) > diz[posizione_diz(str1[i])].min) diz[posizione_diz(str1[i])].min = max+1; //aggiorno dopo altre letture
+                }
+                else {diz[posizione_diz(str1[i])].esatto = max+1;}
+                diz[posizione_diz(str1[i])].no[i]=str1[i];
+            }
+        }
+    }
+
+    for(int i = 0; i<64;i++) {diz[i].letto = 0;}
+}
+
+void scrivi(){
+     for(int i = 0;i<64;i++){
+        if(diz[i].ex != -1){
+            printf("carattere pos %d: esiste %d\n", i,diz[i].ex);
+            printf("esatto: %d\n", diz[i].esatto);
+            printf("min: %d\n", diz[i].min);
+            printf("letto: %d\n", diz[i].letto);
+            printf("Permesso:\n");
+            for(int j = 0; j<k;j++){
+                printf("%c",diz[i].per[j]);
+            }
+            printf("\n");
+            printf("NON permesso:\n");
+            for(int j = 0; j<k;j++){
+                printf("%c",diz[i].no[j]);
+            }
+            printf("\n");
+            printf("_________________\n");
+        }
+    }
+}
+
 int posizione(char* c1, char *c2){ //c2 la testa
     for(int i = 0; i<k;i++){
         if(c1[i] > c2[i]) return 1; //destra
@@ -82,7 +199,7 @@ int controllo(elemento *x, char * parola){
     else return 0;
 }
 
-void confronto(char* str2,char* str1){
+char * confronto(char* str2,char* str1){
     char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
     for(int i = 0; i<=k-1;i++){
         if(str1[i] == str2[i]) out[i] = '+';
@@ -113,6 +230,9 @@ void confronto(char* str2,char* str1){
     }
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
     printf("%s\n", out);
+    char * rit = malloc(sizeof(char)*k);
+    scrittura(out, rit);
+    return rit;
 }
 
 int main(void){
@@ -126,16 +246,18 @@ int main(void){
     int inserimento = 1;
     int conteggio = 0;
 
+    //init(); //preparo il dizionario
+
     while(!feof(stdin)){
         scanf("%s", stringa);
-        //printf("Letto %s\n",stringa);
+        printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
                 nuova = 1;
                 inserimento = 0;
                 //printf("INIZIO_PARTITA in +\n");
-                
+                init(); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 scanf("%s", stringa);
                 scrittura(stringa,rif);
@@ -143,7 +265,7 @@ int main(void){
                 conteggio = atoi(&stringa[0]);
                 //printf("CONTEGGIO %d\n", conteggio);
             }
-            if(stringa[1] == 'i'){
+            else if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
                     inserimento = 1;
                 }
@@ -151,8 +273,9 @@ int main(void){
                     inserimento = 0;
                 }
             }
-            if(stringa[1] == 's'){
-                continue;
+            else if(stringa[1] == 's' && stringa[2] == 't'){
+                //scrivi();
+                printf("S\n");
             }
         }else if(nuova){
             if(inserimento) {
@@ -180,13 +303,19 @@ int main(void){
                         //rif[0] = '&';
                 }else if(conteggio != 1){ 
                     if(controllo(lista,stringa)){
-                        confronto(rif,stringa);
+                        char *ritorno;
+                        ritorno = confronto(rif,stringa);
+                        filtrato(stringa,ritorno);
+                        free(ritorno);
                         conteggio --;
                     }else{
                         printf("not_exists\n");
                     }
                 }else{
-                    confronto(rif,stringa);
+                    char *ritorno;
+                    ritorno = confronto(rif,stringa);
+                    filtrato(stringa,ritorno);
+                    free(ritorno);
                     printf("ko\n");
                     nuova = 0; //FINSICE LA PARTITA
                     //rif[0] = '&';
