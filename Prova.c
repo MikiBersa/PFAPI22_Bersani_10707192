@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 int k;
 int cont_buone = 0;
 
 typedef struct el{
     char *str;
-    int color;
     struct el *sx;
     struct el *dx;
     struct el *p;
@@ -176,28 +174,6 @@ void filtrato(char * str1, char * out, char * ver){
     for(int i = 0; i<64;i++) {diz[i].letto = 0;}
 }
 
-void scrivi(){
-     for(int i = 0;i<64;i++){
-        if(diz[i].ex != -1){
-            printf("carattere pos %d: esiste %d\n", i,diz[i].ex);
-            printf("esatto: %d\n", diz[i].esatto);
-            printf("min: %d\n", diz[i].min);
-            printf("letto: %d\n", diz[i].letto);
-            printf("Permesso:\n");
-            for(int j = 0; j<k;j++){
-                printf("%c",diz[i].per[j]);
-            }
-            printf("\n");
-            printf("NON permesso:\n");
-            for(int j = 0; j<k;j++){
-                printf("%c",diz[i].no[j]);
-            }
-            printf("\n");
-            printf("_________________\n");
-        }
-    }
-}
-
 int posizione(char* c1, char *c2){ //c2 la testa
     for(int i = 0; i<k;i++){
         if(c1[i] > c2[i]) return 1; //destra
@@ -245,20 +221,24 @@ int inserimento_tree(elemento * *lista, char* parola){
 
     return i;
 }
-
-void scrittura_ordinata(elemento *x){
+/*
+void scrittura_ordinata(elemento *x,char *ver){
     if(x!=NULL){    
-        scrittura_ordinata(x->sx);
-        printf("%s\n", x->str);
-        scrittura_ordinata(x->dx);
+        scrittura_ordinata(x->sx,ver);
+        if(validazione(x->str,ver)) printf("%s\n", x->str);
+        scrittura_ordinata(x->dx,ver);
     }
 }
+*/
 
-void conto_ordinata(elemento *x,char *ver){
+void conto_ordinata(elemento *x,char *ver, int i){
     if(x!=NULL){    
-        conto_ordinata(x->sx,ver);
-        if(validazione(x->str,ver)) cont_buone ++;
-        conto_ordinata(x->dx,ver);
+        conto_ordinata(x->sx,ver,i);
+        if(validazione(x->str,ver)){
+            if(i == 0) cont_buone ++;
+            else printf("%s\n", x->str);
+        }
+        conto_ordinata(x->dx,ver,i);
     }
 }
 
@@ -315,7 +295,6 @@ char * confronto(char* str2,char* str1){
 }
 
 int main(void){
-    clock_t begin = clock();
     elemento * lista = NULL;
     if(scanf("%d", &k) != EOF);
     char stringa[k];
@@ -355,7 +334,8 @@ int main(void){
             }
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
-                printf("S\n");
+                conto_ordinata(lista,ver,1);
+                //printf("S\n");
             }
         }else if(nuova){
             if(inserimento) {
@@ -390,7 +370,7 @@ int main(void){
                         conteggio --;
                         //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                         cont_buone = 0;
-                        conto_ordinata(lista,ver);
+                        conto_ordinata(lista,ver,0);
                         printf("%d\n",cont_buone);
                     }else{
                         printf("not_exists\n");
@@ -402,7 +382,7 @@ int main(void){
                     free(ritorno);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(lista,ver);
+                    conto_ordinata(lista,ver,0);
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
@@ -418,12 +398,6 @@ int main(void){
     }
 
     //scrittura_ordinata(lista);
-    
-    
-    clock_t end = clock();
-    double time_spent=0.0;
-    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("tempo: %.3f", time_spent);
     
     return 0;
 }
