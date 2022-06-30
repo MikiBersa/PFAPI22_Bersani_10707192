@@ -238,7 +238,7 @@ char * confronto(char* str2,char* str1){
 int main(void){
     clock_t begin = clock();
     elemento * lista = NULL;
-    scanf("%d", &k);
+    if(scanf("%d", &k) != EOF);
     char stringa[k];
     char rif[k];
     rif[0] = '&';
@@ -249,7 +249,7 @@ int main(void){
     //init(); //preparo il dizionario
 
     while(!feof(stdin)){
-        scanf("%s", stringa);
+        if(scanf("%s", stringa)!=EOF);
         //printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
@@ -259,9 +259,9 @@ int main(void){
                 //printf("INIZIO_PARTITA in +\n");
                 init(); //riazzero il dizionario
                 //inserisco i nuovi elementi 
-                scanf("%s", stringa);
+                if(scanf("%s", stringa)!=EOF);
                 scrittura(stringa,rif);
-                scanf("%s", stringa);
+                if(scanf("%s", stringa)!=EOF);
                 conteggio = atoi(&stringa[0]);
                 //printf("CONTEGGIO %d\n", conteggio);
             }
