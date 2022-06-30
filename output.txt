@@ -1,4 +1,23 @@
-stringa: mGNCC |/|//
+////+
+612
+not_exists
+|+///
+21
++///+
+5
+++///
+3
+|++|/
+1
+CACAC
++/+/+
+1
+++/+/
+1
+||/++
+1
+ko
+|/|//
 1389
 AAANm
 AAAmN
@@ -1389,1008 +1408,329 @@ lmmbN
 lmmdN
 lmmlN
 lmmmN
----------------
-Verificato: ..... 
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-.....
-NON permesso:
-..N..
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-.....
-NON permesso:
-m....
-_________________
-S
-stringa: dmCbm /|//+
+/|//+
 33
-AAmNm
-ANAmm
-ANlmm
-ANmAm
-ANmNm
-ANmlm
-ANmmm
-AlmNm
-NAAmm
-NAlmm
-NAmAm
-NAmNm
-NAmlm
-NNAmm
-NNlmm
-NNmAm
-NNmNm
-NNmlm
-NNmmm
-NlAmm
-Nllmm
-NlmAm
-NlmNm
-Nlmlm
-Nlmmm
-lAmNm
-lNAmm
-lNlmm
-lNmAm
-lNmNm
-lNmlm
-lNmmm
-llmNm
----------------
-Verificato: ....m 
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-.....
-NON permesso:
-..N..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-....m
-NON permesso:
-mm...
-_________________
-stringa: CNGGm /|//+
+/|//+
 15
-AAmNm
-AlmNm
-NAAmm
-NAlmm
-NAmAm
-NAmNm
-NAmlm
-NlAmm
-Nllmm
-NlmAm
-NlmNm
-Nlmlm
-Nlmmm
-lAmNm
-llmNm
----------------
-Verificato: ....m 
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-.....
-NON permesso:
-.NN..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-....m
-NON permesso:
-mm...
-_________________
-stringa: bmmNG /|++/
+/|++/
 6
-AAmNm
-AlmNm
-NAmNm
-NlmNm
-lAmNm
-llmNm
----------------
-Verificato: ..mNm 
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-...N.
-NON permesso:
-.NN..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm...
-_________________
-stringa: GmNmb /|||/
+/|||/
 6
-AAmNm
-AlmNm
-NAmNm
-NlmNm
-lAmNm
-llmNm
----------------
-Verificato: ..mNm 
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-...N.
-NON permesso:
-.NN..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: AdmAm |/+/+
+|/+/+
 1
-lAmNm
----------------
-Verificato: ..mNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-A..A.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-...N.
-NON permesso:
-.NN..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: bAbNm /+/++
+/+/++
 1
-lAmNm
----------------
-Verificato: .AmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A..A.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 1
-letto: 0
-Permesso:
-...N.
-NON permesso:
-.NN..
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: NAdmN ++/||
+++/||
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A..A.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: GAGNm /+/++
+/+/++
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A..A.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: ANAmm ||/|+
+||/|+
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: NmmNm +/+++
++/+++
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 2
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: NAmNC ++++/
+++++/
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 2
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: NAbNm ++/++
+++/++
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 2
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: GAmNm /++++
+/++++
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 2
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-stringa: AAmNm /++++
+/++++
 0
----------------
-Verificato: NAmNm 
-carattere pos 12: esiste 1  car: A
-esatto: 1
-min: 1
-letto: 0
-Permesso:
-.A...
-NON permesso:
-A.AA.
-_________________
-carattere pos 14: esiste 0  car: C
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-....C
-_________________
-carattere pos 18: esiste 0  car: G
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 25: esiste 1  car: N
-esatto: 0
-min: 2
-letto: 0
-Permesso:
-N..N.
-NON permesso:
-.NN.N
-_________________
-carattere pos 39: esiste 0  car: b
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 41: esiste 0  car: d
-esatto: 0
-min: 0
-letto: 0
-Permesso:
-.....
-NON permesso:
-.....
-_________________
-carattere pos 50: esiste 1  car: m
-esatto: 2
-min: 2
-letto: 0
-Permesso:
-..m.m
-NON permesso:
-mm.m.
-_________________
-S
+ok
+/|/|/
+1390
+//+//
+89
+AAGAb
+AAGbA
+AAGbG
+AAGbb
+AAGbd
+AAGdb
+AGGAb
+AGGbA
+AGGbG
+AGGbb
+AGGbd
+AGGdb
+AdGAb
+AdGbA
+AdGbG
+AdGbb
+AdGbd
+AdGdb
+GAGAb
+GAGbA
+GAGbG
+GAGbb
+GAGbd
+GAGdb
+GGGAb
+GGGbA
+GGGbG
+GGGbb
+GGGbd
+GGGdb
+GdGAb
+GdGbA
+GdGbG
+GdGbb
+GdGbd
+GdGdb
+bAGAA
+bAGAG
+bAGAb
+bAGAd
+bAGbA
+bAGbG
+bAGbb
+bAGbd
+bAGdA
+bAGdG
+bAGdb
+bAGdd
+bGGAA
+bGGAG
+bGGAb
+bGGAd
+bGGbA
+bGGbG
+bGGbb
+bGGbd
+bGGdA
+bGGdG
+bGGdb
+bGGdd
+bdGAA
+bdGAG
+bdGAb
+bdGAd
+bdGbA
+bdGbG
+bdGbb
+bdGdA
+bdGdG
+bdGdb
+bdGdd
+dAGAb
+dAGbA
+dAGbG
+dAGbb
+dAGbd
+dAGdb
+dGGAb
+dGGbA
+dGGbG
+dGGbb
+dGGbd
+dGGdb
+ddGAb
+ddGbA
+ddGbG
+ddGbb
+ddGbd
+ddGdb
++|/|/
+7
+|//++
+0
+not_exists
++/|+/
+0
+++///
+0
++/++/
+0
+++//+
+0
++++//
+0
+++/+|
+0
++/+++
+0
+++++/
+0
+not_exists
++++/+
+0
+not_exists
+++/++
+0
+++/++
+0
+ko
+//+||
+222
+//|+/
+76
+/++//
+6
+ANNAb
+NNNAb
+bNNAN
+bNNAb
+bNNAm
+mNNAb
+|//++
+1
+/+||/
+1
+/+++/
+1
+not_exists
+++||/
+1
+not_exists
+/|+|+
+1
+/|+++
+0
+not_exists
++/+++
+0
+++++/
+0
++/+++
+0
+/++++
+0
+/++++
+0
+ok
+/+|/+
+73
+not_exists
+//+++
+0
++/+/+
+0
+|/+++
+0
+/+++/
+0
+//+++
+0
+++++/
+0
++++/+
+0
+/++++
+0
+/++++
+0
+/++++
+0
+ok
+/|///
+1837
+//|+/
+0
++/|//
+0
+//++|
+0
++/+|/
+0
+|/+/+
+0
+|||++
+0
+ko
+not_exists
+///++
+334
++/+/+
+5
++|||/
+4
+|++/+
+1
+bbNGl
+/+|++
+1
+++/++
+0
+++++/
+0
++/+++
+0
+/++++
+0
+/++++
+0
+ok
+///|/
+1453
++|///
+0
+/|+//
+0
+++|//
+0
+/||+/
+0
+/++|/
+0
++++//
+0
+ko
+////|
+511
+not_exists
+/+|//
+52
++///|
+8
+|||/+
+4
+++|//
+1
+//++/
+1
+|/+++
+1
+++/+/
+0
++/|++
+0
+/+++/
+0
+not_exists
++/+++
+0
++++/+
+0
+ko
+/|/|/
+1376
+///+|
+199
+/+///
+47
+||/+/
+24
++/+/|
+3
+//+/+
+1
+||/++
+0
++//++
+0
+not_exists
+/+/++
+0
+/+/++
+0
+++/++
+0
+++++/
+0
++/+++
+0
+/++++
+0
+/++++
+0
 ok

@@ -307,8 +307,8 @@ char * confronto(char* str2,char* str1){
         }
     }
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
-    printf("stringa: %s %s\n",str1, out);
-    //printf("%s\n", out);
+    //printf("stringa: %s %s\n",str1, out);
+    printf("%s\n", out);
     char * rit = malloc(sizeof(char)*k);
     scrittura(out, rit);
     return rit;
@@ -378,8 +378,8 @@ int main(void){
             }
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
-                //conto_ordinata(lista,ver,1);
-                printf("S\n");
+                conto_ordinata(lista,ver,1);
+                //printf("S\n");
             }
         }else if(nuova){
             if(inserimento) {
@@ -416,8 +416,8 @@ int main(void){
                         cont_buone = 0;
                         conto_ordinata(lista,ver,0);
                         printf("%d\n",cont_buone);
-                        conto_ordinata(lista,ver,1);
-                        scrivi(ver);
+                        //conto_ordinata(lista,ver,1);
+                        //scrivi(ver);
                     }else{
                         printf("not_exists\n");
                     }
@@ -432,8 +432,8 @@ int main(void){
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
-                    conto_ordinata(lista,ver,1);
-                    scrivi(ver);
+                    //conto_ordinata(lista,ver,1);
+                    //scrivi(ver);
                     pulisci(ver);
                     nuova = 0; //FINSICE LA PARTITA
                     //rif[0] = '&';
