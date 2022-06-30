@@ -13,7 +13,7 @@ typedef struct el{
 
 typedef struct{
     int ex;
-    char *per;
+    //char *per;
     char *no;
     int esatto;
     int min;
@@ -29,10 +29,10 @@ void init(char *ver){
         diz[i].letto=0;
         diz[i].min=0;
         diz[i].ex = -1;
-        diz[i].per = malloc(sizeof(char)*k);
+        //diz[i].per = malloc(sizeof(char)*k);
         diz[i].no = malloc(sizeof(char)*k);
         for(int j = 0; j<k;j++){
-            diz[i].per[j] = '.';
+            //diz[i].per[j] = '.';
             diz[i].no[j] = '.';
             ver[j]='.';
         }
@@ -46,7 +46,7 @@ void pulisci(char *ver){
         diz[i].min=0;
         diz[i].ex = -1;
         for(int j = 0; j<k;j++){
-            diz[i].per[j] = '.';
+            //diz[i].per[j] = '.';
             diz[i].no[j] = '.';
             ver[j]='.';
         }
@@ -153,7 +153,7 @@ void filtrato(char * str1, char * out, char * ver){
                     if(out[j]=='+') {
                         //printf("Dentro a +\n");
                         //printf("Carattere %c, posizione %d diz %d\n", str1[i], i,posizione(str1[i]));
-                        diz[posizione_diz(str1[i])].per[j]=str1[j];
+                        //diz[posizione_diz(str1[i])].per[j]=str1[j];
                         //printf("Fine a +\n");
                         ver[j] = str1[j];
                     }
@@ -161,10 +161,11 @@ void filtrato(char * str1, char * out, char * ver){
             }
             if(out[i]=='+') {
                 ver[i] = str1[i];
+                /*
                 if(diz[posizione_diz(str1[i])].per[i]=='.'){
                     diz[posizione_diz(str1[i])].per[i]=str1[i];
                     //diz[posizione_diz(str1[i])].min = diz[posizione_diz(str1[i])].min + 1;
-                }
+                }*/
                 
                 diz[posizione_diz(str1[i])].ex = 1;
                 if(sl && pos){
@@ -324,9 +325,10 @@ void scrivi(char *ver){
             printf("min: %d\n", diz[i].min);
             printf("letto: %d\n", diz[i].letto);
             printf("Permesso:\n");
+            /*
             for(int j = 0; j<k;j++){
                 printf("%c",diz[i].per[j]);
-            }
+            }*/
             printf("\n");
             printf("NON permesso:\n");
             for(int j = 0; j<k;j++){
