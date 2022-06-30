@@ -1,44 +1,42 @@
-stringa: riSo traduzione: ////+
-stringa: EefT traduzione: ////+
-stringa: jbB3 traduzione: ////+
-stringa: 7DJL traduzione: /++++
-Paorla: bbAd valida 0
-Paorla: 8F4r valida 0
-Paorla: -b7f valida 0
-Paorla: gDJL valida 1
-Paorla: ri7o valida 0
-Paorla: WkhF valida 0
-Paorla: 7DJL valida 0
-Paorla: WKqt valida 0
-Paorla: gJJ5 valida 0
-Paorla: 7D7d valida 0
-Paorla: jFBr valida 0
-Paorla: rK7t valida 0
-Paorla: riaO valida 0
-Paorla: EeJ5 valida 0
-Paorla: biaI valida 0
-Paorla: 8FLr valida 0
-Paorla: Ro7e valida 0
-Paorla: nOdE valida 0
-Paorla: qo7A valida 0
-Paorla: qDJL valida 1
-Paorla: 8F6A valida 0
-Paorla: -Kit valida 0
-Paorla: No7j valida 0
-Paorla: 8FPe valida 0
-Paorla: njBE valida 0
-Paorla: EAhT valida 0
-Paorla: -D7w valida 0
-Paorla: jbB3 valida 0
-Paorla: riSo valida 0
-Paorla: N8de valida 0
-Paorla: bbkd valida 0
-Paorla: -kiF valida 0
-Paorla: pjBb valida 0
-Paorla: KKqt valida 0
-Paorla: WnhT valida 0
-Paorla: EefT valida 0
-Paorla: fo7f valida 0
-Paorla: NoBJ valida 0
-Paorla: u0hT valida 0
-Paorla: pjAd valida 0
+not_exists
+////
+23
+/++/
+2
+/++/
+1
+ok
+///+
+1
+ok
+++//
+3
+++//
+2
+S
+++/+
+1
+S
+ok
+////
+34
+S
+////
+24
+////
+17
+/+//
+1
+ok
+////
+25
+////
+15
+////
+10
+/+++
+2
+not_exists
+S
+ok
+tempo: 0.000

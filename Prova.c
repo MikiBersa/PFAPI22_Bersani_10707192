@@ -3,6 +3,7 @@
 #include <time.h>
 
 int k;
+int cont_buone = 0;
 
 typedef struct el{
     char *str;
@@ -23,7 +24,7 @@ typedef struct{
 
 filtro diz[64];
 
-void init(){
+void init(char *ver){
     
     for(int i = 0; i<64;i++){
         diz[i].esatto=0;
@@ -35,6 +36,7 @@ void init(){
         for(int j = 0; j<k;j++){
             diz[i].per[j] = '.';
             diz[i].no[j] = '.';
+            ver[j]='.';
         }
     }
 }
@@ -52,7 +54,67 @@ int posizione_diz (char c){
     return -1;
 }
 
-void filtrato(char * str1, char * out){
+char inv_posizione (int n){
+    if(n==0) return '-';
+    if(n==1) return '_';
+    if(n>=2 && n<=11) return (char) (n+46);
+    if(n>=12 && n<=37) return (char) (n+53);
+    if(n>=38 && n<=63) return (char) (n+59);
+    return '.';
+}
+
+int presente(char c, char *s, int tipo){
+    
+    if(tipo == 0) {
+        for(int m = 0;m<k;m++){
+            if(s[m]==c) return 1;
+        }
+        return 0;
+    }else{
+        int cont=0;
+        for(int m = 0;m<k;m++){
+            if(s[m]==c) cont++;
+        }
+        return cont;
+    }
+}
+
+int validazione(char *conf, char * ver){
+    int conteggio = 0;
+    for(int i = 0;i<k;i++){
+        if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è
+        else if(diz[posizione_diz(conf[i])].ex==-1) continue; //non ancora analizzata
+        else if(diz[posizione_diz(conf[i])].ex==0) return 0; //confornto con le posizion obbligate
+        else if(diz[posizione_diz(conf[i])].ex==1){ //non c'è 
+            if(diz[posizione_diz(conf[i])].no[i]==conf[i]) return 0; //posizione sbagliata
+            if(diz[posizione_diz(conf[i])].per[i]!='.' && conf[i]!=diz[posizione_diz(conf[i])].per[i]) return 0; //non è quella obbligatoria
+            for(int j = 0;j<k;j++) {
+                if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
+                    conteggio ++;
+            }
+        }
+
+        if(diz[posizione_diz(conf[i])].esatto!=0 && diz[posizione_diz(conf[i])].esatto != conteggio) return 0;
+        else if(diz[posizione_diz(conf[i])].esatto==0){
+            if(diz[posizione_diz(conf[i])].min!=0 && conteggio <  diz[posizione_diz(conf[i])].min) return 0;
+        }
+
+    }
+
+    //ANALISI DELLE PAROLE CHE NON HA QUELLA PAROLA MA CHE ALTRE HANNO
+    for(int l = 0; l<64;l++){
+        if(diz[l].ex==1){ 
+            if(!presente(inv_posizione(l),conf,0))  return 0; //proprio non è presente
+            else{
+                if(presente(inv_posizione(l),conf,1)<diz[l].min) return 0; //non è del numero minimo
+            }
+        }
+    }
+
+    return 1;
+}
+
+void filtrato(char * str1, char * out, char * ver){
     for(int i = 0; i<k;i++){
         if(!diz[posizione_diz(str1[i])].letto){
             //printf("Dentro a letto\n");
@@ -81,11 +143,18 @@ void filtrato(char * str1, char * out){
                 }
             }
             if(out[i]=='+') {
-                diz[posizione_diz(str1[i])].per[i]=str1[i];
+                ver[i] = str1[i];
+                if(diz[posizione_diz(str1[i])].per[i]=='.'){
+                    diz[posizione_diz(str1[i])].per[i]=str1[i];
+                    diz[posizione_diz(str1[i])].min = diz[posizione_diz(str1[i])].min + 1;
+                }
+                
                 diz[posizione_diz(str1[i])].ex = 1;
                 if(sl && pos){
                     diz[posizione_diz(str1[i])].esatto = max+1;
                 }
+
+                if((max+1) > diz[posizione_diz(str1[i])].min) diz[posizione_diz(str1[i])].min = max+1;
             }
             else if(out[i]=='/'){
                 if(pos) {
@@ -185,6 +254,16 @@ void scrittura_ordinata(elemento *x){
     }
 }
 
+void conto_ordinata(elemento *x,char *ver){
+    if(x!=NULL){    
+        conto_ordinata(x->sx,ver);
+        if(validazione(x->str,ver)) cont_buone ++;
+        conto_ordinata(x->dx,ver);
+    }
+}
+
+
+
 int uguale(char *c, char *p){
     for(int i = 0;i<k;i++)
         if(c[i] != p[i]) return 0;
@@ -245,6 +324,7 @@ int main(void){
     int nuova = 0;
     int inserimento = 1;
     int conteggio = 0;
+    char ver[k];
 
     //init(); //preparo il dizionario
 
@@ -257,7 +337,7 @@ int main(void){
                 nuova = 1;
                 inserimento = 0;
                 //printf("INIZIO_PARTITA in +\n");
-                init(); //riazzero il dizionario
+                init(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF);
                 scrittura(stringa,rif);
@@ -305,17 +385,26 @@ int main(void){
                     if(controllo(lista,stringa)){
                         char *ritorno;
                         ritorno = confronto(rif,stringa);
-                        filtrato(stringa,ritorno);
+                        filtrato(stringa,ritorno, ver);
                         free(ritorno);
                         conteggio --;
+                        //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
+                        cont_buone = 0;
+                        conto_ordinata(lista,ver);
+                        printf("%d\n",cont_buone);
                     }else{
                         printf("not_exists\n");
                     }
                 }else{
                     char *ritorno;
                     ritorno = confronto(rif,stringa);
-                    filtrato(stringa,ritorno);
+                    filtrato(stringa,ritorno, ver);
                     free(ritorno);
+                    //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
+                    cont_buone = 0;
+                    conto_ordinata(lista,ver);
+                    printf("%d\n",cont_buone);
+                    
                     printf("ko\n");
                     nuova = 0; //FINSICE LA PARTITA
                     //rif[0] = '&';
