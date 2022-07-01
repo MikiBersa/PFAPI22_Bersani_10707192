@@ -233,6 +233,81 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
     return i;
 }
 
+void rotazione_sx(elemento *x, elemento **lista){
+    elemento * y = x->dx;
+    printf("Entra il nodo %s in sx_rotate\n", x->str);
+    x->dx = y->sx;
+    if(y->sx!=NULL) y->sx->p = x;
+    y->p = x->p;
+    if (x->p==NULL) *(lista) = y;
+    else if(x==x->p->sx) x->p->sx = y;
+    else x->p->dx = y;
+    y->sx = x;
+    x->p = y;
+}
+
+void rotazione_dx(elemento *y, elemento **lista){
+    elemento * x = y->sx;
+    printf("Entra il nodo %s in dx_rotate\n", x->str);
+    y->sx = x->dx;
+    if(x->dx!=NULL) x->dx->p = y;
+    x->p = y->p;
+    if (y->p==NULL) *(lista) = x;
+    else if(y==y->p->dx) y->p->dx = x;
+    else y->p->sx = x;
+    x->dx = y;
+    y->p = x;
+}
+
+void rb_inserimento_fixup(elemento * *lista, elemento *z){
+    elemento * x= NULL;
+    elemento * y= NULL;
+    if(z==*(lista)) z->colore=0; //balck
+    else{
+        x = z->p;
+        if(x->colore==1) { //rosso
+            if(x==x->p->sx){
+                y=x->p->dx;
+                if(y->colore==1){
+                    x->colore=0;
+                    y->colore=0;
+                    x->p->colore = 1;
+                    printf("Entra il nodo %s\n", z->str);
+                    rb_inserimento_fixup(lista, x->p);
+                }else {
+                    if(z == x->dx){
+                        z = x;
+                        rotazione_sx(z,lista);
+                        x=z->p;
+                    }
+                    x->colore=0;
+                    x->p->colore = 1;
+                    rotazione_dx(x->p,lista);
+                }
+            }else{
+                y=x->p->dx;
+                if(y->colore==1){
+                    x->colore=0;
+                    y->colore=0;
+                    x->p->colore = 1;
+                    rb_inserimento_fixup(lista, x->p);
+                }else {
+                    if(z == x->dx){
+                        z = x;
+                        rotazione_dx(z,lista);
+                        x=z->p;
+                    }
+                    x->colore=0;
+                    x->p->colore = 1;
+                    rotazione_sx(x->p,lista);
+                }
+                
+            }
+
+        }
+    }
+}
+
 elemento * inserimento_tree(elemento * *lista, char* parola){
     //modifico per RB
     elemento * y = NULL;
@@ -265,8 +340,9 @@ elemento * inserimento_tree(elemento * *lista, char* parola){
     else {y->dx=ell; }
 
     //PARTE RB
-    ell->colore=1 //colore rosso
-    
+    ell->colore=1; //colore rosso
+    printf("Inerito %s prima del fixup\n", parola);
+    rb_inserimento_fixup(lista,ell);
     return ell;
 }
 
@@ -443,7 +519,7 @@ int main(void){
 
     while(!feof(stdin)){
         if(scanf("%s", stringa)!=EOF);
-        //printf("Letto %s\n",stringa);
+        printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
@@ -556,6 +632,7 @@ int main(void){
                 
             }
         }else if(inserimento) {
+            printf("Inerito %s prima dell'ins\n", stringa);
             inserimento_tree(&lista,stringa);
             //printf("Inserito nuove stringhe\n");
         }
