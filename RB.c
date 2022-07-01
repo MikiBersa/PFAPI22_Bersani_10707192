@@ -203,9 +203,9 @@ void rotazione_sx(elemento *x, elemento_nil* lista){
     elemento * y = x->dx;
     //printf("Entra il nodo %s in sx_rotate\n", x->str);
     x->dx = y->sx;
-    if(y->sx!=NULL) y->sx->p = x;
+    if(y->sx!=lista->nill) y->sx->p = x;
     y->p = x->p;
-    if (x->p==NULL) lista->radice = y;
+    if (x->p==lista->nill) lista->radice = y;
     else if(x==x->p->sx) x->p->sx = y;
     else x->p->dx = y;
     y->sx = x;
@@ -216,9 +216,9 @@ void rotazione_dx(elemento *y, elemento_nil* lista){
     elemento * x = y->sx;
     //printf("Entra il nodo %s in dx_rotate\n", x->str);
     y->sx = x->dx;
-    if(x->dx!=NULL) x->dx->p = y;
+    if(x->dx!=lista->nill) x->dx->p = y;
     x->p = y->p;
-    if (y->p==NULL) lista->radice = x;
+    if (y->p==lista->nill) lista->radice = x;
     else if(y==y->p->dx) y->p->dx = x;
     else y->p->sx = x;
     x->dx = y;
@@ -228,38 +228,43 @@ void rotazione_dx(elemento *y, elemento_nil* lista){
 void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
     elemento * x= lista->nill;
     elemento * y= lista->nill;
-    printf("Colore z %d\n", z->colore);
+    //printf("Colore z %d\n", z->colore);
     if(z==lista->radice) {
         lista->radice->colore=0; //balck
-        printf("Vuoto\n");
+        //printf("Vuoto\n");
     }
     else{
         x = z->p;
-        printf("%s %d\n", x->str, x->colore);
+        //printf("%s %d\n", x->str, x->colore);
         if(x->colore==1) { //rosso
-            printf("Dentro a rosso %s\n", x->str);
+            //printf("Dentro a rosso %s\n", x->str);
             if(x==x->p->sx){
-                printf("Primo colore %s\n", x->p->dx->str);
+                //printf("Primo colore %s\n", x->p->dx->str);
                 y=x->p->dx;
-                printf("colore %d\n", y->colore);
+                //printf("colore %d\n", y->colore);
                 if(y->colore==1){
                     x->colore=0;
                     y->colore=0;
                     x->p->colore = 1;
-                    printf("Entra il nodo %s\n", z->str);
+                    //printf("Entra il nodo %s\n", z->str);
                     rb_inserimento_fixup(lista, x->p);
                 }else{
+                    //printf("In procinto di rotazione\n");
+                    //printf("Stringa %s\n", x->dx->str);
                     if(z == x->dx){
                         z = x;
+                        //printf("Rotazione a sx\n");
                         rotazione_sx(z,lista);
                         x=z->p;
                     }
                     x->colore=0;
+                    //printf("Padre %s\n", x->p->str);
                     x->p->colore = 1;
+                    //printf("Rotazione a dx\n");
                     rotazione_dx(x->p,lista);
                 }
             }else{
-                printf("Due\n");
+                //printf("Due\n");
                 y=x->p->dx;
                 if(y->colore==1){
                     x->colore=0;
@@ -296,21 +301,24 @@ void inserimento_tree(elemento_nil *lista, char* parola){
     elemento * ell = malloc(sizeof(elemento));
     char *st = malloc(sizeof(char)*k);
     scrittura(parola, st);
-
+    /*
+    printf("------------\n");
+    printf("La radice: %s\n", lista->radice->str);
     printf("provas\n");
+    */
     //int i = 0;
     while (x!=lista->nill){
-       printf("Dentro\n");
+       //printf("Dentro\n");
         y = x;
         //printf("Stringa di prova: %s\n", (*lista)->str);
         //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
-        printf("Pos: %d\n",posizione(st,x->str));
+        //printf("Pos: %d\n",posizione(st,x->str));
         if(posizione(st,x->str) == -1){ 
             x = x->sx; //printf("-1\n");
-            printf("-1_\n");
+            //printf("-1_\n");
         }
         else {x = x->dx;
-            printf("1_\n");
+           // printf("1_\n");
         }
     }
     ell->p = y;
@@ -322,15 +330,15 @@ void inserimento_tree(elemento_nil *lista, char* parola){
         lista->radice = ell;
     else if(posizione(ell->str, y->str) == -1) {
         //printf("Dentro a sx");
-        printf("Dentro a sx");
+        //printf("Dentro a sx");
         y->sx=ell;}
     else {y->dx=ell; 
-        printf("Dentro a dx");
+        //printf("Dentro a dx");
     }
 
     //PARTE RB
     ell->colore=1; //colore rosso
-    printf("Inserito %s prima del fixup padre %s\n", parola, ell->p->str);
+    //printf("Inserito %s prima del fixup padre %s\n", parola, ell->p->str);
     rb_inserimento_fixup(lista,ell);
     //return ell;
 }
@@ -339,7 +347,7 @@ void scrittura_ordinata(elemento *x){
     if(x!=NULL){    
         scrittura_ordinata(x->sx);
         //if(validazione(x->str,ver)) printf("%s\n", x->str);
-        printf("%s\n", x->str);
+        if(x->dx!=NULL) printf("%s\n", x->str);
         scrittura_ordinata(x->dx);
     }
 }
@@ -352,7 +360,7 @@ int main(void){
     nil.colore = 0;
     while(!feof(stdin)){
         scanf("%s", stringa);
-        printf("Stringa %s\n",stringa);
+        //printf("Stringa %s\n",stringa);
         inserimento_tree(&lista, stringa);
     }
     //rotazioni funzionano
