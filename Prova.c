@@ -211,9 +211,9 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
         y = x;
         //printf("Stringa di prova: %s\n", (*lista)->str);
         //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
-        if(posizione(parola->str,x->str) == -1){ x = x->sx; //printf("-1\n");
+        if(posizione(parola->str,x->str) == -1){ x = x->prev_bst; //prev è a sx
         }
-        else {x = x->dx; //printf("1\n");
+        else {x = x->next_bst; //next è a dx
         }
     }
     parola->testa = y;
@@ -276,28 +276,29 @@ void scrittura_ordinata(elemento *x,char *ver){
 
 void conto_ordinata(elemento *x,char *ver, int i){
     if(x!=NULL){    
-        conto_ordinata(x->sx,ver,i);
+        conto_ordinata(x->prev_bst,ver,i);
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
         }else{
             //elimino nell'albero
         }
-        conto_ordinata(x->dx,ver,i);
+        conto_ordinata(x->next_bst,ver,i);
     }
 }
 
-void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver){
+void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver, int i){
     if(x!=NULL){    
-        conto_ordinata_filtrato(x->sx,lista_nuova,ver);
+        conto_ordinata_filtrato(x->sx,lista_nuova,ver,i);
         if(validazione(x->str,ver)){
-          
-            cont_buone ++;
+            if(i == 0) cont_buone ++;
+            else printf("%s\n", x->str);
                 //inserimento nel nuovo bst
-            inserimento_tree_filtrato(lista_nuova, x);
+            inserimento_tree_filtrato(lista_nuova, x); //occhio che me li inserisce già ordinati -> facendo così riduco solo il teta di n come numero
+            //dovrei trasformare anche questo in RB
             
         }
-        conto_ordinata_filtrato(x->dx,lista_nuova,ver);
+        conto_ordinata_filtrato(x->dx,lista_nuova,ver,i);
     }
 }
 
@@ -405,6 +406,7 @@ int main(void){
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
+                lista_filtrata = NULL;
                 nuova = 1;
                 inserimento = 0;
                 primo_inserimento = 1;
@@ -431,10 +433,13 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
-                conto_ordinata(lista_filtrata,ver,1);
+                if(primo_inserimento) {conto_ordinata_filtrato(lista,&lista_filtrata,ver,1);primo_inserimento = 0;}
+                else conto_ordinata(lista_filtrata,ver,1); //faccio il conteggio sul nuovo bst
+                //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }
         }else if(nuova){
+            //insrriemnto durante la partita
             if(inserimento) {
                 elemento * prova = inserimento_tree(&lista,stringa);
                 //printf("Inserito nuove stringhe\n");
@@ -455,7 +460,8 @@ int main(void){
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; //DA VERIFICARE
                         //rif[0] = '&';
-                        lista_filtrata = NULL; //pulisco il bst 
+                        //lista_filtrata = NULL; //pulisco il bst 
+                        primo_inserimento = 1;
                 }else if(!controllo(lista,stringa)){
                         printf("not_exists\n");
                 }else if(conteggio != 1){ 
@@ -471,8 +477,8 @@ int main(void){
                         //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                         cont_buone = 0;
 
-                        if(primo_inserimento) conto_ordinata_filtrato(lista,&lista_filtrata,ver);
-                        else conto_ordinata(lista_filtrata,ver,0);
+                        if(primo_inserimento) {conto_ordinata_filtrato(lista,&lista_filtrata,ver,0);primo_inserimento = 0;}
+                        else conto_ordinata(lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
 
                         printf("%d\n",cont_buone);
                         #ifdef debug
@@ -491,18 +497,19 @@ int main(void){
                     free(ritorno);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(lista,ver,0);
+                    conto_ordinata(lista_filtrata,ver,0);
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
                     #ifdef debug
-                        conto_ordinata(lista,ver,1);
+                        conto_ordinata(lista_filtrata,ver,1);
                         scrivi(ver);
                     #endif
                     pulisci(ver);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
-                    lista_filtrata = NULL;
+                    //lista_filtrata = NULL;
+                    primo_inserimento = 1;
                     //rif[0] = '&';
                 }
                 
