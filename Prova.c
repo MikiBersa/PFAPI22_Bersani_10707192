@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define debug 
+//#define debug 
 
 int k;
 int cont_buone = 0;
@@ -311,11 +311,11 @@ char * confronto(char* str2,char* str1){
         }
     }
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
-    #ifdef debug
-        printf("stringa: %s %s\n",str1, out);
-    #else 
+   
+        //printf("%s %s\n",str1, out);
+   
         printf("%s\n", out);
-    #endif
+   
     char * rit = malloc(sizeof(char)*k);
     scrittura(out, rit);
     return rit;
@@ -367,6 +367,7 @@ int main(void){
             if(stringa[1] == 'n'){
                 nuova = 1;
                 inserimento = 0;
+                //printf("INSERIMENTO PAROLE FINE\n");
                 //printf("INIZIO_PARTITA in +\n");
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
@@ -379,9 +380,11 @@ int main(void){
             else if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
                     inserimento = 1;
+                    //printf("INSERIMENTO PAROLE INZIO\n");
                 }
                 else if(stringa[11] == 'f'){
                     inserimento = 0;
+                    //printf("INSERIMENTO PAROLE FINE\n");
                 }
             }
             else if(stringa[1] == 's' && stringa[2] == 't'){
@@ -393,33 +396,29 @@ int main(void){
             if(inserimento) {
                 inserimento_tree(&lista,stringa);
                 //printf("Inserito nuove stringhe\n");
-            }/*
-            //QUI SIAMO DENTRO ALLA PARTITA
-            else if(rif[0] == '&'){ //inserimento di una nuova parola -> DA METTERE QUANDO FINISCE UNA PARTITA A RIF[0] = '&'
-                
-                scrittura(stringa,rif);
-                scanf("%s", stringa);
-                conteggio = atoi(&stringa[0]);
-                printf("INIZIO_PARTITA\n"); //L'HO MESSO IO POI VA TOLTO
-                printf("Parola di riferminto %s\n", rif);
-                printf("CONTEGGIO: %d\n", conteggio);
-                
-            }*/
-            else{
+            }else{
                 //Qui dovrebbe partire algoritmo 
                 //printf("Stringhe da confrontare %s\n", stringa);
                 //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
+                //printf("CONTEGGIO prima -1: %D\n", conteggio);
+                //printf("Stringa letta in : %s\n", stringa);
                 if(uguale(rif,stringa)){
                         printf("ok\n");
                         nuova = 0; //FINSICE LA PARTITA
+                        conteggio = 0; //DA VERIFICARE
                         //rif[0] = '&';
+                }else if(!controllo(lista,stringa)){
+                        printf("not_exists\n");
                 }else if(conteggio != 1){ 
-                    if(controllo(lista,stringa)){
+                    //printf("Stringa letta in : %s\n", stringa);
+                    //if(controllo(lista,stringa)){
                         char *ritorno;
                         ritorno = confronto(rif,stringa);
                         filtrato(stringa,ritorno, ver);
                         free(ritorno);
-                        conteggio --;
+                        //printf("CONTEGGIO prima: %D\n", conteggio);
+                        conteggio = conteggio - 1;
+                        //printf("CONTEGGIO dopo: %D\n", conteggio);
                         //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                         cont_buone = 0;
                         conto_ordinata(lista,ver,0);
@@ -428,10 +427,12 @@ int main(void){
                             conto_ordinata(lista,ver,1);
                             scrivi(ver);
                         #endif
-                    }else{
-                        printf("not_exists\n");
-                    }
+                    //}else{
+                        //printf("CONTEGGIO in NON exists: %D\n", conteggio);
+                    //    printf("not_exists\n");
+                    //}
                 }else{
+                    //printf("CONTEGGIO in ko: %D\n", conteggio);
                     char *ritorno;
                     ritorno = confronto(rif,stringa);
                     filtrato(stringa,ritorno, ver);
@@ -448,6 +449,7 @@ int main(void){
                     #endif
                     pulisci(ver);
                     nuova = 0; //FINSICE LA PARTITA
+                    conteggio = 0;
                     //rif[0] = '&';
                 }
                 

@@ -1,33 +1,32 @@
-/////
+Stringa letta in : KS06l
+KS06l /////
 5
+Stringa letta in : had7s
 not_exists
-//|//
+Stringa letta in : okauE
+okauE //|//
 3
 5sjaH
 8adfs
 Hi23a
-/+///
+Stringa letta in : -s9k0
+-s9k0 /+///
 2
-|////
-2
-ko
--s9k0
+Stringa letta in : sghks
+not_exists
 5sjaH
-8adfs
-Hi23a
-KS06l
-PsjW5
 asHdd
-laj74
-okauE
-paF7s
-sm_ks
-/|///
+Stringa letta in : sn_ks
+not_exists
+Stringa letta in : laj74
+laj74 /|///
 4
 Hi23a
 _fah-
 asHdd
 okauE
-///|/
+Stringa letta in : sm_ks
+sm_ks ///|/
 1
+Stringa letta in : okauE
 ok
