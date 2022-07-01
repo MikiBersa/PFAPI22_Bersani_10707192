@@ -28,6 +28,8 @@ typedef struct{
 
 filtro diz[64];
 
+elemento nil = {"NULL", 0,NULL,NULL,NULL};
+
 void init(char *ver){
     
     for(int i = 0; i<64;i++){

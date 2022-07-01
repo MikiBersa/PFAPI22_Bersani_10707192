@@ -344,10 +344,10 @@ void inserimento_tree(elemento_nil *lista, char* parola){
 }
 
 void scrittura_ordinata(elemento *x){
-    if(x!=NULL){    
+    if(x->dx!=NULL){    
         scrittura_ordinata(x->sx);
         //if(validazione(x->str,ver)) printf("%s\n", x->str);
-        if(x->dx!=NULL) printf("%s\n", x->str);
+        printf("%s\n", x->str);
         scrittura_ordinata(x->dx);
     }
 }
