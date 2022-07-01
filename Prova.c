@@ -11,11 +11,13 @@ typedef struct el{
     struct el *sx;
     struct el *dx;
     struct el *p;
+    struct el *next_bst; //per la lista interna o si fa anche qui un BST
+    struct el *prev_bst; //per la lista interna filtrate
+    struct el *testa;
 } elemento;
 
 typedef struct{
     int ex;
-    //char *per;
     char *no;
     int esatto;
     int min;
@@ -31,10 +33,8 @@ void init(char *ver){
         diz[i].letto=0;
         diz[i].min=0;
         diz[i].ex = -1;
-        //diz[i].per = malloc(sizeof(char)*k);
         diz[i].no = malloc(sizeof(char)*k);
         for(int j = 0; j<k;j++){
-            //diz[i].per[j] = '.';
             diz[i].no[j] = '.';
             ver[j]='.';
         }
@@ -48,7 +48,6 @@ void pulisci(char *ver){
         diz[i].min=0;
         diz[i].ex = -1;
         for(int j = 0; j<k;j++){
-            //diz[i].per[j] = '.';
             diz[i].no[j] = '.';
             ver[j]='.';
         }
@@ -98,7 +97,6 @@ int validazione(char *conf, char * ver){
     int conteggio = 0;
     for(int i = 0;i<k;i++){
         if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è
-        //else if(diz[posizione_diz(conf[i])].ex==-1) continue; //non ancora analizzata
         else if(diz[posizione_diz(conf[i])].ex==0) return 0; //confornto con le posizion obbligate
         else if(diz[posizione_diz(conf[i])].ex==1){ //non c'è 
             if(diz[posizione_diz(conf[i])].no[i]==conf[i]) return 0; //posizione sbagliata
@@ -154,21 +152,12 @@ void filtrato(char * str1, char * out, char * ver){
                         diz[posizione_diz(str1[i])].no[j]=str1[j];
                     }
                     if(out[j]=='+') {
-                        //printf("Dentro a +\n");
-                        //printf("Carattere %c, posizione %d diz %d\n", str1[i], i,posizione(str1[i]));
-                        //diz[posizione_diz(str1[i])].per[j]=str1[j];
-                        //printf("Fine a +\n");
                         ver[j] = str1[j];
                     }
                 }
             }
             if(out[i]=='+') {
                 ver[i] = str1[i];
-                /*
-                if(diz[posizione_diz(str1[i])].per[i]=='.'){
-                    diz[posizione_diz(str1[i])].per[i]=str1[i];
-                    //diz[posizione_diz(str1[i])].min = diz[posizione_diz(str1[i])].min + 1;
-                }*/
                 
                 diz[posizione_diz(str1[i])].ex = 1;
                 if(sl && pos){
@@ -211,16 +200,47 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
     }
 }
 
-int inserimento_tree(elemento * *lista, char* parola){
+//INSERIMENTO BST FILTRATO NUOVO
+int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
+    elemento * y = NULL;
+    elemento * x = *(lista);
+
+    int i = 0;
+    while (x != NULL){
+        i ++;
+        y = x;
+        //printf("Stringa di prova: %s\n", (*lista)->str);
+        //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
+        if(posizione(parola->str,x->str) == -1){ x = x->sx; //printf("-1\n");
+        }
+        else {x = x->dx; //printf("1\n");
+        }
+    }
+    parola->testa = y;
+    parola->next_bst = NULL;
+    parola->prev_bst = NULL;
+
+    if(y==NULL)
+        *(lista) = parola;
+    else if(posizione(parola->str, y->str) == -1) {
+        //printf("Dentro a sx");
+        y->prev_bst=parola;}
+    else {y->next_bst=parola; //printf("Dentro a dx");
+    }
+
+    return i;
+}
+
+elemento * inserimento_tree(elemento * *lista, char* parola){
     elemento * y = NULL;
     elemento * x = *(lista);
     elemento * ell = malloc(sizeof(elemento));
     char *st = malloc(sizeof(char)*k);
     scrittura(parola, st);
 
-    int i = 0;
+    //int i = 0;
     while (x != NULL){
-        i ++;
+        //i ++;
         y = x;
         //printf("Stringa di prova: %s\n", (*lista)->str);
         //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
@@ -242,7 +262,7 @@ int inserimento_tree(elemento * *lista, char* parola){
     else {y->dx=ell; //printf("Dentro a dx");
     }
 
-    return i;
+    return ell;
 }
 /*
 void scrittura_ordinata(elemento *x,char *ver){
@@ -260,11 +280,29 @@ void conto_ordinata(elemento *x,char *ver, int i){
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
+        }else{
+            //elimino nell'albero
         }
         conto_ordinata(x->dx,ver,i);
     }
 }
 
+void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver){
+    if(x!=NULL){    
+        conto_ordinata_filtrato(x->sx,lista_nuova,ver);
+        if(validazione(x->str,ver)){
+          
+            cont_buone ++;
+                //inserimento nel nuovo bst
+            inserimento_tree_filtrato(lista_nuova, x);
+            
+        }
+        conto_ordinata_filtrato(x->dx,lista_nuova,ver);
+    }
+}
+
+
+//inserimento_tree_filtrato
 
 
 int uguale(char *c, char *p){
@@ -312,15 +350,15 @@ char * confronto(char* str2,char* str1){
     }
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
    
-        //printf("%s %s\n",str1, out);
+    //printf("%s %s\n",str1, out);
    
-        printf("%s\n", out);
+    printf("%s\n", out);
    
     char * rit = malloc(sizeof(char)*k);
     scrittura(out, rit);
     return rit;
 }
-
+/*
 void scrivi(char *ver){
     printf("---------------\n");
     printf("Verificato: %s \n", ver);
@@ -331,10 +369,10 @@ void scrivi(char *ver){
             printf("min: %d\n", diz[i].min);
             printf("letto: %d\n", diz[i].letto);
             printf("Permesso:\n");
-            /*
+            
             for(int j = 0; j<k;j++){
                 printf("%c",diz[i].per[j]);
-            }*/
+            }
             printf("\n");
             printf("NON permesso:\n");
             for(int j = 0; j<k;j++){
@@ -344,10 +382,11 @@ void scrivi(char *ver){
             printf("_________________\n");
         }
     }
-}
+}*/
 
 int main(void){
     elemento * lista = NULL;
+    elemento * lista_filtrata = NULL;
     if(scanf("%d", &k) != EOF);
     char stringa[k];
     char rif[k];
@@ -355,6 +394,7 @@ int main(void){
     int nuova = 0;
     int inserimento = 1;
     int conteggio = 0;
+    int primo_inserimento = 0;
     char ver[k+1]; ver[k] = '\0';
 
     init(ver); //preparo il dizionario
@@ -367,6 +407,7 @@ int main(void){
             if(stringa[1] == 'n'){
                 nuova = 1;
                 inserimento = 0;
+                primo_inserimento = 1;
                 //printf("INSERIMENTO PAROLE FINE\n");
                 //printf("INIZIO_PARTITA in +\n");
                 pulisci(ver); //riazzero il dizionario
@@ -389,13 +430,20 @@ int main(void){
             }
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
-                conto_ordinata(lista,ver,1);
+                //conto_ordinata(lista,ver,1);
+                conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }
         }else if(nuova){
             if(inserimento) {
-                inserimento_tree(&lista,stringa);
+                elemento * prova = inserimento_tree(&lista,stringa);
                 //printf("Inserito nuove stringhe\n");
+                if(validazione(stringa,ver)){
+                    //se è gia valido lo metto li dentro
+                    inserimento_tree_filtrato(&lista_filtrata, prova);
+                }
+            
+            
             }else{
                 //Qui dovrebbe partire algoritmo 
                 //printf("Stringhe da confrontare %s\n", stringa);
@@ -407,6 +455,7 @@ int main(void){
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; //DA VERIFICARE
                         //rif[0] = '&';
+                        lista_filtrata = NULL; //pulisco il bst 
                 }else if(!controllo(lista,stringa)){
                         printf("not_exists\n");
                 }else if(conteggio != 1){ 
@@ -421,7 +470,10 @@ int main(void){
                         //printf("CONTEGGIO dopo: %D\n", conteggio);
                         //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                         cont_buone = 0;
-                        conto_ordinata(lista,ver,0);
+
+                        if(primo_inserimento) conto_ordinata_filtrato(lista,&lista_filtrata,ver);
+                        else conto_ordinata(lista_filtrata,ver,0);
+
                         printf("%d\n",cont_buone);
                         #ifdef debug
                             conto_ordinata(lista,ver,1);
@@ -450,6 +502,7 @@ int main(void){
                     pulisci(ver);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
+                    lista_filtrata = NULL;
                     //rif[0] = '&';
                 }
                 
