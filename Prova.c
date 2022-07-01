@@ -264,15 +264,39 @@ elemento * inserimento_tree(elemento * *lista, char* parola){
 
     return ell;
 }
-/*
-void scrittura_ordinata(elemento *x,char *ver){
-    if(x!=NULL){    
-        scrittura_ordinata(x->sx,ver);
-        if(validazione(x->str,ver)) printf("%s\n", x->str);
-        scrittura_ordinata(x->dx,ver);
-    }
+
+elemento * three_minore(elemento *x){
+    while(x->prev_bst!=NULL) x = x->prev_bst;
+    return x;
 }
-*/
+
+elemento * successore_bst(elemento *s){
+    elemento * y = NULL;
+    if(s->next_bst!=NULL) return three_minore(s->next_bst);
+    y = s->testa;
+    while(y!=NULL && s==y->next_bst){
+        s = y;
+        y = y->testa;
+    }
+    return y;
+}
+//T->x e Z->s
+void eliminazione (elemento **lista, elemento *s){
+    elemento * y = NULL;
+    elemento * x = NULL;
+
+    if(s->prev_bst==NULL || s->next_bst == NULL) y = s;
+    else y = successore_bst(s); //da fare questo algoritmo
+    if(y->prev_bst!=NULL) x = y->prev_bst;
+    else x = y->next_bst;
+
+    if(x!=NULL) x->testa = y->testa;
+    if(y->testa==NULL) *(lista) = x;
+    else if(y==y->testa->prev_bst) y->testa->prev_bst = x;
+    else y->testa->next_bst = x;
+    if(y!=s) scrittura(y->str,s->str);
+
+}
 
 void conto_ordinata(elemento *x,char *ver, int i){
     if(x!=NULL){    
@@ -282,6 +306,7 @@ void conto_ordinata(elemento *x,char *ver, int i){
             else printf("%s\n", x->str);
         }else{
             //elimino nell'albero
+
         }
         conto_ordinata(x->next_bst,ver,i);
     }
@@ -303,8 +328,15 @@ void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver, int i
 }
 
 
-//inserimento_tree_filtrato
-
+/*
+void scrittura_ordinata(elemento *x,char *ver){
+    if(x!=NULL){    
+        scrittura_ordinata(x->sx,ver);
+        if(validazione(x->str,ver)) printf("%s\n", x->str);
+        scrittura_ordinata(x->dx,ver);
+    }
+}
+*/
 
 int uguale(char *c, char *p){
     for(int i = 0;i<k;i++)
