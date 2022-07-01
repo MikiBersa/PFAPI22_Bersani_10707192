@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define debug 
+
 int k;
 int cont_buone = 0;
 
@@ -101,6 +103,7 @@ int validazione(char *conf, char * ver){
         else if(diz[posizione_diz(conf[i])].ex==1){ //non c'è 
             if(diz[posizione_diz(conf[i])].no[i]==conf[i]) return 0; //posizione sbagliata
             //if(diz[posizione_diz(conf[i])].per[i]!='.' && conf[i]!=diz[posizione_diz(conf[i])].per[i]) return 0; //non è quella obbligatoria
+            conteggio = 0;
             for(int j = 0;j<k;j++) {
                 if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
                     conteggio ++;
@@ -308,8 +311,11 @@ char * confronto(char* str2,char* str1){
         }
     }
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
-    //printf("stringa: %s %s\n",str1, out);
-    printf("%s\n", out);
+    #ifdef debug
+        printf("stringa: %s %s\n",str1, out);
+    #else 
+        printf("%s\n", out);
+    #endif
     char * rit = malloc(sizeof(char)*k);
     scrittura(out, rit);
     return rit;
@@ -418,8 +424,10 @@ int main(void){
                         cont_buone = 0;
                         conto_ordinata(lista,ver,0);
                         printf("%d\n",cont_buone);
-                        //conto_ordinata(lista,ver,1);
-                        //scrivi(ver);
+                        #ifdef debug
+                            conto_ordinata(lista,ver,1);
+                            scrivi(ver);
+                        #endif
                     }else{
                         printf("not_exists\n");
                     }
@@ -434,8 +442,10 @@ int main(void){
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
-                    //conto_ordinata(lista,ver,1);
-                    //scrivi(ver);
+                    #ifdef debug
+                        conto_ordinata(lista,ver,1);
+                        scrivi(ver);
+                    #endif
                     pulisci(ver);
                     nuova = 0; //FINSICE LA PARTITA
                     //rif[0] = '&';
