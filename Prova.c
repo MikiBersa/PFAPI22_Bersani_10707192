@@ -6,8 +6,10 @@
 int k;
 int cont_buone = 0;
 
+//FACCIO UN ALBERO RB
 typedef struct el{
     char *str;
+    int colore; //0 è nero 1 è rosso
     struct el *sx;
     struct el *dx;
     struct el *p;
@@ -232,6 +234,7 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
 }
 
 elemento * inserimento_tree(elemento * *lista, char* parola){
+    //modifico per RB
     elemento * y = NULL;
     elemento * x = *(lista);
     elemento * ell = malloc(sizeof(elemento));
@@ -259,9 +262,11 @@ elemento * inserimento_tree(elemento * *lista, char* parola){
     else if(posizione(ell->str, y->str) == -1) {
         //printf("Dentro a sx");
         y->sx=ell;}
-    else {y->dx=ell; //printf("Dentro a dx");
-    }
+    else {y->dx=ell; }
 
+    //PARTE RB
+    ell->colore=1 //colore rosso
+    
     return ell;
 }
 
@@ -280,6 +285,16 @@ elemento * successore_bst(elemento *s){
     }
     return y;
 }
+
+void scrittura_ordinata(elemento *x){
+    if(x!=NULL){    
+        scrittura_ordinata(x->next_bst);
+        //if(validazione(x->str,ver)) printf("%s\n", x->str);
+        printf("Rimanenti: %s\n", x->str);
+        scrittura_ordinata(x->prev_bst);
+    }
+}
+
 //T->x e Z->s
 void eliminazione (elemento **lista, elemento *s){
     elemento * y = NULL;
@@ -296,19 +311,23 @@ void eliminazione (elemento **lista, elemento *s){
     else y->testa->next_bst = x;
     if(y!=s) scrittura(y->str,s->str);
 
+    //scrittura_ordinata(*(lista));
+
 }
 
-void conto_ordinata(elemento *x,char *ver, int i){
+void conto_ordinata(elemento *x,elemento **lista,char *ver, int i){
     if(x!=NULL){    
-        conto_ordinata(x->prev_bst,ver,i);
+        conto_ordinata(x->prev_bst,lista,ver,i);
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
         }else{
             //elimino nell'albero
+            eliminazione(lista,x);
+            //printf("Eliminazione: %s\n", x->str);
 
         }
-        conto_ordinata(x->next_bst,ver,i);
+        conto_ordinata(x->next_bst,lista,ver,i);
     }
 }
 
@@ -327,16 +346,6 @@ void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver, int i
     }
 }
 
-
-/*
-void scrittura_ordinata(elemento *x,char *ver){
-    if(x!=NULL){    
-        scrittura_ordinata(x->sx,ver);
-        if(validazione(x->str,ver)) printf("%s\n", x->str);
-        scrittura_ordinata(x->dx,ver);
-    }
-}
-*/
 
 int uguale(char *c, char *p){
     for(int i = 0;i<k;i++)
@@ -466,7 +475,7 @@ int main(void){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
                 if(primo_inserimento) {conto_ordinata_filtrato(lista,&lista_filtrata,ver,1);primo_inserimento = 0;}
-                else conto_ordinata(lista_filtrata,ver,1); //faccio il conteggio sul nuovo bst
+                else conto_ordinata(lista_filtrata,&lista_filtrata,ver,1); //faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }
@@ -510,7 +519,7 @@ int main(void){
                         cont_buone = 0;
 
                         if(primo_inserimento) {conto_ordinata_filtrato(lista,&lista_filtrata,ver,0);primo_inserimento = 0;}
-                        else conto_ordinata(lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
+                        else conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
 
                         printf("%d\n",cont_buone);
                         #ifdef debug
@@ -529,7 +538,7 @@ int main(void){
                     free(ritorno);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(lista_filtrata,ver,0);
+                    conto_ordinata(lista_filtrata,&lista_filtrata,ver,0);
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
