@@ -448,7 +448,7 @@ void conto_ordinata(elemento *x,elemento **lista,char *ver, int i){
         }else{
             //elimino nell'albero
             eliminazione(lista,x);
-            printf("Eliminazione: %s\n", x->str);
+            //printf("Eliminazione: %s\n", x->str);
 
         }
         conto_ordinata(x->next_bst,lista,ver,i);
@@ -605,10 +605,10 @@ int main(void){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
                 if(primo_inserimento) {
-                    printf("Prima volta\n");
+                    //printf("Prima volta\n");
                     conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,1);primo_inserimento = 0;}
                 else {
-                    printf("NOn prima volta\n");
+                    //printf("NOn prima volta\n");
                     conto_ordinata(lista_filtrata,&lista_filtrata,ver,1); 
                 }//faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
@@ -655,10 +655,10 @@ int main(void){
                         cont_buone = 0;
 
                         if(primo_inserimento) {
-                            printf("Prima volta\n");
+                            //printf("Prima volta\n");
                             conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
-                            printf("NOn prima volta\n");
+                            //printf("NOn prima volta\n");
                             conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
