@@ -341,7 +341,7 @@ int cont = 0;
 void mood(NodePtr node) {
 		if (node != TNULL) {
 			mood(node->left);
-            if(cont < 3) {
+            if(cont < 1) {
                 printf("%s\n", node->str);
                 cont ++;
             }else{
@@ -360,7 +360,7 @@ int main(void){
     //nil.colore = 0;
     while(!feof(stdin)){
         scanf("%s", stringa);
-        printf("Stringa %s\n",stringa);
+        //printf("Stringa %s\n",stringa);
         insert(stringa);
     }
 
