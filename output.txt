@@ -1,143 +1,151 @@
-/////
-36
-/////
-22
-not_exists
-|+/++
-1
-9lq0c
-//+/+
-1
-///+/
-1
-/////
-1
-not_exists
-+////
-1
-ko
-/////
-51
-not_exists
-/////
-36
-/////
-20
-/////
-15
--_zTl
-2lI0c
-2lqUc
-BtzTl
-EO2AE
-ETRA3
-Kdl0c
-Kll0c
-Kln0c
-cSEqL
-cSp4L
-gsleN
-qlJ0c
-sslqL
-ylU0c
-/////
-1
-/////
-1
-/////
-1
-ko
-/////
-49
-/////
-25
--_zTl
-5lqUc
-96P81
-96hP1
-9XC81
-9lq0c
-BtzTl
-CZmFB
-KXl0c
-Kdl0c
-Kll0c
-Kul0p
-M-qUc
-cSp4L
-cs8qL
-gsleN
-q_qML
-qlF0c
-qlJ0c
-sslqL
-tBMJs
-vBMKt
-w9MKW
-x_zMl
-ylU0c
-/////
-22
-/////
-19
-/////
-19
-not_exists
-/////
-16
-not_exists
-+//++
-1
-/////
-1
-/////
-1
-/////
-1
-not_exists
-/////
-1
-+////
-1
-/////
-1
-96P81
-/////
-1
-/////
-1
-96P81
-/////
-1
-/////
-1
-ko
-/////
-57
-//|/|
-3
-cSEqL
-cs8qL
-tqncX
-|///+
-2
-cSEqL
-cs8qL
-+////
-2
-////|
-1
-cSEqL
-/////
-1
-/////
-1
-/////
-1
-ko
-not_exists
-not_exists
-not_exists
-//+//
-3
-ok
+Stringa bbAd
+Stringa 8F4r
+Stringa -b7f
+Stringa gDJL
+Stringa ri7o
+Stringa WkhF
+Stringa 7DJL
+Stringa WKqt
+Stringa gJJ5
+Stringa 7D7d
+Stringa jFBr
+Stringa rK7t
+Stringa riaO
+Stringa EeJ5
+Stringa biaI
+Stringa 8FLr
+Stringa Ro7e
+Stringa nOdE
+Stringa qo7A
+Stringa qDJL
+Stringa 8F6A
+Stringa -Kit
+Stringa No7j
+Stringa 8FPe
+Stringa njBE
+Stringa EAhT
+Stringa -D7w
+Stringa jbB3
+Stringa riSo
+Stringa N8de
+Stringa bbkd
+Stringa -kiF
+Stringa pjBb
+Stringa KKqt
+Stringa WnhT
+Stringa EefT
+Stringa fo7f
+Stringa NoBJ
+Stringa u0hT
+Stringa pjAd
+IN ordine
+-D7w
+-Kit
+-b7f
+-kiF
+7D7d
+7DJL
+8F4r
+8F6A
+8FLr
+8FPe
+EAhT
+EeJ5
+EefT
+KKqt
+N8de
+No7j
+NoBJ
+Ro7e
+WKqt
+WkhF
+WnhT
+bbAd
+bbkd
+biaI
+fo7f
+gDJL
+gJJ5
+jFBr
+jbB3
+nOdE
+njBE
+pjAd
+pjBb
+qDJL
+qo7A
+rK7t
+ri7o
+riSo
+riaO
+u0hT
+Conteggio : 40
+******************** ELIMINAZIONE ******************
+1 -D7w
+1 -Kit
+1 -b7f
+Eliminata: -kiF
+1 7D7d
+1 7DJL
+1 8F4r
+Eliminata: 8F6A
+1 8FLr
+1 EeJ5
+1 EefT
+Eliminata: KKqt
+1 N8de
+1 No7j
+1 NoBJ
+Eliminata: Ro7e
+1 WkhF
+1 WnhT
+1 bbAd
+Eliminata: bbkd
+1 fo7f
+1 gDJL
+1 gJJ5
+Eliminata: jFBr
+1 nOdE
+1 njBE
+1 pjAd
+Eliminata: pjBb
+1 qo7A
+1 rK7t
+1 ri7o
+Eliminata: riSo
+1 riaO
+1 u0hT
+IN ORDINE
+-D7w
+-Kit
+-b7f
+7D7d
+7DJL
+8F4r
+8FLr
+8FPe
+EAhT
+EeJ5
+EefT
+N8de
+No7j
+NoBJ
+WKqt
+WkhF
+WnhT
+bbAd
+biaI
+fo7f
+gDJL
+gJJ5
+jbB3
+nOdE
+njBE
+pjAd
+qDJL
+qo7A
+rK7t
+ri7o
+riaO
+u0hT
+Conteggio : 32

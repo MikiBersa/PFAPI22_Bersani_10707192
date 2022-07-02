@@ -298,37 +298,37 @@ elemento * eliminazione (elemento_nil* lista, elemento *s){
     elemento * y = lista->nill;
     elemento * x = lista->nill;
 
-    printf("Dentro ad eliminazione\n");
-    printf("prova %s\n", s->str);
+    //printf("Dentro ad eliminazione\n");
+    //printf("prova %s\n", s->str);
     if(s->sx==lista->nill || s->dx == lista->nill){
-        printf("y = s\n");
+        //printf("y = s\n");
         y = s;
     }
     else {
-        printf("Prima di successore\n");
+        //printf("Prima di successore\n");
         y = successore_bst(lista,s); 
     }//da fare questo algoritmo
     
     if(y->sx!=lista->nill) x = y->sx;
     else x = y->dx;
 
-    printf("x->p = y->p\n");
+    //printf("x->p = y->p\n");
     x->p = y->p;
     //if(x!=lista->nill) x->p = y->p;
     if(y->p==lista->nill) lista->radice = x;
     else if(y==y->p->sx) y->p->sx = x;
     else y->p->dx = x;
-    printf("y!=s\n");
+    //printf("y!=s\n");
     if(y!=s) {
-        printf("strncopy\n");
+        //printf("strncopy\n");
         //scrittura(y->str,s->str);
         strncpy(s->str,y->str,k);
     }
-    printf("colore\n");
+    //printf("colore\n");
     if(y->colore==0){
-        printf("Prima del fixup\n");
-        printf("y %s\n", y->str);
-        printf("x %s\n", x->str);
+        //printf("Prima del fixup\n");
+        //printf("y %s\n", y->str);
+        //printf("x %s\n", x->str);
         rb_delete_fixup(lista,x);
     }
 
