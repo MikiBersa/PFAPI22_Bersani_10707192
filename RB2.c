@@ -203,19 +203,6 @@ void inOrder(NodePtr node) {
 		} 
 }
 
-
-
-void rbTransplant(NodePtr u, NodePtr v){
-		if (u->parent == NULL) {
-			root = v;
-		} else if (u == u->parent->left){
-			u->parent->left = v;
-		} else {
-			u->parent->right = v;
-		}
-		v->parent = u->parent;
-	}
-
 void fixDelete(NodePtr x) {
 		NodePtr s;
 		while (x != root && x->color == 0) {
@@ -287,34 +274,7 @@ void fixDelete(NodePtr x) {
 void deleteNodeHelper(NodePtr node, NodePtr s) {
 		// find the node containing key
 		NodePtr x, y; 
-        //z è il nodo da eliminare
-        /*
-		y = s;
-		int y_original_color = y->color;
-		if (s->left == TNULL) {
-			x = s->right;
-			rbTransplant(s, s->right);
-		} else if (s->right == TNULL) {
-			x = s->left;
-			rbTransplant(s, s->left);
-		} else {
-			y = minimum(s->right);
-			y_original_color = y->color;
-			x = y->right;
-			if (y->parent == s) {
-				x->parent = y;
-			} else {
-				rbTransplant(y, y->right);
-				y->right = s->right;
-				y->right->parent = y;
-			}
-
-			rbTransplant(s, y);
-			y->left = s->left;
-			y->left->parent = y;
-			y->color = s->color;
-		}
-        */
+		
         if(s->left==TNULL || s->right == TNULL){
             y = s;
         }else { 

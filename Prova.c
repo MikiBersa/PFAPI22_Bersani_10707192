@@ -11,12 +11,13 @@ int cont_buone = 0;
 typedef struct el{
     char *str;
     int colore; //0 è nero 1 è rosso
+    int colore_filt;
     struct el *sx;
     struct el *dx;
     struct el *p;
-    struct el *next_bst; //per la lista interna o si fa anche qui un BST
-    struct el *prev_bst; //per la lista interna filtrate
-    struct el *testa;
+    struct el *parent; // pointer to the parent
+	struct el *left; // pointer to left child
+	struct el *right; // pointer to right child
 } elemento;
 
 typedef struct{
@@ -27,15 +28,25 @@ typedef struct{
     int letto;
 }filtro;
 
-typedef struct {
-    elemento *radice;
-    elemento *nill;
-}elemento_nil;
+typedef elemento *NodePtr;
 
 filtro diz[64];
 
-elemento nil = {"NULL", 0,NULL,NULL,NULL};
-elemento nil_filtrato = {"NULL", 0,NULL,NULL,NULL};
+NodePtr root_filtrato;
+NodePtr radice;
+NodePtr TNULL;
+
+void init_rb(){
+    TNULL = malloc(sizeof(elemento));
+    TNULL->colore=0;
+    TNULL->colore_filt=0;
+    TNULL->left=NULL;
+    TNULL->right=NULL;
+    TNULL->sx=NULL;
+    TNULL->dx=NULL;
+    root_filtrato = TNULL;
+    radice = TNULL;
+}
 
 void init(char *ver){
     
@@ -215,6 +226,528 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
     }
 }
 */
+
+//RB DEL FILTRO
+NodePtr maximum_filtrato(NodePtr node) {
+	while (node->right != TNULL) {
+		node = node->right;
+	}
+	return node;
+}
+
+NodePtr minimum_filtrato(NodePtr node) {
+	while (node->left != TNULL) {
+		node = node->left;
+	}
+	return node;
+}
+
+NodePtr successor_filtrato(NodePtr x) {
+		// if the right subtree is not null,
+		// the successor is the leftmost node in the
+		// right subtree
+		if (x->right != TNULL) {
+			return minimum_filtrato(x->right);
+		}
+
+		// else it is the lowest ancestor of x whose
+		// left child is also an ancestor of x.
+		NodePtr y = x->parent;
+		while (y != TNULL && x == y->right) {
+			x = y;
+			y = y->parent;
+		}
+		return y;
+}
+
+void rightRotate_filtrato(NodePtr x) {
+		NodePtr y = x->left;
+		x->left = y->right;
+		if (y->right != TNULL) {
+			y->right->parent = x;
+		}
+		y->parent = x->parent;
+		if (x->parent == NULL) {
+			root_filtrato = y;
+		} else if (x == x->parent->right) {
+			x->parent->right = y;
+		} else {
+			x->parent->left = y;
+		}
+		y->right = x;
+		x->parent = y;
+	}
+
+void leftRotate_filtrato(NodePtr x) {
+		NodePtr y = x->right;
+		x->right = y->left;
+		if (y->left != TNULL) {
+			y->left->parent = x;
+		}
+		y->parent = x->parent;
+		if (x->parent == NULL) {
+			root_filtrato = y;
+		} else if (x == x->parent->left) {
+			x->parent->left = y;
+		} else {
+			x->parent->right = y;
+		}
+		y->left = x;
+		x->parent = y;
+	}
+
+void fixInsert_filtrato(NodePtr k){
+		NodePtr u;
+		while (k->parent->colore_filt == 1) {
+			if (k->parent == k->parent->parent->right) {
+				u = k->parent->parent->left; // uncle
+				if (u->colore_filt == 1) {
+					// case 3.1
+					u->colore_filt = 0;
+					k->parent->colore_filt = 0;
+					k->parent->parent->colore_filt = 1;
+					k = k->parent->parent;
+				} else {
+					if (k == k->parent->left) {
+						// case 3.2.2
+						k = k->parent;
+						rightRotate_filtrato(k);
+					}
+					// case 3.2.1
+					k->parent->colore_filt = 0;
+					k->parent->parent->colore_filt = 1;
+					leftRotate_filtrato(k->parent->parent);
+				}
+			} else {
+				u = k->parent->parent->right; // uncle
+
+				if (u->colore_filt == 1) {
+					// mirror case 3.1
+					u->colore_filt = 0;
+					k->parent->colore_filt = 0;
+					k->parent->parent->colore_filt = 1;
+					k = k->parent->parent;	
+				} else {
+					if (k == k->parent->right) {
+						// mirror case 3.2.2
+						k = k->parent;
+						leftRotate_filtrato(k);
+					}
+					// mirror case 3.2.1
+					k->parent->colore_filt = 0;
+					k->parent->parent->colore_filt = 1;
+					rightRotate_filtrato(k->parent->parent);
+				}
+			}
+			if (k == root_filtrato) {
+				break;
+			}
+		}
+		root_filtrato->colore_filt = 0;
+	}
+
+
+void insert_filtrato(NodePtr node) {
+
+        NodePtr y = NULL;
+		NodePtr x = root_filtrato;
+
+		node->parent = NULL;
+        node->left = TNULL;
+		node->right = TNULL;
+		node->colore_filt = 1; // new node must be red
+
+		while (x != TNULL) {
+			y = x;
+			if (strncmp(node->str, x->str,k) < 0) {
+				x = x->left;
+			} else {
+				x = x->right;
+			}
+		}
+
+		// y is parent of x
+		node->parent = y;
+		if (y == NULL) {
+			root_filtrato = node;
+		} else if (strncmp(node->str, y->str,k) < 0) {
+			y->left = node;
+		} else {
+			y->right = node;
+		}
+
+		// if new node is a root node, simply return
+		if (node->parent == NULL){
+			node->colore_filt = 0;
+			return;
+		}
+
+		// if the grandparent is null, simply return
+		if (node->parent->parent == NULL) {
+			return;
+        }
+		// Fix the tree
+		fixInsert_filtrato(node);
+	}
+
+void fixDelete_filtrato(NodePtr x) {
+		NodePtr s;
+		while (x != root_filtrato && x->colore_filt == 0) {
+			if (x == x->parent->left) {
+				s = x->parent->right;
+				if (s->colore_filt == 1) {
+					// case 3.1
+					s->colore_filt = 0;
+					x->parent->colore_filt = 1;
+					leftRotate_filtrato(x->parent);
+					s = x->parent->right;
+				}
+
+				if (s->left->colore_filt == 0 && s->right->colore_filt == 0) {
+					// case 3.2
+					s->colore_filt = 1;
+					x = x->parent;
+				} else {
+					if (s->right->colore_filt == 0) {
+						// case 3.3
+						s->left->colore_filt = 0;
+						s->colore_filt = 1;
+						rightRotate_filtrato(s);
+						s = x->parent->right;
+					} 
+
+					// case 3.4
+					s->colore_filt = x->parent->colore_filt;
+					x->parent->colore_filt = 0;
+					s->right->colore_filt = 0;
+					leftRotate_filtrato(x->parent);
+					x = root_filtrato;
+				}
+			} else {
+				s = x->parent->left;
+				if (s->colore_filt == 1) {
+					// case 3.1
+					s->colore_filt = 0;
+					x->parent->colore_filt = 1;
+					rightRotate_filtrato(x->parent);
+					s = x->parent->left;
+				}
+
+				if (s->right->colore_filt == 0 && s->right->colore_filt == 0) {
+					// case 3.2
+					s->colore_filt = 1;
+					x = x->parent;
+				} else {
+					if (s->left->colore_filt == 0) {
+						// case 3.3
+						s->right->colore_filt = 0;
+						s->colore_filt = 1;
+						leftRotate_filtrato(s);
+						s = x->parent->left;
+					} 
+
+					// case 3.4
+					s->colore_filt = x->parent->colore_filt;
+					x->parent->colore_filt = 0;
+					s->left->colore_filt = 0;
+					rightRotate_filtrato(x->parent);
+					x = root_filtrato;
+				}
+			} 
+		}
+		x->colore_filt = 0;
+	}
+
+void deleteNodeHelper_filtrato(NodePtr node, NodePtr s) {
+		// find the node containing key
+		NodePtr x, y; 
+		
+        if(s->left==TNULL || s->right == TNULL){
+            y = s;
+        }else { 
+            y = successor_filtrato(s); 
+        }
+        if(y->left!=TNULL) x = y->left;
+        else x = y->right;
+
+        x->parent= y->parent;
+        
+        if(y->parent==TNULL) root_filtrato = x;
+        else if(y==y->parent->left) y->parent->left = x;
+        else y->parent->right = x;
+        if(y!=s) {
+            strncpy(s->str,y->str,k);
+        }
+
+		if (y->colore_filt == 0){
+			fixDelete_filtrato(x);
+		}
+	}
+
+//RB DEL ALBERO NORMALE
+NodePtr maximum(NodePtr node) {
+	while (node->dx != TNULL) {
+		node = node->dx;
+	}
+	return node;
+}
+
+NodePtr minimum(NodePtr node) {
+	while (node->sx != TNULL) {
+		node = node->sx;
+	}
+	return node;
+}
+
+NodePtr successor(NodePtr x) {
+		// if the right subtree is not null,
+		// the successor is the leftmost node in the
+		// right subtree
+		if (x->dx != TNULL) {
+			return minimum(x->dx);
+		}
+
+		// else it is the lowest ancestor of x whose
+		// left child is also an ancestor of x.
+		NodePtr y = x->p;
+		while (y != TNULL && x == y->dx) {
+			x = y;
+			y = y->p;
+		}
+		return y;
+}
+
+void rightRotate(NodePtr x) {
+		NodePtr y = x->sx;
+		x->sx = y->dx;
+		if (y->dx != TNULL) {
+			y->dx->p = x;
+		}
+		y->p = x->p;
+		if (x->p == NULL) {
+			radice = y;
+		} else if (x == x->p->dx) {
+			x->p->dx = y;
+		} else {
+			x->p->sx = y;
+		}
+		y->dx = x;
+		x->p = y;
+	}
+
+void leftRotate(NodePtr x) {
+		NodePtr y = x->dx;
+		x->dx = y->sx;
+		if (y->sx != TNULL) {
+			y->sx->p = x;
+		}
+		y->p = x->p;
+		if (x->p == NULL) {
+			radice = y;
+		} else if (x == x->p->sx) {
+			x->p->sx = y;
+		} else {
+			x->p->dx = y;
+		}
+		y->sx = x;
+		x->p = y;
+	}
+
+void fixInsert(NodePtr k){
+		NodePtr u;
+		while (k->p->colore == 1) {
+			if (k->p == k->p->p->dx) {
+				u = k->p->p->sx; // uncle
+				if (u->colore == 1) {
+					// case 3.1
+					u->colore = 0;
+					k->p->colore = 0;
+					k->p->p->colore = 1;
+					k = k->p->p;
+				} else {
+					if (k == k->p->sx) {
+						// case 3.2.2
+						k = k->p;
+						rightRotate(k);
+					}
+					// case 3.2.1
+					k->p->colore = 0;
+					k->p->p->colore = 1;
+					leftRotate(k->p->p);
+				}
+			} else {
+				u = k->p->p->dx; // uncle
+
+				if (u->colore == 1) {
+					// mirror case 3.1
+					u->colore = 0;
+					k->p->colore = 0;
+					k->p->p->colore = 1;
+					k = k->p->p;	
+				} else {
+					if (k == k->p->dx) {
+						// mirror case 3.2.2
+						k = k->p;
+						leftRotate(k);
+					}
+					// mirror case 3.2.1
+					k->p->colore = 0;
+					k->p->p->colore = 1;
+					rightRotate(k->p->p);
+				}
+			}
+			if (k == radice) {
+				break;
+			}
+		}
+		radice->colore = 0;
+	}
+
+
+NodePtr insert(char *stringa) {
+
+        NodePtr node = malloc(sizeof(elemento));
+        char *st = malloc(sizeof(char)*k);
+        strncpy(st,stringa,k);
+
+        NodePtr y = NULL;
+		NodePtr x = radice;
+
+        node->str = st;
+		node->p = NULL;
+        node->sx = TNULL;
+		node->dx = TNULL;
+		node->colore = 1; // new node must be red
+
+		while (x != TNULL) {
+			y = x;
+			if (strncmp(node->str, x->str,k) < 0) {
+				x = x->sx;
+			} else {
+				x = x->dx;
+			}
+		}
+        printf("Arrivato\n");
+		// y is parent of x
+		node->p = y;
+		if (y == NULL) {
+			radice = node;
+		} else if (strncmp(node->str, y->str,k) < 0) {
+			y->sx = node;
+		} else {
+			y->dx = node;
+		}
+
+		// if new node is a root node, simply return
+		if (node->p == NULL){
+			node->colore = 0;
+			return node;
+		}
+
+		// if the grandparent is null, simply return
+		if (node->p->p == NULL) {
+			return node;
+        }
+		// Fix the tree
+		fixInsert(node);
+    return node;
+}
+
+void fixDelete(NodePtr x) {
+		NodePtr s;
+		while (x != radice && x->colore == 0) {
+			if (x == x->p->sx) {
+				s = x->p->dx;
+				if (s->colore == 1) {
+					// case 3.1
+					s->colore = 0;
+					x->p->colore = 1;
+					leftRotate(x->p);
+					s = x->p->dx;
+				}
+
+				if (s->sx->colore == 0 && s->dx->colore == 0) {
+					// case 3.2
+					s->colore = 1;
+					x = x->p;
+				} else {
+					if (s->dx->colore == 0) {
+						// case 3.3
+						s->sx->colore = 0;
+						s->colore = 1;
+						rightRotate(s);
+						s = x->p->dx;
+					} 
+
+					// case 3.4
+					s->colore = x->p->colore;
+					x->p->colore = 0;
+					s->dx->colore = 0;
+					leftRotate(x->p);
+					x = radice;
+				}
+			} else {
+				s = x->p->sx;
+				if (s->colore == 1) {
+					// case 3.1
+					s->colore = 0;
+					x->p->colore = 1;
+					rightRotate(x->p);
+					s = x->p->sx;
+				}
+
+				if (s->dx->colore == 0 && s->dx->colore == 0) {
+					// case 3.2
+					s->colore = 1;
+					x = x->p;
+				} else {
+					if (s->sx->colore == 0) {
+						// case 3.3
+						s->dx->colore = 0;
+						s->colore = 1;
+						leftRotate(s);
+						s = x->p->sx;
+					} 
+
+					// case 3.4
+					s->colore = x->p->colore;
+					x->p->colore = 0;
+					s->sx->colore = 0;
+					rightRotate(x->p);
+					x = radice;
+				}
+			} 
+		}
+		x->colore = 0;
+	}
+
+void deleteNodeHelper(NodePtr node, NodePtr s) {
+		// find the node containing key
+		NodePtr x, y; 
+		
+        if(s->sx==TNULL || s->dx == TNULL){
+            y = s;
+        }else { 
+            y = successor(s); 
+        }
+        if(y->sx!=TNULL) x = y->sx;
+        else x = y->dx;
+
+        x->p= y->p;
+        
+        if(y->p==TNULL) radice = x;
+        else if(y==y->p->sx) y->p->sx = x;
+        else y->p->dx = x;
+        if(y!=s) {
+            strncpy(s->str,y->str,k);
+        }
+
+		if (y->colore == 0){
+			fixDelete(x);
+		}
+	}
+
+/*
 //INSERIMENTO BST FILTRATO NUOVO
 int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
     elemento * y = NULL;
@@ -247,7 +780,9 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
 
     return i;
 }
+*/
 
+/*
 void rotazione_sx(elemento *x, elemento_nil* lista){
     elemento * y = x->dx;
     //printf("Entra il nodo %s in sx_rotate\n", x->str);
@@ -260,7 +795,8 @@ void rotazione_sx(elemento *x, elemento_nil* lista){
     y->sx = x;
     x->p = y;
 }
-
+*/
+/*
 void rotazione_dx(elemento *y, elemento_nil* lista){
     elemento * x = y->sx;
     //printf("Entra il nodo %s in dx_rotate\n", x->str);
@@ -273,7 +809,8 @@ void rotazione_dx(elemento *y, elemento_nil* lista){
     x->dx = y;
     y->p = x;
 }
-
+*/
+/*
 void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
     elemento * x= lista->nill;
     elemento * y= lista->nill;
@@ -337,7 +874,8 @@ void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
         //z->sx->colore = 0;  
     }
 }
-
+*/
+/*
 elemento * inserimento_tree(elemento_nil * lista, char* parola){
     //modifico per RB
     elemento * y = lista->nill;
@@ -346,11 +884,11 @@ elemento * inserimento_tree(elemento_nil * lista, char* parola){
     char *st = malloc(sizeof(char)*k);
     //scrittura(parola, st);
     strncpy(st,parola,k);
-    /*
+    
     printf("------------\n");
     printf("La radice: %s\n", lista->radice->str);
     printf("provas\n");
-    */
+    
     //int i = 0;
     while (x!=lista->nill){
        //printf("Dentro\n");
@@ -390,7 +928,8 @@ elemento * inserimento_tree(elemento_nil * lista, char* parola){
     //return ell;
     return ell;
 }
-
+*/
+/*
 elemento * three_minore(elemento *x){
     while(x->prev_bst!=NULL) x = x->prev_bst;
     return x;
@@ -406,7 +945,7 @@ elemento * successore_bst(elemento *s){
     }
     return y;
 }
-
+*/
 void scrittura_ordinata(elemento *x){
     if(x->dx!=NULL){    
         scrittura_ordinata(x->sx);
@@ -417,56 +956,34 @@ void scrittura_ordinata(elemento *x){
 }
 
 //T->x e Z->s
-void eliminazione (elemento **lista, elemento *s){
-    elemento * y = NULL;
-    elemento * x = NULL;
-
-    if(s->prev_bst==NULL || s->next_bst == NULL) y = s;
-    else y = successore_bst(s); //da fare questo algoritmo
-    if(y->prev_bst!=NULL) x = y->prev_bst;
-    else x = y->next_bst;
-
-    if(x!=NULL) x->testa = y->testa;
-    if(y->testa==NULL) *(lista) = x;
-    else if(y==y->testa->prev_bst) y->testa->prev_bst = x;
-    else y->testa->next_bst = x;
-    if(y!=s) {
-        //scrittura(y->str,s->str);
-        strncpy(s->str,y->str,k);
-    }
-
-    //scrittura_ordinata(*(lista));
-
-}
-
-void conto_ordinata(elemento *x,elemento **lista,char *ver, int i){
+void conto_ordinata(elemento *x,char *ver, int i){
     if(x!=NULL){    
-        conto_ordinata(x->prev_bst,lista,ver,i);
+        conto_ordinata(x->left,ver,i);
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
         }else{
             //elimino nell'albero
-            eliminazione(lista,x);
+            deleteNodeHelper_filtrato(root_filtrato,x);
             //printf("Eliminazione: %s\n", x->str);
 
         }
-        conto_ordinata(x->next_bst,lista,ver,i);
+        conto_ordinata(x->right,ver,i);
     }
 }
 
-void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver, int i){
-    if(x->dx!=NULL){    
-        conto_ordinata_filtrato(x->sx,lista_nuova,ver,i);
+void conto_ordinata_filtrato(elemento *x,char *ver, int i){
+    if(x!=TNULL){    
+        conto_ordinata_filtrato(x->sx,ver,i);
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
                 //inserimento nel nuovo bst
-            inserimento_tree_filtrato(lista_nuova, x); //occhio che me li inserisce già ordinati -> facendo così riduco solo il teta di n come numero
+            insert_filtrato(x); //occhio che me li inserisce già ordinati -> facendo così riduco solo il teta di n come numero
             //dovrei trasformare anche questo in RB
             
         }
-        conto_ordinata_filtrato(x->dx,lista_nuova,ver,i);
+        conto_ordinata_filtrato(x->dx,ver,i);
     }
 }
 
@@ -478,13 +995,20 @@ int uguale(char *c, char *p){
 }
 */
 
-int controllo(elemento *x, char * parola){
-    if(x->dx!=NULL){   
+int controllo(NodePtr x, char * parola){
+    printf("Dentro a controllo\n");
+    //printf("%s\n", x->str);
+    x = x->sx;
+    printf("Prova\n");
+    if(x!=TNULL){   
         //(x->str,parola)) return 1;
         if(!strncmp(x->str,parola,k)) return 1;
         else return (controllo(x->sx, parola) || controllo(x->dx,parola));
     }
-    else return 0;
+    else {
+        printf("Return 0 %s\n", x->str);
+        return 0;
+    }
 }
 
 char * confronto(char* str2,char* str1){
@@ -555,8 +1079,7 @@ void scrivi(char *ver){
 
 int main(void){
     //elemento * lista = NULL;
-    elemento_nil lista = {&nil, &nil};
-    elemento * lista_filtrata = NULL;
+
     if(scanf("%d", &k) != EOF);
 
     char stringa[k];
@@ -568,20 +1091,22 @@ int main(void){
     int primo_inserimento = 0;
     char ver[k+1]; ver[k] = '\0';
 
+    init_rb();
     init(ver); //preparo il dizionario
 
     while(!feof(stdin)){
         if(scanf("%s", stringa)!=EOF);
-        //printf("Letto %s\n",stringa);
+        printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
-                lista_filtrata = NULL;
+                radice = NULL; //TENERE D'OCCHIO
+
                 nuova = 1;
                 inserimento = 0;
                 primo_inserimento = 1;
                 //printf("INSERIMENTO PAROLE FINE\n");
-                //printf("INIZIO_PARTITA in +\n");
+                printf("INIZIO_PARTITA in +\n");
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF);
@@ -589,7 +1114,7 @@ int main(void){
                 strncpy(rif,stringa,k);
                 if(scanf("%s", stringa)!=EOF);
                 conteggio = atoi(&stringa[0]);
-                //printf("CONTEGGIO %d\n", conteggio);
+                printf("CONTEGGIO %d\n", conteggio);
             }
             else if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
@@ -606,10 +1131,10 @@ int main(void){
                 //conto_ordinata(lista,ver,1);
                 if(primo_inserimento) {
                     //printf("Prima volta\n");
-                    conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,1);primo_inserimento = 0;}
+                    conto_ordinata_filtrato(root_filtrato,ver,1);primo_inserimento = 0;}
                 else {
                     //printf("NOn prima volta\n");
-                    conto_ordinata(lista_filtrata,&lista_filtrata,ver,1); 
+                    conto_ordinata(radice,ver,1); 
                 }//faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
@@ -617,11 +1142,11 @@ int main(void){
         }else if(nuova){
             //insrriemnto durante la partita
             if(inserimento) {
-                elemento * prova = inserimento_tree(&lista,stringa);
+                NodePtr prova = insert(stringa);
                 //printf("Inserito nuove stringhe\n");
                 if(validazione(stringa,ver)){
                     //se è gia valido lo metto li dentro
-                    inserimento_tree_filtrato(&lista_filtrata, prova);
+                    insert_filtrato(prova);
                 }
             
             
@@ -639,10 +1164,10 @@ int main(void){
                         //rif[0] = '&';
                         //lista_filtrata = NULL; //pulisco il bst 
                         primo_inserimento = 1;
-                }else if(!controllo(lista.radice,stringa)){
+                }else if(!controllo(radice,stringa)){
                         printf("not_exists\n");
                 }else if(conteggio != 1){ 
-                    //printf("Stringa letta in : %s\n", stringa);
+                    printf("Stringa letta in : %s\n", stringa);
                     //if(controllo(lista,stringa)){
                         char *ritorno;
                         ritorno = confronto(rif,stringa);
@@ -656,10 +1181,12 @@ int main(void){
 
                         if(primo_inserimento) {
                             //printf("Prima volta\n");
-                            conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
+                            conto_ordinata_filtrato(root_filtrato,ver,0);primo_inserimento = 0;}
+                            //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
                             //printf("NOn prima volta\n");
-                            conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
+                            conto_ordinata(radice,ver,0); 
+                            //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
                         #ifdef debug
@@ -678,7 +1205,7 @@ int main(void){
                     free(ritorno);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(lista_filtrata,&lista_filtrata,ver,0);
+                    conto_ordinata(radice,ver,0);
                     printf("%d\n",cont_buone);
                     
                     printf("ko\n");
@@ -696,9 +1223,9 @@ int main(void){
                 
             }
         }else if(inserimento) {
-            //printf("Inerito %s prima dell'ins\n", stringa);
-            inserimento_tree(&lista,stringa);
-            //printf("Inserito nuove stringhe\n");
+            printf("Inerito %s prima dell'ins\n", stringa);
+            insert(stringa);
+            printf("Inserito nuove stringhe\n");
         }
     }
 
