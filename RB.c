@@ -18,6 +18,7 @@ typedef struct {
 }elemento_nil;
 
 elemento nil = {"NULL", 0,NULL,NULL,NULL};
+elemento nil2 = {"RADI", 0,NULL,NULL,NULL};
 
 void scrittura(char* c1, char *c2){ //da c1 a c2
     for(int i = 0; i<k;i++){
@@ -49,15 +50,18 @@ void rotazione_sx(elemento *x, elemento_nil* lista){
 
 void rotazione_dx(elemento *y, elemento_nil* lista){
     elemento * x = y->sx;
-    //printf("Entra il nodo %s in dx_rotate\n", x->str);
-    y->sx = x->dx;
-    if(x->dx!=lista->nill) x->dx->p = y;
-    x->p = y->p;
-    if (y->p==lista->nill) lista->radice = x;
-    else if(y==y->p->dx) y->p->dx = x;
-    else y->p->sx = x;
-    x->dx = y;
-    y->p = x;
+    if(x != lista->nill){ //da eliminare
+        printf("Entra il nodo %s in dx_rotate\n", x->str);
+        y->sx = x->dx;
+        if(x->dx!=lista->nill) x->dx->p = y;
+        printf("Qui ci arrvio\n");
+        x->p = y->p;
+        if (y->p==lista->nill) lista->radice = x;
+        else if(y==y->p->dx) y->p->dx = x;
+        else y->p->sx = x;
+        x->dx = y;
+        y->p = x;
+    }
 }
 
 void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
@@ -178,23 +182,32 @@ void inserimento_tree(elemento_nil *lista, char* parola){
     //return ell;
 }
 
+int contt = 0;
 void scrittura_ordinata(elemento *x){
     if(x->dx!=NULL){    
         scrittura_ordinata(x->sx);
         //if(validazione(x->str,ver)) printf("%s\n", x->str);
-        printf("%s\n", x->str);
+        printf("%s\n", x->str); contt ++;
         scrittura_ordinata(x->dx);
     }
 }
 
 elemento * three_minore(elemento_nil* lista, elemento *x){
-    while(x->sx!=lista->nill) x = x->sx;
+    //while(x->sx!=lista->nill) x = x->sx;
+    while(x->sx!=lista->nill) {
+        x = x->sx;
+    }
     return x;
 }
 
 elemento * successore_bst(elemento_nil* lista, elemento *s){
     elemento * y = lista->nill;
-    if(s->dx!=lista->nill) return three_minore(lista,s->dx);
+    printf("Dentro a succ\n");
+    if(s->dx!=lista->nill) {
+        printf("Prima d minore\n");
+        return three_minore(lista,s->dx);
+    } 
+    printf("NO s!=lista->nill\n");
     y = s->p;
     while(y!=lista->nill && s==y->dx){
         s = y;
@@ -205,9 +218,12 @@ elemento * successore_bst(elemento_nil* lista, elemento *s){
 
 void rb_delete_fixup(elemento_nil* lista, elemento *x){
     elemento * w = lista->nill;
-    if(x->colore==1 || x->p==lista->nill)
+    printf("colore x\n");
+    //if(x->colore==1 || x->p==lista->nill){
+    if(x->colore==1 || x->p==lista->nill || x == lista->nill){
         x->colore = 0;
-    else if(x==x->p->sx){
+    }else if(x==x->p->sx){
+        printf("else if\n");
         w = x->p->dx;
         if(w->colore==1){
             w->colore = 0;
@@ -215,11 +231,16 @@ void rb_delete_fixup(elemento_nil* lista, elemento *x){
             rotazione_sx(x->p,lista);
             w = x->p->dx;
         }
+        printf("w->sx->colore\n");
+        printf("XXXX: %s\n", x->str);
+        printf("w: %s\n", w->str);
+        if(w==lista->nill) return;
         if(w->sx->colore == 0 && w->dx->colore==0){
             w->colore = 1;
             rb_delete_fixup(lista,x->p);
         }
         else {
+            printf("else\n");
             if(w->dx->colore==0){
                 w->sx->colore = 0;
                 w->colore=1;
@@ -229,73 +250,108 @@ void rb_delete_fixup(elemento_nil* lista, elemento *x){
             w->colore = x->p->colore;
             x->p->colore=0;
             w->dx->colore=0;
-            rotazione_sx(lista,x->p);
+            rotazione_sx(x->p,lista);
         }
     }else{
-        w = x->p->sx;
+        printf("Else\n");
+        printf("X %s\n", x->str);
+        w = x->p->dx;
         if(w->colore==1){
+            printf("Rotazioene imminente\n");
             w->colore = 0;
             x->p->colore = 1;
             rotazione_dx(x->p,lista);
             w = x->p->sx;
         }
+        printf("Avanti\n");
+        printf("%s\n", w->str);
+        printf("%s\n", w->dx->str);
         if(w->dx->colore == 0 && w->sx->colore==0){
+            printf("Dentro\n");
             w->colore = 1;
             rb_delete_fixup(lista,x->p);
         }
         else {
+            printf("Ancora\n");
             if(w->sx->colore==0){
+                printf("Pre rotazione sx\n");
                 w->dx->colore = 0;
                 w->colore=1;
                 rotazione_sx(w,lista);
                 w = x->p->sx;
             }
+            printf("Pre rotazione dx\n");
+            printf("W %s\n",w->str);
+            printf("x.p %s\n",x->p->str);
+            printf("W.sx %s\n",w->sx->str);
             w->colore = x->p->colore;
             x->p->colore=0;
             w->sx->colore=0;
-            rotazione_dx(lista,x->p);
+            rotazione_dx(x->p,lista);
         }
 
     }
 }
 
 //ELIMINAZIONE RB
-void eliminazione (elemento_nil* lista, elemento *s){
+elemento * eliminazione (elemento_nil* lista, elemento *s){
     elemento * y = lista->nill;
     elemento * x = lista->nill;
 
-    if(s->sx==lista->nill || s->dx == lista->nill) y = s;
-    else y = successore_bst(lista,s); //da fare questo algoritmo
+    printf("Dentro ad eliminazione\n");
+    printf("prova %s\n", s->str);
+    if(s->sx==lista->nill || s->dx == lista->nill){
+        printf("y = s\n");
+        y = s;
+    }
+    else {
+        printf("Prima di successore\n");
+        y = successore_bst(lista,s); 
+    }//da fare questo algoritmo
+    
     if(y->sx!=lista->nill) x = y->sx;
     else x = y->dx;
 
-    if(x!=lista->nill) x->p = y->p;
+    printf("x->p = y->p\n");
+    x->p = y->p;
+    //if(x!=lista->nill) x->p = y->p;
     if(y->p==lista->nill) lista->radice = x;
     else if(y==y->p->sx) y->p->sx = x;
     else y->p->dx = x;
+    printf("y!=s\n");
     if(y!=s) {
+        printf("strncopy\n");
         //scrittura(y->str,s->str);
         strncpy(s->str,y->str,k);
     }
+    printf("colore\n");
     if(y->colore==0){
+        printf("Prima del fixup\n");
+        printf("y %s\n", y->str);
+        printf("x %s\n", x->str);
         rb_delete_fixup(lista,x);
     }
 
     //scrittura_ordinata(*(lista));
-
+    return y;
 }
 
 int conto = 0;
 
 void conto_ordinata_filtrato(elemento *x,elemento_nil *lista_nuova){
-    if(x->dx!=lista_nuova->nill){    
+    //if(x!=lista_nuova->nill){   
+    if(x->dx!=NULL){ 
         conto_ordinata_filtrato(x->sx,lista_nuova);
         
-        if(conto < 3){ conto ++; printf("%s\n", x->str);}
+        if(conto < 10){ 
+            conto ++; 
+            printf("%s %d\n", x->str, conto);
+        }
         else {
             conto = 0;
-            eliminazione(lista_nuova,x);
-            printf("Eliminazione: %s", x->str);
+            printf("Eliminazione\n");
+            //eliminazione(lista_nuova,x);
+            printf("Eliminazione: %s\n", eliminazione(lista_nuova,x)->str);
         }
         
         conto_ordinata_filtrato(x->dx,lista_nuova);
@@ -308,15 +364,22 @@ int main(void){
     char stringa[k];
     //elemento_nil lista = {NULL, &nil};
     elemento_nil lista = {&nil, &nil};
-    nil.colore = 0;
+    //nil.colore = 0;
     while(!feof(stdin)){
         scanf("%s", stringa);
-        //printf("Stringa %s\n",stringa);
+        printf("Stringa %s\n",stringa);
         inserimento_tree(&lista, stringa);
     }
     //rotazioni funzionano
+    contt = 0;
     scrittura_ordinata(lista.radice);
+    printf("+++++++++++++++++++++++++++++++++++++\n");
+    printf("Conteggio %d\n", contt);
     printf("_______________\n");
     conto_ordinata_filtrato(lista.radice,&lista);
+    printf("________________\n");
+    contt = 0;
+    scrittura_ordinata(lista.radice);
+    printf("Conteggio %d\n", contt);
     return 0;
 }
