@@ -1,173 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int k = 5;
-/*
-typedef enum {rosso, nero} colore_t;
-
-typedef struct nodo
-{
-  char* str;
-  colore_t colore;
-  struct nodo *sinistro, *destro, *padre;
-} alberorn_t;  
-
-void rotazione_sx(alberorn_t *x, alberorn_t *lista){
-    alberorn_t * y = x->destro;
-    //printf("Entra il nodo %s in sx_rotate\n", x->str);
-    x->destro = y->sinistro;
-    if(y->sinistro!=NULL) y->sinistro->padre = x;
-    y->padre = x->padre;
-    if (x->padre==NULL) lista = y;
-    else if(x==x->padre->sinistro) x->padre->sinistro = y;
-    else x->padre->destro = y;
-    y->sinistro = x;
-    x->padre = y;
-}
-
-void rotazione_dx(alberorn_t *y, alberorn_t *lista){
-    alberorn_t * x = y->sinistro;
-    //printf("Entra il nodo %s in dx_rotate\n", x->str);
-    y->sinistro = x->destro;
-    if(x->destro !=NULL) x->destro->padre = y;
-    x->padre = y->padre;
-    if (y->padre==NULL) lista = x;
-    else if(y==y->padre->destro) y->padre->destro = x;
-    else y->padre->sinistro = x;
-    x->destro = y;
-    y->padre = x;
-}
-
-void ripristina(alberorn_t* sent, alberorn_t* nodo)
-{
-  alberorn_t *zio;
-  
-  while(nodo->padre->colore == rosso)
-  {
-     if(nodo->padre == nodo->padre->padre->sinistro)
-     {
-        zio = nodo->padre->padre->destro;
-        if(zio->colore == rosso)
-        {
-           nodo->padre->colore = nero;
-           zio->colore = nero;
-           nodo->padre->padre->colore = rosso;
-           nodo = nodo->padre->padre;           
-        }
-        else
-        {
-           if(nodo == nodo->padre->destro)
-           {
-              nodo = nodo->padre;
-              rotazione_sx(nodo,sent);
-           }
-           nodo->padre->colore = nero;
-           nodo->padre->padre->colore = rosso;
-           rotazione_dx(nodo->padre->padre,sent);           
-        }
-     }
-     else
-     {
-        zio = nodo->padre->padre->sinistro;
-        if(zio->colore == rosso)
-        {
-           nodo->padre->colore = nero;
-           zio->colore = nero;
-           nodo->padre->padre->colore = rosso;
-           nodo = nodo->padre->padre;           
-        }
-        else
-        {
-           if(nodo == nodo->padre->sinistro)
-           {
-              nodo = nodo->padre;
-              rotazione_dx(nodo,sent);
-           }
-           nodo->padre->colore = nero;
-           nodo->padre->padre->colore = rosso;
-           rotazione_sx(nodo->padre->padre,sent);           
-        }
-     }
-  }
-  sent->sinistro->colore = nero;  
-}
-
-void scrittura(char* c1, char *c2){ //da c1 a c2
-    for(int i = 0; i<k;i++){
-        c2[i] = c1[i];
-    }
-}
-
-int uguale(char *c, char *p){
-    for(int i = 0;i<k;i++)
-        if(c[i] != p[i]) return 0;
-    return 1;
-}
-
-
-int posizione(char* c1, char *c2){ //c2 la testa
-    for(int i = 0; i<k;i++){
-        if(c1[i] > c2[i]) return 1; //destra
-        else if(c1[i] < c2[i]) return -1; //sinistra
-    }
-    return 0;
-}
-
-int inserisci(alberorn_t* sent, char* parola)
-{
-  int inserito;
-  alberorn_t *nodo, *padre, *nuovo;
-  for(nodo = sent->sinistro, padre = sent; ((nodo != sent) && (uguale(nodo->str,parola)));
-
-      padre = nodo, nodo = (posizione(nodo->str,parola))?
-                             nodo->sinistro:
-                             nodo->destro);
-
-  if(nodo != sent)
-  {
-     inserito = 0;
-  }
-  else
-  {
-     inserito = 1;
-     nuovo = (alberorn_t *)malloc(sizeof(alberorn_t));
-     char *st = malloc(sizeof(char)*k);
-    scrittura(parola, st);
-     nuovo->str = st;
-     nuovo->colore = rosso;
-     nuovo->sinistro = nuovo->destro = sent;
-     nuovo->padre = padre;
-
-     if(padre == sent)
-     {
-        sent->sinistro = sent->destro = nuovo;
-     }
-     else
-     {
-        if(posizione(padre->str, parola))
-        {
-           padre->sinistro = nuovo;
-        }
-        else
-        {
-           padre->destro = nuovo;
-        }
-     }
-     ripristina(sent, nuovo);
-  }
-  return(inserito);
-}
-
-void scrittura_ordinata(alberorn_t *x){
-    if(x!=NULL){    
-        scrittura_ordinata(x->sinistro);
-        //if(validazione(x->str,ver)) printf("%s\n", x->str);
-        printf("%s\n", x->str);
-        scrittura_ordinata(x->destro);
-    }
-}
-*/
-
 
 typedef struct el{
     char *str;
@@ -352,6 +187,122 @@ void scrittura_ordinata(elemento *x){
     }
 }
 
+elemento * three_minore(elemento_nil* lista, elemento *x){
+    while(x->sx!=lista->nill) x = x->sx;
+    return x;
+}
+
+elemento * successore_bst(elemento_nil* lista, elemento *s){
+    elemento * y = lista->nill;
+    if(s->dx!=lista->nill) return three_minore(lista,s->dx);
+    y = s->p;
+    while(y!=lista->nill && s==y->dx){
+        s = y;
+        y = y->p;
+    }
+    return y;
+}
+
+void rb_delete_fixup(elemento_nil* lista, elemento *x){
+    elemento * w = lista->nill;
+    if(x->colore==1 || x->p==lista->nill)
+        x->colore = 0;
+    else if(x==x->p->sx){
+        w = x->p->dx;
+        if(w->colore==1){
+            w->colore = 0;
+            x->p->colore = 1;
+            rotazione_sx(x->p,lista);
+            w = x->p->dx;
+        }
+        if(w->sx->colore == 0 && w->dx->colore==0){
+            w->colore = 1;
+            rb_delete_fixup(lista,x->p);
+        }
+        else {
+            if(w->dx->colore==0){
+                w->sx->colore = 0;
+                w->colore=1;
+                rotazione_dx(w,lista);
+                w = x->p->dx;
+            }
+            w->colore = x->p->colore;
+            x->p->colore=0;
+            w->dx->colore=0;
+            rotazione_sx(lista,x->p);
+        }
+    }else{
+        w = x->p->sx;
+        if(w->colore==1){
+            w->colore = 0;
+            x->p->colore = 1;
+            rotazione_dx(x->p,lista);
+            w = x->p->sx;
+        }
+        if(w->dx->colore == 0 && w->sx->colore==0){
+            w->colore = 1;
+            rb_delete_fixup(lista,x->p);
+        }
+        else {
+            if(w->sx->colore==0){
+                w->dx->colore = 0;
+                w->colore=1;
+                rotazione_sx(w,lista);
+                w = x->p->sx;
+            }
+            w->colore = x->p->colore;
+            x->p->colore=0;
+            w->sx->colore=0;
+            rotazione_dx(lista,x->p);
+        }
+
+    }
+}
+
+//ELIMINAZIONE RB
+void eliminazione (elemento_nil* lista, elemento *s){
+    elemento * y = lista->nill;
+    elemento * x = lista->nill;
+
+    if(s->sx==lista->nill || s->dx == lista->nill) y = s;
+    else y = successore_bst(lista,s); //da fare questo algoritmo
+    if(y->sx!=lista->nill) x = y->sx;
+    else x = y->dx;
+
+    if(x!=lista->nill) x->p = y->p;
+    if(y->p==lista->nill) lista->radice = x;
+    else if(y==y->p->sx) y->p->sx = x;
+    else y->p->dx = x;
+    if(y!=s) {
+        //scrittura(y->str,s->str);
+        strncpy(s->str,y->str,k);
+    }
+    if(y->colore==0){
+        rb_delete_fixup(lista,x);
+    }
+
+    //scrittura_ordinata(*(lista));
+
+}
+
+int conto = 0;
+
+void conto_ordinata_filtrato(elemento *x,elemento_nil *lista_nuova){
+    if(x->dx!=lista_nuova->nill){    
+        conto_ordinata_filtrato(x->sx,lista_nuova);
+        
+        if(conto < 3){ conto ++; printf("%s\n", x->str);}
+        else {
+            conto = 0;
+            eliminazione(lista_nuova,x);
+            printf("Eliminazione: %s", x->str);
+        }
+        
+        conto_ordinata_filtrato(x->dx,lista_nuova);
+    }
+}
+
+
 
 int main(void){
     char stringa[k];
@@ -365,5 +316,7 @@ int main(void){
     }
     //rotazioni funzionano
     scrittura_ordinata(lista.radice);
+    printf("_______________\n");
+    conto_ordinata_filtrato(lista.radice,&lista);
     return 0;
 }
