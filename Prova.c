@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //#define debug 
 
@@ -194,7 +195,7 @@ void filtrato(char * str1, char * out, char * ver){
 
     for(int i = 0; i<64;i++) {diz[i].letto = 0;}
 }
-
+/*
 int posizione(char* c1, char *c2){ //c2 la testa
     for(int i = 0; i<k;i++){
         if(c1[i] > c2[i]) return 1; //destra
@@ -202,6 +203,7 @@ int posizione(char* c1, char *c2){ //c2 la testa
     }
     return 0;
 }
+*/
 
 void scrittura(char* c1, char *c2){ //da c1 a c2
     for(int i = 0; i<k;i++){
@@ -220,7 +222,8 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
         y = x;
         //printf("Stringa di prova: %s\n", (*lista)->str);
         //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
-        if(posizione(parola->str,x->str) == -1){ x = x->prev_bst; //prev è a sx
+        //if(posizione(parola->str,x->str) == -1){ x = x->prev_bst; //prev è a sx
+        if(strncmp(parola->str,x->str,k) < 0){ x = x->prev_bst;
         }
         else {x = x->next_bst; //next è a dx
         }
@@ -231,7 +234,8 @@ int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
 
     if(y==NULL)
         *(lista) = parola;
-    else if(posizione(parola->str, y->str) == -1) {
+    //else if(posizione(parola->str, y->str) == -1) {
+    else if(strncmp(parola->str, y->str,k) < 0) {
         //printf("Dentro a sx");
         y->prev_bst=parola;}
     else {y->next_bst=parola; //printf("Dentro a dx");
@@ -306,14 +310,14 @@ void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
                 }
             }else{
                 //printf("Due\n");
-                y=x->p->dx;
+                y=x->p->sx; //vedere se mettere dx non mi da differenze
                 if(y->colore==1){
                     x->colore=0;
                     y->colore=0;
                     x->p->colore = 1;
                     rb_inserimento_fixup(lista, x->p);
                 }else {
-                    if(z == x->dx){
+                    if(z == x->sx){
                         z = x;
                         rotazione_dx(z,lista);
                         x=z->p;
@@ -349,7 +353,8 @@ elemento * inserimento_tree(elemento_nil * lista, char* parola){
         //printf("Stringa di prova: %s\n", (*lista)->str);
         //printf("Parola in x: %s, parola in stringa: %s\n", x->str, st);
         //printf("Pos: %d\n",posizione(st,x->str));
-        if(posizione(st,x->str) == -1){ 
+        //if(posizione(st,x->str) == -1){ 
+        if(strncmp(st,x->str,k) < 0){
             x = x->sx; //printf("-1\n");
             //printf("-1_\n");
         }
@@ -364,7 +369,8 @@ elemento * inserimento_tree(elemento_nil * lista, char* parola){
 
     if(y==lista->nill)
         lista->radice = ell;
-    else if(posizione(ell->str, y->str) == -1) {
+    //else if(posizione(ell->str, y->str) == -1) {
+    else if(strncmp(ell->str, y->str,k) < 0) {  
         //printf("Dentro a sx");
         //printf("Dentro a sx");
         y->sx=ell;}
@@ -456,16 +462,18 @@ void conto_ordinata_filtrato(elemento *x,elemento **lista_nuova,char *ver, int i
     }
 }
 
-
+/*
 int uguale(char *c, char *p){
     for(int i = 0;i<k;i++)
         if(c[i] != p[i]) return 0;
     return 1;
 }
+*/
 
 int controllo(elemento *x, char * parola){
     if(x->dx!=NULL){   
-        if(uguale(x->str,parola)) return 1;
+        //(x->str,parola)) return 1;
+        if(!strncmp(x->str,parola,k)) return 1;
         else return (controllo(x->sx, parola) || controllo(x->dx,parola));
     }
     else return 0;
@@ -607,7 +615,8 @@ int main(void){
                 //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
                 //printf("CONTEGGIO prima -1: %D\n", conteggio);
                 //printf("Stringa letta in : %s\n", stringa);
-                if(uguale(rif,stringa)){
+                //if(uguale(rif,stringa)){
+                if(!strncmp(rif,stringa,k)){
                         printf("ok\n");
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; //DA VERIFICARE
