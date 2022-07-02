@@ -343,7 +343,7 @@ void conto_ordinata_filtrato(elemento *x,elemento_nil *lista_nuova){
     if(x->dx!=NULL){ 
         conto_ordinata_filtrato(x->sx,lista_nuova);
         
-        if(conto < 10){ 
+        if(conto < 1){ 
             conto ++; 
             printf("%s %d\n", x->str, conto);
         }
@@ -373,13 +373,13 @@ int main(void){
     //rotazioni funzionano
     contt = 0;
     scrittura_ordinata(lista.radice);
-    printf("+++++++++++++++++++++++++++++++++++++\n");
-    printf("Conteggio %d\n", contt);
-    printf("_______________\n");
-    conto_ordinata_filtrato(lista.radice,&lista);
-    printf("________________\n");
-    contt = 0;
-    scrittura_ordinata(lista.radice);
-    printf("Conteggio %d\n", contt);
+    //printf("*****************\n");
+    //printf("Conteggio %d\n", contt);
+    //printf("_______________\n");
+    //conto_ordinata_filtrato(lista.radice,&lista);
+    //printf("________________\n");
+    //contt = 0;
+    //scrittura_ordinata(lista.radice);
+    //printf("Conteggio %d\n", contt);
     return 0;
 }
