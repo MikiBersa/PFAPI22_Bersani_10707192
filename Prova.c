@@ -35,6 +35,7 @@ typedef struct {
 filtro diz[64];
 
 elemento nil = {"NULL", 0,NULL,NULL,NULL};
+elemento nil_filtrato = {"NULL", 0,NULL,NULL,NULL};
 
 void init(char *ver){
     
@@ -130,7 +131,10 @@ int validazione(char *conf, char * ver){
     for(int l = 0; l<64;l++){
         if(diz[l].ex==1){ 
             char car = inv_posizione(l);
-            if(!presente(car,conf,0))  return 0; //proprio non è presente
+            //strstr(haystack, needle);
+            //if(!presente(car,conf,0))  return 0; //proprio non è presente
+            //if(strstr(conf,&car) == NULL)  return 0;
+            if(!presente(car,conf,0))  return 0;
             else{
                 if(diz[l].min != 0 && presente(car,conf,1)<diz[l].min) return 0; //non è del numero minimo
                 if(diz[l].esatto != 0 && presente(car,conf,1)!=diz[l].esatto) return 0;
@@ -204,13 +208,13 @@ int posizione(char* c1, char *c2){ //c2 la testa
     return 0;
 }
 */
-
+/*
 void scrittura(char* c1, char *c2){ //da c1 a c2
     for(int i = 0; i<k;i++){
         c2[i] = c1[i];
     }
 }
-
+*/
 //INSERIMENTO BST FILTRATO NUOVO
 int inserimento_tree_filtrato(elemento * *lista, elemento* parola){
     elemento * y = NULL;
@@ -310,14 +314,14 @@ void rb_inserimento_fixup(elemento_nil* lista, elemento *z){
                 }
             }else{
                 //printf("Due\n");
-                y=x->p->sx; //vedere se mettere dx non mi da differenze
+                y=x->p->dx; //vedere se mettere sx non mi da differenze  BELLA DOMANDA
                 if(y->colore==1){
                     x->colore=0;
                     y->colore=0;
                     x->p->colore = 1;
                     rb_inserimento_fixup(lista, x->p);
                 }else {
-                    if(z == x->sx){
+                    if(z == x->dx){
                         z = x;
                         rotazione_dx(z,lista);
                         x=z->p;
@@ -340,7 +344,8 @@ elemento * inserimento_tree(elemento_nil * lista, char* parola){
     elemento * x = lista->radice;
     elemento * ell = malloc(sizeof(elemento));
     char *st = malloc(sizeof(char)*k);
-    scrittura(parola, st);
+    //scrittura(parola, st);
+    strncpy(st,parola,k);
     /*
     printf("------------\n");
     printf("La radice: %s\n", lista->radice->str);
@@ -425,7 +430,10 @@ void eliminazione (elemento **lista, elemento *s){
     if(y->testa==NULL) *(lista) = x;
     else if(y==y->testa->prev_bst) y->testa->prev_bst = x;
     else y->testa->next_bst = x;
-    if(y!=s) scrittura(y->str,s->str);
+    if(y!=s) {
+        //scrittura(y->str,s->str);
+        strncpy(s->str,y->str,k);
+    }
 
     //scrittura_ordinata(*(lista));
 
@@ -440,7 +448,7 @@ void conto_ordinata(elemento *x,elemento **lista,char *ver, int i){
         }else{
             //elimino nell'albero
             eliminazione(lista,x);
-            //printf("Eliminazione: %s\n", x->str);
+            printf("Eliminazione: %s\n", x->str);
 
         }
         conto_ordinata(x->next_bst,lista,ver,i);
@@ -515,7 +523,8 @@ char * confronto(char* str2,char* str1){
     printf("%s\n", out);
    
     char * rit = malloc(sizeof(char)*k);
-    scrittura(out, rit);
+    //scrittura(out, rit);
+    strncpy(rit,out,k);
     return rit;
 }
 /*
@@ -549,6 +558,7 @@ int main(void){
     elemento_nil lista = {&nil, &nil};
     elemento * lista_filtrata = NULL;
     if(scanf("%d", &k) != EOF);
+
     char stringa[k];
     char rif[k];
     rif[0] = '&';
@@ -575,7 +585,8 @@ int main(void){
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF);
-                scrittura(stringa,rif);
+                //scrittura(stringa,rif);
+                strncpy(rif,stringa,k);
                 if(scanf("%s", stringa)!=EOF);
                 conteggio = atoi(&stringa[0]);
                 //printf("CONTEGGIO %d\n", conteggio);
@@ -593,8 +604,13 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
-                if(primo_inserimento) {conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,1);primo_inserimento = 0;}
-                else conto_ordinata(lista_filtrata,&lista_filtrata,ver,1); //faccio il conteggio sul nuovo bst
+                if(primo_inserimento) {
+                    printf("Prima volta\n");
+                    conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,1);primo_inserimento = 0;}
+                else {
+                    printf("NOn prima volta\n");
+                    conto_ordinata(lista_filtrata,&lista_filtrata,ver,1); 
+                }//faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }
@@ -638,9 +654,13 @@ int main(void){
                         //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                         cont_buone = 0;
 
-                        if(primo_inserimento) {conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
-                        else conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
-
+                        if(primo_inserimento) {
+                            printf("Prima volta\n");
+                            conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
+                        else {
+                            printf("NOn prima volta\n");
+                            conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
+                        }
                         printf("%d\n",cont_buone);
                         #ifdef debug
                             conto_ordinata(lista,ver,1);
