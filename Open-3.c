@@ -3,6 +3,7 @@
 #include <string.h>
 
 
+
 //#define debug 
 
 int k;
@@ -510,7 +511,7 @@ void rbTransplant(NodePtr u, NodePtr v, NodePtr *radice){
 
 void deleteNodeHelper(NodePtr* radice, NodePtr z) {
 		// find the node containing key
-        /*
+        
 		NodePtr x, y; 
 		
         if(s->sx==TNULL || s->dx == TNULL){
@@ -699,6 +700,7 @@ int main(void){
 
     while(!feof(stdin)){
         if(scanf("%s", stringa)!=EOF){}
+        //if(fgets(stringa,k+1,stdin)!=NULL){}
         //printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
@@ -712,10 +714,12 @@ int main(void){
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF){}
+                //if(fgets(stringa,k+1,stdin)!=NULL){}
                 //scrittura(stringa,rif);
                 strncpy(rif,stringa,k);
-                if(scanf("%s", stringa)!=EOF){}
-                conteggio = atoi(&stringa[0]);
+                //if(scanf("%s", stringa)!=EOF){}
+                if(scanf("%d", &conteggio)!=EOF){}
+                //conteggio = atoi(&stringa[0]);
                 //printf("CONTEGGIO %d\n", conteggio);
             }
             else if(stringa[1] == 'i'){
