@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-
 
 //#define debug 
 
@@ -95,6 +92,18 @@ char inv_posizione (int n){
     return '.';
 }
 
+int uguale(char *c, char *p){
+    for(int i = 0;i<k;i++)
+        if(c[i] != p[i]) return 0;
+    return 1;
+}
+
+void scrittura(char* c1, char *c2){ //da c1 a c2
+    for(int i = 0; i<k;i++){
+        c2[i] = c1[i];
+    }
+}
+
 int presente(char c, char *s, int tipo){
     
     if(tipo == 0) {
@@ -110,6 +119,14 @@ int presente(char c, char *s, int tipo){
         return cont;
     }
     return -1;
+}
+
+int posizione(char* c1, char *c2){ //c2 la testa
+    for(int i = 0; i<k;i++){
+        if(c1[i] > c2[i]) return 1; //destra
+        else if(c1[i] < c2[i]) return -1; //sinistra
+    }
+    return 0;
 }
 
 int validazione(char *conf, char * ver){
@@ -210,30 +227,15 @@ void filtrato(char * str1, char * out, char * ver){
     for(int i = 0; i<k;i++) {diz[posizione_diz(str1[i])].letto = 0;}
     //for(int i = 0; i<64;i++) {diz[i].letto = 0;}
 }
-/*
-int posizione(char* c1, char *c2){ //c2 la testa
-    for(int i = 0; i<k;i++){
-        if(c1[i] > c2[i]) return 1; //destra
-        else if(c1[i] < c2[i]) return -1; //sinistra
-    }
-    return 0;
-}
-*/
-/*
-void scrittura(char* c1, char *c2){ //da c1 a c2
-    for(int i = 0; i<k;i++){
-        c2[i] = c1[i];
-    }
-}
-*/
 
 //LISTA
 void inserisci_lista(NodePtr *root, NodePtr x){
     NodePtr puntCorrente, puntPrecedente;
     puntPrecedente = NULL;
-    puntCorrente = *root;
+    puntCorrente = *root; 
 
-    while(puntCorrente != NULL && strncmp(puntCorrente->str, x->str,k) < 0){
+    //while(puntCorrente != NULL && strncmp(puntCorrente->str, x->str,k) < 0){
+    while(puntCorrente != NULL && posizione(puntCorrente->str, x->str) < 0){
         puntPrecedente = puntCorrente;
         puntCorrente = puntPrecedente->next;
     }
@@ -381,7 +383,8 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
 
         NodePtr node = malloc(sizeof(elemento));
         char *st = malloc(sizeof(char)*k);
-        strncpy(st,stringa,k);
+        //strncpy(st,stringa,k);
+        scrittura(stringa, st);
 
         node->str = st;
         node->sx = TNULL;
@@ -395,7 +398,8 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
 
 		while (x != TNULL) {
 			y = x;
-			if (strncmp(node->str, x->str,k) < 0) {
+			//if (strncmp(node->str, x->str,k) < 0) {
+            if(posizione(node->str, x->str) < 0) {
 				x = x->sx;
 			} else {
 				x = x->dx;
@@ -407,7 +411,8 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
 		if (y == NULL) {
             //printf("Dentro\n");
 			*(radicec) = node;
-		} else if (strncmp(node->str, y->str,k) < 0) {
+		//} else if (strncmp(node->str, y->str,k) < 0) {
+        } else if (posizione(node->str, y->str) < 0) {
 			y->sx = node;
 		} else {
 			y->dx = node;
@@ -635,7 +640,8 @@ int trovata = 0;
 void inOrder_controllo(NodePtr node, char* parola) {
 		if (node != TNULL && trovata == 0) {
 			inOrder_controllo(node->sx, parola);
-			if(!strncmp(node->str,parola,k)) trovata = 1;
+			//if(!strncmp(node->str,parola,k)) trovata = 1;
+            if(uguale(node->str,parola)) trovata = 1;
 			inOrder_controllo(node->dx, parola);
 		} 
 }
@@ -676,8 +682,8 @@ char * confronto(char* str2,char* str1){
     printf("%s\n", out);
    
     char * rit = malloc(sizeof(char)*k);
-    //scrittura(out, rit);
-    strncpy(rit,out,k);
+    scrittura(out, rit);
+    //strncpy(rit,out,k);
     return rit;
 }
 
@@ -715,8 +721,8 @@ int main(void){
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF){}
                 //if(fgets(stringa,k+1,stdin)!=NULL){}
-                //scrittura(stringa,rif);
-                strncpy(rif,stringa,k);
+                scrittura(stringa,rif);
+                //strncpy(rif,stringa,k);
                 //if(scanf("%s", stringa)!=EOF){}
                 if(scanf("%d", &conteggio)!=EOF){}
                 //conteggio = atoi(&stringa[0]);
@@ -770,7 +776,8 @@ int main(void){
                 //inOrder(radice);
                 trovata = 0;
                 inOrder_controllo(radice, stringa);
-                if(!strncmp(rif,stringa,k)){
+                //if(!strncmp(rif,stringa,k)){
+                if(uguale(rif,stringa)){
                         printf("ok\n");
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; //DA VERIFICARE
