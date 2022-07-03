@@ -8,6 +8,7 @@ int k;
 int cont_buone = 0;
 
 //FACCIO UN ALBERO RB
+/*
 typedef struct el{
     char *str;
     int colore; //0 è nero 1 è rosso
@@ -18,6 +19,15 @@ typedef struct el{
     struct el *parent; // pointer to the parent
 	struct el *left; // pointer to left child
 	struct el *right; // pointer to right child
+} elemento;
+*/
+
+typedef struct el{
+    char *str;
+    int colore; //0 è nero 1 è rosso
+    struct el *sx;
+    struct el *dx;
+    struct el *p;
 } elemento;
 
 typedef struct{
@@ -484,6 +494,7 @@ void deleteNodeHelper_filtrato(NodePtr node, NodePtr s) {
 		}
 	}
 
+
 //RB DEL ALBERO NORMALE
 NodePtr maximum(NodePtr node) {
 	while (node->dx != TNULL) {
@@ -627,7 +638,7 @@ NodePtr insert(char *stringa) {
 				x = x->dx;
 			}
 		}
-        printf("Arrivato\n");
+        //printf("Arrivato\n");
 		// y is parent of x
 		node->p = y;
 		if (y == NULL) {
@@ -746,6 +757,7 @@ void deleteNodeHelper(NodePtr node, NodePtr s) {
 			fixDelete(x);
 		}
 	}
+
 
 /*
 //INSERIMENTO BST FILTRATO NUOVO
@@ -956,8 +968,8 @@ void scrittura_ordinata(elemento *x){
 }
 
 //T->x e Z->s
-void conto_ordinata(elemento *x,char *ver, int i){
-    if(x!=NULL){    
+void conto_ordinata(NodePtr x,char *ver, int i){
+    if(x!=TNULL){    
         conto_ordinata(x->left,ver,i);
         if(validazione(x->str,ver)){
             if(i == 0) cont_buone ++;
@@ -972,10 +984,12 @@ void conto_ordinata(elemento *x,char *ver, int i){
     }
 }
 
-void conto_ordinata_filtrato(elemento *x,char *ver, int i){
-    if(x!=TNULL){    
+void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
+    if(x!=TNULL){  
+        printf("DENTRO\n");  
         conto_ordinata_filtrato(x->sx,ver,i);
         if(validazione(x->str,ver)){
+            printf("Dentro a validazione\n");
             if(i == 0) cont_buone ++;
             else printf("%s\n", x->str);
                 //inserimento nel nuovo bst
@@ -995,6 +1009,7 @@ int uguale(char *c, char *p){
 }
 */
 
+/*
 int controllo(NodePtr x, char * parola){
     printf("Dentro a controllo\n");
     //printf("%s\n", x->str);
@@ -1010,6 +1025,39 @@ int controllo(NodePtr x, char * parola){
         return 0;
     }
 }
+*/
+void inOrder(NodePtr node) {
+		if (node != TNULL) {
+			inOrder(node->sx);
+			printf("%s\n", node->str);
+			inOrder(node->dx);
+		} 
+}
+
+int trovata = 0;
+
+void inOrder_controllo(NodePtr node, char* parola) {
+		if (node != TNULL && trovata == 0) {
+			inOrder_controllo(node->sx, parola);
+			if(!strncmp(node->str,parola,k)) trovata = 1;
+			inOrder_controllo(node->dx, parola);
+		} 
+}
+
+/*
+int controllo(NodePtr x, char * parola){
+
+    if(x!=TNULL){   
+        //(x->str,parola)) return 1;
+        if(!strncmp(x->str,parola,k)) return 1;
+        return (controllo(x->sx, parola) || controllo(x->dx,parola));
+    }
+    else {
+        return 0;
+    }
+}
+*/
+
 
 char * confronto(char* str2,char* str1){
     char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
@@ -1096,17 +1144,16 @@ int main(void){
 
     while(!feof(stdin)){
         if(scanf("%s", stringa)!=EOF);
-        printf("Letto %s\n",stringa);
+        //printf("Letto %s\n",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
-                radice = NULL; //TENERE D'OCCHIO
 
                 nuova = 1;
                 inserimento = 0;
                 primo_inserimento = 1;
                 //printf("INSERIMENTO PAROLE FINE\n");
-                printf("INIZIO_PARTITA in +\n");
+                //printf("INIZIO_PARTITA in +\n");
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(scanf("%s", stringa)!=EOF);
@@ -1114,7 +1161,7 @@ int main(void){
                 strncpy(rif,stringa,k);
                 if(scanf("%s", stringa)!=EOF);
                 conteggio = atoi(&stringa[0]);
-                printf("CONTEGGIO %d\n", conteggio);
+                //printf("CONTEGGIO %d\n", conteggio);
             }
             else if(stringa[1] == 'i'){
                 if(stringa[11] == 'i') {
@@ -1131,13 +1178,15 @@ int main(void){
                 //conto_ordinata(lista,ver,1);
                 if(primo_inserimento) {
                     //printf("Prima volta\n");
-                    conto_ordinata_filtrato(root_filtrato,ver,1);primo_inserimento = 0;}
+                    conto_ordinata_filtrato(radice,ver,1);primo_inserimento = 0;}
                 else {
                     //printf("NOn prima volta\n");
-                    conto_ordinata(radice,ver,1); 
+                    conto_ordinata(root_filtrato,ver,1); 
                 }//faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
+            }else if(stringa[1] == '2'){
+                    inOrder(radice);
             }
         }else if(nuova){
             //insrriemnto durante la partita
@@ -1157,16 +1206,20 @@ int main(void){
                 //printf("CONTEGGIO prima -1: %D\n", conteggio);
                 //printf("Stringa letta in : %s\n", stringa);
                 //if(uguale(rif,stringa)){
-                if(!strncmp(rif,stringa,k)){
+                //printf("Stampo le parole\n");
+                //inOrder(radice);
+                trovata = 0;
+                inOrder_controllo(radice, stringa);
+                if(!strncmp(rif,stringa,k) && trovata == 1){
                         printf("ok\n");
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; //DA VERIFICARE
                         //rif[0] = '&';
                         //lista_filtrata = NULL; //pulisco il bst 
                         primo_inserimento = 1;
-                }else if(!controllo(radice,stringa)){
-                        printf("not_exists\n");
-                }else if(conteggio != 1){ 
+                }else if(!trovata){
+                    printf("not_exists\n");
+                }else if(conteggio != 1 && trovata == 1 ){ 
                     printf("Stringa letta in : %s\n", stringa);
                     //if(controllo(lista,stringa)){
                         char *ritorno;
@@ -1180,12 +1233,12 @@ int main(void){
                         cont_buone = 0;
 
                         if(primo_inserimento) {
-                            //printf("Prima volta\n");
-                            conto_ordinata_filtrato(root_filtrato,ver,0);primo_inserimento = 0;}
+                            printf("Prima volta\n");
+                            conto_ordinata_filtrato(radice,ver,0);primo_inserimento = 0;}
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
                             //printf("NOn prima volta\n");
-                            conto_ordinata(radice,ver,0); 
+                            conto_ordinata(root_filtrato,ver,0); 
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
@@ -1223,9 +1276,9 @@ int main(void){
                 
             }
         }else if(inserimento) {
-            printf("Inerito %s prima dell'ins\n", stringa);
+            //printf("Inerito %s prima dell'ins\n", stringa);
             insert(stringa);
-            printf("Inserito nuove stringhe\n");
+            //printf("Inserito nuove stringhe\n");
         }
     }
 
