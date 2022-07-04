@@ -852,6 +852,7 @@ int main(void){
     int primo_inserimento = 0;
     char ver[k+1]; ver[k] = '\0';
 
+
     init_rb();
     init(ver); //preparo il dizionario
 
