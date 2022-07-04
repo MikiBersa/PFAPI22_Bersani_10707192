@@ -8,5 +8,6 @@ int main(void){
     printf("stringa %s\n", stringa);
     printf("lunghezza %lu\n", strlen(stringa));
     for(int i = 0;i<k;i++) printf("%c", stringa[i]);
+
     return 0;
 }

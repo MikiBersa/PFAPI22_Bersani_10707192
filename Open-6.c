@@ -13,6 +13,7 @@ int cont_buone = 0;
 typedef struct el{
     char *str;
     int colore; //0 è nero 1 è rosso
+    int valida; //così so che è valida
     struct el *sx;
     struct el *dx;
     struct el *p;
@@ -29,11 +30,16 @@ typedef struct{
 }filtro;
 
 typedef elemento *NodePtr;
+typedef struct{
+    NodePtr radice_lista;
+    NodePtr fine_lista;
+}Root;
 
 filtro diz[64];
 
 NodePtr lista;
 NodePtr radice;
+Root lista_prova;
 NodePtr TNULL;
 
 void init_rb(){
@@ -233,6 +239,9 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 
 
 //LISTA
+//POSSO INSERIRE IN ORDINE INVERSO -> così ho inserimento costante perchè li leggo in ordine 
+//PROBLEMA è CON INSERIMENTO DELLE INIZIO E FINE COORDINATE CON RB?
+/*
 void inserisci_lista(NodePtr *root, NodePtr x){
     NodePtr puntCorrente, puntPrecedente;
     puntPrecedente = NULL;
@@ -249,17 +258,37 @@ void inserisci_lista(NodePtr *root, NodePtr x){
 
     if(puntPrecedente != NULL) puntPrecedente->next = x;
     else *root = x;
+}*/
+
+void inserisci_lista(Root *root, NodePtr x){
+    x->next = root->radice_lista;
+    if(root->radice_lista!=NULL) root->radice_lista->prev = x;
+    if(root->radice_lista==NULL) root->fine_lista = x;
+    root->radice_lista = x;
+    x->prev = NULL;
 }
 
-void cancella(NodePtr *root, NodePtr x){
+//costante eliminazione
+void cancella(Root *root, NodePtr x){
     if(x->prev!=NULL) x->prev->next = x->next;
-    else (*root) = x->next;
+    else (*root).radice_lista = x->next;
     if(x->next != NULL) x->next->prev = x->prev;
+    else (*root).fine_lista = x->prev;
+    //printf("CANCELLATO %s\n", x->str);
 }
 
+//TEAT DI N
+/*
 void stampa_lista(NodePtr l){
     while(l->next!=NULL) printf("%s", l->str);
     printf("%s", l->str);
+}*/
+void stampa_lista(Root l){
+    elemento *p = l.fine_lista;
+    while(p!=NULL) {
+        printf("%s\n", p->str);
+        p = p->prev;
+    }
 }
 
 //RB DEL ALBERO NORMALE
@@ -585,7 +614,7 @@ void conto_ordinata(NodePtr x,char *ver, int i){
         }else{
             //elimino nell'albero
             //deleteNodeHelper(&root_filtrato,x);
-            cancella(&lista, x);
+            cancella(&lista_prova, x);
             //printf("Eliminazione: %s\n", x->str);
 
         }
@@ -600,10 +629,10 @@ void stampa_lista_filtrato(NodePtr l,char *ver, int i){
             }
             else printf("%s\n", l->str);
         }else{
-            cancella(&lista, l);
+            cancella(&lista_prova, l);
         }
-       
-        l = l->next;
+
+        l = l->prev;
     }
 }
 
@@ -618,11 +647,35 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
             else printf("%s\n", x->str);
                 //inserimento nel nuovo bst
             //insert(x->str, &root_filtrato); //occhio che me li inserisce già ordinati -> facendo così riduco solo il teta di n come numero
-            inserisci_lista(&lista, x);
+            inserisci_lista(&lista_prova,x);
             //dovrei trasformare anche questo in RB
             
         }
         conto_ordinata_filtrato(x->dx,ver,i);
+    }
+}
+
+void conto_ordinata_filtrato_2(NodePtr x){
+    if(x!=TNULL){  
+        //printf("DENTRO\n");  
+        conto_ordinata_filtrato_2(x->sx);
+        inserisci_lista(&lista_prova,x);
+        conto_ordinata_filtrato_2(x->dx);
+    }
+}
+
+int cont_c = 0;
+void conto_ordinata_filtrato_c(NodePtr x){
+    if(x!=TNULL){  
+        //printf("DENTRO\n");  
+        conto_ordinata_filtrato_c(x->sx);
+        if(cont_c>=1) {
+            cont_c = 0;
+            cancella(&lista_prova,x);
+        }else {
+            cont_c ++;
+        }
+        conto_ordinata_filtrato_c(x->dx);
     }
 }
 
@@ -688,9 +741,12 @@ char * confronto(char* str2,char* str1){
 
 int main(void){
     //elemento * lista = NULL;
-
-    if(scanf("%d", &k) != EOF){}
-
+    char c[4];
+    //if(scanf("%d", &k) != EOF){}
+    //printf("INIZIO\n");
+    if(fgets(c,4,stdin)!=NULL){}
+    k = atoi(&c[0]);
+   //printf("VALORE: %d\n", k);
     char stringa[k];
     char rif[k];
     rif[0] = '&';
@@ -703,13 +759,15 @@ int main(void){
     init_rb();
     init(ver); //preparo il dizionario
 
-    while(!feof(stdin)){
-        if(scanf("%s", stringa)!=EOF){}
-        //printf("Letto %s\n",stringa);
+    while(fgets(stringa,10*k,stdin)!=NULL){
+        //if(scanf("%s", stringa)!=EOF){}
+        //printf("Letto %s",stringa);
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
                 lista = NULL;
+                lista_prova.radice_lista=NULL;
+                lista_prova.fine_lista=NULL;
                 nuova = 1;
                 inserimento = 0;
                 primo_inserimento = 1;
@@ -717,11 +775,11 @@ int main(void){
                 //printf("INIZIO_PARTITA in +\n");
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
-                if(scanf("%s", stringa)!=EOF){}
+                if(fgets(stringa,10*k,stdin)!=NULL){}
                 scrittura(stringa,rif);
                 //strncpy(rif,stringa,k);
-                if(scanf("%d", &conteggio)!=EOF){}
-                //conteggio = atoi(&stringa[0]);
+                if(fgets(stringa,10*k,stdin)!=NULL){}
+                conteggio = atoi(&stringa[0]);
                 //printf("CONTEGGIO %d\n", conteggio);
             }
             else if(stringa[1] == 'i'){
@@ -743,8 +801,18 @@ int main(void){
                 else {
                     //printf("NOn prima volta\n");
                     //conto_ordinata(root_filtrato,ver,1); 
-                    stampa_lista_filtrato(lista,ver,1);
-                }//faccio il conteggio sul nuovo bst
+                    stampa_lista_filtrato(lista_prova.fine_lista,ver,1);
+                }
+               /*
+                conto_ordinata_filtrato_2(radice);
+                printf("STAMPA LISTA\n");
+                stampa_lista(lista_prova);
+                conto_ordinata_filtrato_c(radice);
+                printf("STAMPA LISTA\n");
+                stampa_lista(lista_prova);
+                */
+
+                //faccio il conteggio sul nuovo bst
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }else if(stringa[1] == '2'){
@@ -759,7 +827,7 @@ int main(void){
                     //se è gia valido lo metto li dentro
                     //printf("INSERISCO %s\n", stringa);
                     //insert(stringa, &root_filtrato);
-                    inserisci_lista(&lista, prova);
+                    inserisci_lista(&lista_prova, prova);
                 }
             }else{
                 //Qui dovrebbe partire algoritmo 
@@ -803,7 +871,7 @@ int main(void){
                         else {
                             //printf("NOn prima volta\n");
                             //conto_ordinata(root_filtrato,ver,0); 
-                            stampa_lista_filtrato(lista,ver,0);
+                            stampa_lista_filtrato(lista_prova.fine_lista,ver,0);
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
