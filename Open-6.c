@@ -286,6 +286,16 @@ void cancella(Root *root, NodePtr x){
     //printf("CANCELLATO %s\n", x->str);
 }
 
+void init_lista(Root *l){
+    printf("PULIZIA\n");
+    NodePtr p = l->radice_lista;
+    //PULIZIA DEI NODI
+    while(p!=NULL) {
+        p->valida = 0;
+        p = p->next;
+    }
+}
+
 //TEAT DI N
 /*
 void stampa_lista(NodePtr l){
@@ -301,6 +311,7 @@ void stampa_lista(Root l){
 }
 
 //RB DEL ALBERO NORMALE
+/*
 NodePtr maximum(NodePtr node) {
 	while (node->dx != TNULL) {
 		node = node->dx;
@@ -332,6 +343,7 @@ NodePtr successor(NodePtr x) {
 		}
 		return y;
 }
+*/
 
 void rightRotate(NodePtr x, NodePtr *radicec) {
 		NodePtr y = x->sx;
@@ -420,8 +432,9 @@ void fixInsert(NodePtr k, NodePtr *radicec){
 	}
 
 
-NodePtr insert(char *stringa, NodePtr *radicec) {
-
+NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
+        //VEDERE COME FARE CON VALIDAZIONE E COLLEGARLO ALLA LISTA
+        //PER EVITARE DI FARLA SCORRERE SEMRPE
         NodePtr node = malloc(sizeof(elemento));
         char *st = malloc(sizeof(char)*k);
         strncpy(st,stringa,k);
@@ -430,13 +443,20 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
         node->sx = TNULL;
 		node->dx = TNULL;
 		node->colore = 1; // new node must be red
-
+        node->valida = validazione; //così lo tengo traccia per dopo
+        //0 di default se parte da zero il gioco 
+        //printf("%s valido %d\n", node->str, node->valida);
         node->p = NULL;
 
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
+        NodePtr ult_valido = NULL;
 
 		while (x != TNULL) {
+
+            if(x->valida) ult_valido = x; //che risulta essere poi y
+            //inserimento di prima o dopo dipende dalla posizione rispetto a y
+
 			y = x;
 			if (strncmp(node->str, x->str,k) < 0) {
 				x = x->sx;
@@ -444,7 +464,7 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
 				x = x->dx;
 			}
 		}
-        //printf("Arrivato\n");
+        //if(ult_valido!=NULL) printf("Ultimo_valido: %s\n", ult_valido->str);
 		// y is parent of x
 		node->p = y;
 		if (y == NULL) {
@@ -452,8 +472,57 @@ NodePtr insert(char *stringa, NodePtr *radicec) {
 			*(radicec) = node;
 		} else if (strncmp(node->str, y->str,k) < 0) {
 			y->sx = node;
+            //QUI VUOL DIRE CHE STA A SX
+            //printf("%s sta a sx\n", node->str);
+            if(validazione){
+                //inseirmento in lista a dx (siccome lista è ordinata al contrario)
+                if(ult_valido != NULL){
+                    //printf("%s ultimo\n", ult_valido->str);
+                    node->next = ult_valido->next;
+                    node->prev = ult_valido->next->prev;
+                    //printf("Next %s\n",node->next->str);
+                    //printf("Prev %s\n",node->prev->str);
+                    ult_valido->next->prev = node;
+                    ult_valido->next = node;
+                    if(ult_valido->next == NULL) root->fine_lista = node;
+                }else{
+                    //insrisco in testa
+                    node->next = root->radice_lista;
+                    node->prev = NULL;
+                    root->fine_lista = node;
+                    root->radice_lista = node;
+                }
+            }
+
 		} else {
 			y->dx = node;
+            //QUI VUOL DIRE CHE STA A DX
+            //printf("%s sta a dx\n", node->str);
+            if(validazione){
+                if(ult_valido != NULL){
+                    //printf("%s ultimo\n", ult_valido->str);
+                    node->next = ult_valido;
+                    node->prev = ult_valido->prev;
+                    if(ult_valido->prev==NULL) printf("NULLO\n");
+                    //printf("Next %s\n",node->next->str);
+                    //printf("Prev %s\n",node->prev->str);
+                    if(ult_valido->prev == NULL){
+                        //in testa alla lista
+                        root->radice_lista = node;
+                        root->fine_lista = ult_valido;
+                    }
+                    else{
+                        ult_valido->prev->next = node;
+                        ult_valido->prev = node;
+                    }
+                }else{
+                    //insrisco in testa
+                    node->next = root->radice_lista;
+                    node->prev = NULL;
+                    root->fine_lista = node;
+                    root->radice_lista = node;
+                }
+            } //inseirmento in lista
 		}
 
 		// if new node is a root node, simply return
@@ -617,12 +686,13 @@ void conto_ordinata(NodePtr x,char *ver, int i){
     if(x!=TNULL){    
         conto_ordinata(x->sx,ver,i);
         if(validazione(x->str,ver)){
-            if(i == 0) {cont_buone ++; //printf("%s\n", x->str);
+            if(i == 0) { x->valida = 0; cont_buone ++; //printf("%s\n", x->str);
             }
             else printf("%s\n", x->str);
         }else{
             //elimino nell'albero
             //deleteNodeHelper(&root_filtrato,x);
+            x->valida = 0;
             cancella(&lista_prova, x);
             //printf("Eliminazione: %s\n", x->str);
 
@@ -634,10 +704,14 @@ void conto_ordinata(NodePtr x,char *ver, int i){
 void stampa_lista_filtrato(NodePtr l,char *ver, int i){
     while(l!=NULL) {
         if(validazione(l->str,ver)){
-            if(i == 0) {cont_buone ++; //printf("%s\n", x->str);
+            if(i == 0) {l->valida = 0; cont_buone ++; //printf("%s\n", x->str);
             }
-            else printf("%s\n", l->str);
+            else {
+                l->valida=1;
+                printf("%s\n", l->str);
+            }
         }else{
+            l->valida=0;
             cancella(&lista_prova, l);
         }
 
@@ -652,13 +726,21 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
         conto_ordinata_filtrato(x->sx,ver,i);
         if(validazione(x->str,ver)){
             //printf("Dentro a validazione\n");
-            if(i == 0) {cont_buone ++;}
-            else printf("%s\n", x->str);
+            if(i == 0) {
+                x->valida = 1; 
+                cont_buone ++;
+            }
+            else {
+                x->valida = 1; 
+                printf("%s\n", x->str);
+            }
                 //inserimento nel nuovo bst
             //insert(x->str, &root_filtrato); //occhio che me li inserisce già ordinati -> facendo così riduco solo il teta di n come numero
             inserisci_lista(&lista_prova,x);
             //dovrei trasformare anche questo in RB
             
+        }else{
+            x->valida=0;
         }
         conto_ordinata_filtrato(x->dx,ver,i);
     }
@@ -674,6 +756,7 @@ void conto_ordinata_filtrato_2(NodePtr x){
 }
 
 int cont_c = 0;
+
 void conto_ordinata_filtrato_c(NodePtr x){
     if(x!=TNULL){  
         //printf("DENTRO\n");  
@@ -774,6 +857,9 @@ int main(void){
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
+                //CONTROLLARE SE è VUOTA SE NO IMPOSTARE VALID = 0
+                if(lista!=NULL) init_lista(&lista_prova);
+
                 lista = NULL;
                 lista_prova.radice_lista=NULL;
                 lista_prova.fine_lista=NULL;
@@ -825,32 +911,40 @@ int main(void){
                 //conto_ordinata(lista_filtrata,ver,1);
                 //printf("S\n");
             }else if(stringa[1] == '2'){
+                /*
+                    printf("Stampo albero\n");
                     inOrder(radice);
+                    printf("Stampo lista\n");
+                    stampa_lista(lista_prova);
+                */
             }
         }else if(nuova){
             //insrriemnto durante la partita
+            /*
             if(inserimento) {
                 NodePtr prova = insert(stringa, &radice);
                 //printf("Inserito nuove stringhe\n");
                 if(validazione(stringa,ver)){
-                    //se è gia valido lo metto li dentro
-                    //printf("INSERISCO %s", prova->str);
-                    //insert(stringa, &root_filtrato);
-                    //stampa_lista(lista_prova);
-                    //printf("Inserimento lista nuova\n");
                     inserisci_lista_nuove(&lista_prova, prova);
                     //stampa_lista(lista_prova);
 
                 }
+            */
+            if(inserimento) {
+                //printf("Inserimento in mezzo al gioco\n");
+                //NodePtr prova = insert(stringa, &radice);
+                //printf("Validazione di %s valido %d", stringa, validazione(stringa,ver));
+                insert(stringa, &radice, validazione(stringa,ver), &lista_prova);
+                //printf("Inserito nuove stringhe\n");
+                /*
+                if(validazione(stringa,ver)){
+                    //IDEA è QUELLO DI INSERIRE ELEMENTO NELLA LISTA NEL MENTRE CHE INSERISCO IN RB
+                    inserisci_lista_nuove(&lista_prova, prova);
+                    //stampa_lista(lista_prova);
+
+                }*/
             }else{
-                //Qui dovrebbe partire algoritmo 
-                //printf("Stringhe da confrontare %s\n", stringa);
-                //VEDERE SE APPARTIENE O NO ALLE PAROLE AMMISSBILI
-                //printf("CONTEGGIO prima -1: %D\n", conteggio);
-                //printf("Stringa letta in : %s\n", stringa);
-                //if(uguale(rif,stringa)){
-                //printf("Stampo le parole\n");
-                //inOrder(radice);
+
                 trovata = 0;
                 inOrder_controllo(radice, stringa);
                 //if(!strncmp(rif,stringa,k)){
@@ -888,14 +982,7 @@ int main(void){
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
-                        #ifdef debug
-                            conto_ordinata(lista,ver,1);
-                            scrivi(ver);
-                        #endif
-                    //}else{
-                        //printf("CONTEGGIO in NON exists: %D\n", conteggio);
-                    //    printf("not_exists\n");
-                    //}
+
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
                     char *ritorno;
@@ -922,7 +1009,7 @@ int main(void){
             }
         }else if(inserimento) {
             //printf("Inerito %s prima dell'ins\n", stringa);
-            insert(stringa, &radice);
+            insert(stringa, &radice,0, &lista_prova);
             //printf("Inserito nuove stringhe\n");
         }
     }
