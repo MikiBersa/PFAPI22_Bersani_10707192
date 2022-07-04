@@ -455,7 +455,7 @@ void fixInsert(NodePtr k, NodePtr *radicec){
 	}
 
 
-NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
+void insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
         //VEDERE COME FARE CON VALIDAZIONE E COLLEGARLO ALLA LISTA
         //PER EVITARE DI FARLA SCORRERE SEMRPE
         NodePtr node = malloc(sizeof(elemento));
@@ -559,16 +559,16 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
 		// if new node is a root node, simply return
 		if (node->p == NULL){
 			node->colore = 0;
-			return node;
+			return;
 		}
 
 		// if the grandparent is null, simply return
 		if (node->p->p == NULL) {
-			return node;
+			return;
         }
 		// Fix the tree
 		fixInsert(node, radicec);
-    return node;
+    return;
 }
 
 /*
@@ -734,10 +734,10 @@ void conto_ordinata(NodePtr x,char *ver, int i){
 void stampa_lista_filtrato(NodePtr l,char *ver, int i){
     while(l!=NULL) {
         if(validazione(l->str,ver)){
-            if(i == 0) {l->valida = 0; cont_buone ++; //printf("%s\n", x->str);
+            l->valida=1;
+            if(i == 0) { cont_buone ++; //printf("%s\n", x->str);
             }
             else {
-                l->valida=1;
                 printf("%s\n", l->str);
             }
         }else{
@@ -756,12 +756,11 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
         conto_ordinata_filtrato(x->sx,ver,i);
         if(validazione(x->str,ver)){
             //printf("Dentro a validazione\n");
+            x->valida = 1; 
             if(i == 0) {
-                x->valida = 1; 
                 cont_buone ++;
             }
             else {
-                x->valida = 1; 
                 printf("%s\n", x->str);
             }
                 //inserimento nel nuovo bst
@@ -786,23 +785,6 @@ void conto_ordinata_filtrato_2(NodePtr x){
 }
 */
 
-int cont_c = 0;
-
-void conto_ordinata_filtrato_c(NodePtr x){
-    if(x!=TNULL){  
-        //printf("DENTRO\n");  
-        conto_ordinata_filtrato_c(x->sx);
-        if(cont_c>=1) {
-            cont_c = 0;
-            cancella(&lista_prova,x);
-        }else {
-            cont_c ++;
-        }
-        conto_ordinata_filtrato_c(x->dx);
-    }
-}
-
-
 void inOrder(NodePtr node) {
 		if (node != TNULL) {
 			inOrder(node->sx);
@@ -822,8 +804,8 @@ void inOrder_controllo(NodePtr node, char* parola) {
 		} 
 }
 
-char * confronto(char* str2,char* str1){
-    char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
+void confronto(char* str2,char* str1, char *out){
+    //char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
     for(int i = 0; i<=k-1;i++){
         if(str1[i] == str2[i]) out[i] = '+';
         else{
@@ -857,10 +839,10 @@ char * confronto(char* str2,char* str1){
    
     printf("%s\n", out);
    
-    char * rit = malloc(sizeof(char)*k);
-    scrittura(out, rit);
+    //char * rit = malloc(sizeof(char)*k);
+    //scrittura(out, rit);
     //strncpy(rit,out,k);
-    return rit;
+    //return rit;
 }
 
 int main(void){
@@ -983,7 +965,9 @@ int main(void){
                     //printf("Stringa letta in : %s\n", stringa);
                     //if(controllo(lista,stringa)){
                         
-                        filtrato(stringa,confronto(rif,stringa), ver);
+                        char conf[k+1];
+                        confronto(rif,stringa, conf);
+                        filtrato(stringa,conf, ver);
                         
                         //printf("CONTEGGIO prima: %D\n", conteggio);
                         conteggio = conteggio - 1;
@@ -1005,8 +989,10 @@ int main(void){
 
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
-                    
-                    filtrato(stringa,confronto(rif,stringa), ver);
+                    char conf[k+1];
+                    confronto(rif,stringa, conf);
+                    filtrato(stringa,conf, ver);
+                    //filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
                     conto_ordinata(radice,ver,0);
