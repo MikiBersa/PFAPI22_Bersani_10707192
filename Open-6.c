@@ -241,24 +241,33 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 //LISTA
 //POSSO INSERIRE IN ORDINE INVERSO -> così ho inserimento costante perchè li leggo in ordine 
 //PROBLEMA è CON INSERIMENTO DELLE INIZIO E FINE COORDINATE CON RB?
-/*
-void inserisci_lista(NodePtr *root, NodePtr x){
+
+void inserisci_lista_nuove(Root *root, NodePtr x){
     NodePtr puntCorrente, puntPrecedente;
     puntPrecedente = NULL;
-    puntCorrente = *root;
+    puntCorrente = root->fine_lista;
 
     while(puntCorrente != NULL && strncmp(puntCorrente->str, x->str,k) < 0){
+        //printf("parole conforntate %s\n", puntCorrente->str);
         puntPrecedente = puntCorrente;
-        puntCorrente = puntPrecedente->next;
+        puntCorrente = puntPrecedente->prev;
     }
+    //printf("Precedente %s\n", puntPrecedente->str);
+    //printf("Corrente %s\n", puntCorrente->str);
+    x->next = puntPrecedente;
+    if(root->radice_lista == NULL) x->prev = NULL;
+    else x->prev = puntCorrente;
 
-    x->next = puntCorrente;
-    if(*root == NULL) x->prev = NULL;
-    else x->prev = puntPrecedente;
+    if(puntCorrente != NULL) puntCorrente->next = x;
+    else root->radice_lista = x;
 
-    if(puntPrecedente != NULL) puntPrecedente->next = x;
-    else *root = x;
-}*/
+    if(puntPrecedente != NULL) puntPrecedente->prev = x;
+    else root->fine_lista = x;
+
+    //printf("Next %s\n", x->next->str);
+    //printf("Prev %s\n", x->prev->str);
+    //printf("COLLEGAMENTO %s", puntPrecedente->prev->str);
+}
 
 void inserisci_lista(Root *root, NodePtr x){
     x->next = root->radice_lista;
@@ -825,9 +834,13 @@ int main(void){
                 //printf("Inserito nuove stringhe\n");
                 if(validazione(stringa,ver)){
                     //se è gia valido lo metto li dentro
-                    //printf("INSERISCO %s\n", stringa);
+                    //printf("INSERISCO %s", prova->str);
                     //insert(stringa, &root_filtrato);
-                    inserisci_lista(&lista_prova, prova);
+                    //stampa_lista(lista_prova);
+                    //printf("Inserimento lista nuova\n");
+                    inserisci_lista_nuove(&lista_prova, prova);
+                    //stampa_lista(lista_prova);
+
                 }
             }else{
                 //Qui dovrebbe partire algoritmo 
