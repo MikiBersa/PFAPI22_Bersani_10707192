@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
 
 
 //#define debug 
@@ -241,7 +239,7 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 //LISTA
 //POSSO INSERIRE IN ORDINE INVERSO -> così ho inserimento costante perchè li leggo in ordine 
 //PROBLEMA è CON INSERIMENTO DELLE INIZIO E FINE COORDINATE CON RB?
-
+/*
 void inserisci_lista_nuove(Root *root, NodePtr x){
     NodePtr puntCorrente, puntPrecedente;
     puntPrecedente = NULL;
@@ -268,7 +266,7 @@ void inserisci_lista_nuove(Root *root, NodePtr x){
     //printf("Prev %s\n", x->prev->str);
     //printf("COLLEGAMENTO %s", puntPrecedente->prev->str);
 }
-
+*/
 void inserisci_lista(Root *root, NodePtr x){
     x->next = root->radice_lista;
     if(root->radice_lista!=NULL) root->radice_lista->prev = x;
@@ -437,7 +435,8 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
         //PER EVITARE DI FARLA SCORRERE SEMRPE
         NodePtr node = malloc(sizeof(elemento));
         char *st = malloc(sizeof(char)*k);
-        strncpy(st,stringa,k);
+        //strncpy(st,stringa,k);
+        scrittura(stringa,st);
 
         node->str = st;
         node->sx = TNULL;
@@ -458,7 +457,9 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
             //inserimento di prima o dopo dipende dalla posizione rispetto a y
 
 			y = x;
-			if (strncmp(node->str, x->str,k) < 0) {
+            
+			//if (strncmp(node->str, x->str,k) < 0) {
+            if (posizione(node->str, x->str) < 0) {
 				x = x->sx;
 			} else {
 				x = x->dx;
@@ -470,7 +471,8 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
 		if (y == NULL) {
             //printf("Dentro\n");
 			*(radicec) = node;
-		} else if (strncmp(node->str, y->str,k) < 0) {
+		//} else if (strncmp(node->str, y->str,k) < 0) {
+        } else if (posizione(node->str, y->str) < 0) {
 			y->sx = node;
             //QUI VUOL DIRE CHE STA A SX
            
@@ -504,7 +506,6 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
                    
                     node->next = ult_valido;
                     node->prev = ult_valido->prev;
-                    if(ult_valido->prev==NULL) printf("NULLO dx\n");
                 
                     if(ult_valido->prev == NULL){
                         //in testa alla lista
@@ -789,7 +790,8 @@ int trovata = 0;
 void inOrder_controllo(NodePtr node, char* parola) {
 		if (node != TNULL && trovata == 0) {
 			inOrder_controllo(node->sx, parola);
-			if(!strncmp(node->str,parola,k)) trovata = 1;
+			//if(!strncmp(node->str,parola,k)) trovata = 1;
+            if(uguale(node->str,parola)) trovata = 1;
 			inOrder_controllo(node->dx, parola);
 		} 
 }
@@ -830,8 +832,8 @@ char * confronto(char* str2,char* str1){
     printf("%s\n", out);
    
     char * rit = malloc(sizeof(char)*k);
-    //scrittura(out, rit);
-    strncpy(rit,out,k);
+    scrittura(out, rit);
+    //strncpy(rit,out,k);
     return rit;
 }
 
@@ -942,7 +944,7 @@ int main(void){
                 trovata = 0;
                 inOrder_controllo(radice, stringa);
                 //if(!strncmp(rif,stringa,k)){
-                if(!strncmp(rif,stringa,k)){
+                if(uguale(rif,stringa)){
                         printf("ok\n");
                         //fputs("ok\n",stdout);
                         nuova = 0; //FINSICE LA PARTITA
