@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug in terminal",
-            "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/Open-6.c",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
