@@ -28,6 +28,7 @@ typedef struct{
 }filtro;
 
 typedef elemento *NodePtr;
+
 typedef struct{
     NodePtr radice_lista;
     NodePtr fine_lista;
@@ -35,7 +36,6 @@ typedef struct{
 
 filtro diz[64];
 
-NodePtr lista;
 NodePtr radice;
 Root lista_prova;
 NodePtr TNULL;
@@ -45,7 +45,6 @@ void init_rb(){
     TNULL->colore=0;
     TNULL->sx=NULL;
     TNULL->dx=NULL;
-    lista = NULL;
     radice = TNULL;
 }
 
@@ -58,6 +57,7 @@ void init(char *ver){
         diz[i].ex = -1;
         diz[i].no = malloc(sizeof(char)*k);
         for(int j = 0; j<k;j++){
+            //idea è mettere il valore non più 
             diz[i].no[j] = '.';
             ver[j]='.';
         }
@@ -149,8 +149,11 @@ int validazione(char *conf, char * ver){
             //if(strstr(conf,&car) == NULL)  return 0;
             if(!presente(car,conf,0))  return 0;
             else{
-                if(diz[l].esatto != 0 && presente(car,conf,1)!=diz[l].esatto) return 0;
-                if(diz[l].min != 0 && presente(car,conf,1)<diz[l].min) return 0; //non è del numero minimo
+                if(diz[l].esatto != 0) {
+                    if(presente(car,conf,1)!=diz[l].esatto) return 0;
+                }else{
+                    if(diz[l].min != 0 && presente(car,conf,1)<diz[l].min) return 0; //non è del numero minimo
+                }
             }
         }
     }
@@ -159,17 +162,26 @@ int validazione(char *conf, char * ver){
 }
 
 void filtrato(char * str1, char * out, char * ver){
+    //int caret[k];
+    //printf("CIAO\n");;
+    int register num;
+    //int poss = 0;
     for(int i = 0; i<k;i++){
-        int register num = posizione_diz(str1[i]);
+        num = posizione_diz(str1[i]);
+
         if(!diz[num].letto && diz[num].ex!=0){
             //printf("Dentro a letto\n");
             int pos = 0;
             int max = 0;
             int sl = 0;
             diz[num].letto = 1;
-            
+            //printf("Numero %d\n", num);
+            //caret[poss] = num;
+            //poss ++;
             for(int j = i+1; j<k;j++){
                 if(str1[j]==str1[i]) {
+                    //prova
+                    /*
                     if((out[j]!='/')) { 
                         pos = 1; //mi dice che escludo il non appartenere
                         max++;
@@ -181,6 +193,16 @@ void filtrato(char * str1, char * out, char * ver){
                     }
                     if(out[j]=='+') {
                         ver[j] = str1[j];
+                    }*/
+                    if(out[j]=='/') {
+                        sl = 1; //mi dice che ho dei valori esatti
+                        diz[num].no[j]=str1[j];
+                    }else{
+                        pos = 1; //mi dice che escludo il non appartenere
+                        max++;
+                        if(out[j]=='+') ver[j] = str1[j]; 
+                        else diz[num].no[j]=str1[j];
+                    
                     }
                 }
             }
@@ -210,7 +232,10 @@ void filtrato(char * str1, char * out, char * ver){
             }
         }
     }
-
+    //poss++;
+    //printf("POSIZIONE %d\n", pos-1);
+    //for(int i = 0; i<poss-1;i++) {diz[caret[i]].letto = 0;}
+    //printf("Ci arrivo\n");
     for(int i = 0; i<k;i++) {diz[posizione_diz(str1[i])].letto = 0;}
     //for(int i = 0; i<64;i++) {diz[i].letto = 0;}
 }
@@ -750,7 +775,7 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
         conto_ordinata_filtrato(x->dx,ver,i);
     }
 }
-
+/*
 void conto_ordinata_filtrato_2(NodePtr x){
     if(x!=TNULL){  
         //printf("DENTRO\n");  
@@ -759,6 +784,7 @@ void conto_ordinata_filtrato_2(NodePtr x){
         conto_ordinata_filtrato_2(x->dx);
     }
 }
+*/
 
 int cont_c = 0;
 
@@ -867,7 +893,6 @@ int main(void){
                 //CONTROLLARE SE è VUOTA SE NO IMPOSTARE VALID = 0
                 //if(lista!=NULL) init_lista(&lista_prova);
 
-                lista = NULL;
                 lista_prova.radice_lista=NULL;
                 lista_prova.fine_lista=NULL;
                 nuova = 1;
@@ -957,10 +982,9 @@ int main(void){
                 }else if(conteggio != 1 ){ 
                     //printf("Stringa letta in : %s\n", stringa);
                     //if(controllo(lista,stringa)){
-                        char *ritorno;
-                        ritorno = confronto(rif,stringa);
-                        filtrato(stringa,ritorno, ver);
-                        free(ritorno);
+                        
+                        filtrato(stringa,confronto(rif,stringa), ver);
+                        
                         //printf("CONTEGGIO prima: %D\n", conteggio);
                         conteggio = conteggio - 1;
                         //printf("CONTEGGIO dopo: %D\n", conteggio);
@@ -981,20 +1005,12 @@ int main(void){
 
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
-                    char *ritorno;
-                    ritorno = confronto(rif,stringa);
-                    filtrato(stringa,ritorno, ver);
-                    free(ritorno);
+                    
+                    filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
                     conto_ordinata(radice,ver,0);
-                    printf("%d\n",cont_buone);
-                    
-                    printf("ko\n");
-                    #ifdef debug
-                        conto_ordinata(lista_filtrata,ver,1);
-                        scrivi(ver);
-                    #endif
+                    printf("%d\nko\n",cont_buone);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
                     //lista_filtrata = NULL;
