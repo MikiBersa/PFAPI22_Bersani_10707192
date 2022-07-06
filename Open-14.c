@@ -2,7 +2,8 @@
 #include <stdlib.h>
 
 
-//#define debug 
+
+//#define Debug 
 
 int k;
 int cont_buone = 0;
@@ -310,11 +311,14 @@ void cancella(Root *root, NodePtr x){
 }
 
 void init_lista(Root *l){
-    printf("PULIZIA\n");
+    #ifdef Debug
+        printf("PULIZIA DA VERIFICARE\n");
+    #endif
     NodePtr p = l->radice_lista;
     //PULIZIA DEI NODI
     while(p!=NULL) {
         p->valida = 0;
+        cancella(&lista_prova, p); 
         p = p->next;
     }
 }
@@ -455,7 +459,7 @@ void fixInsert(NodePtr k, NodePtr *radicec){
 	}
 
 
-NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
+NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         //VEDERE COME FARE CON VALIDAZIONE E COLLEGARLO ALLA LISTA
         //PER EVITARE DI FARLA SCORRERE SEMRPE
         NodePtr node = malloc(sizeof(elemento));
@@ -474,13 +478,16 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
 
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
-        NodePtr ult_valido = NULL;
+        NodePtr register ult_valido = NULL;
 
 		while (x != TNULL) {
 
             if(x->valida) {
                 ult_valido = x; //che risulta essere poi y
-                printf("Valido stringa %s\n", ult_valido->str);
+                
+                #ifdef Debug
+                    printf("Valido stringa %s\n", ult_valido->str);
+                #endif
             }
             //inserimento di prima o dopo dipende dalla posizione rispetto a y
 
@@ -493,46 +500,92 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root) {
 				x = x->dx;
 			}
 		}
-        if(ult_valido != NULL) printf("ultimo %s ciao\n",ult_valido->str);
+        
+        #ifdef Debug
+            if(ult_valido != NULL) printf("ultimo %s ciao\n",ult_valido->str);
+        #endif
 		// y is parent of x
 		node->p = y;
+        #ifdef Debug
+            if(ult_valido != NULL) printf("ultimo %s ciao2\n",ult_valido->str);
+        #endif
 		if (y == NULL) {
-            printf("Dentro\n");
+            #ifdef Debug
+                printf("Dentro\n");
+            #endif
 			*(radicec) = node;
 		//} else if (strncmp(node->str, y->str,k) < 0) {
         } else if (posizione(node->str, y->str) < 0) {
 			y->sx = node;
             //QUI VUOL DIRE CHE STA A SX
-            printf("SX entro %s\n", y->str);
-            if(validazione){
-                printf("In validazione\n");
+            #ifdef Debug
+                if(ult_valido != NULL) printf("ultimo %s ciao3\n",ult_valido->str);
+            #endif
+            #ifdef Debug
+                printf("SX entro %s\n", y->str);
+            #endif
+            if(validazione && conf){
+                #ifdef Debug
+                    printf("In validazione\n");
+                #endif
+                #ifdef Debug
+                    if(ult_valido != NULL) printf("ultimo %s ciao4\n",ult_valido->str);
+                #endif
                 //inseirmento in lista a dx (siccome lista è ordinata al contrario)
                 if(ult_valido != NULL){
-                    printf("ULTIMO\n");
-                    printf("ultimo %d",y->valida);
+                    #ifdef Debug
+                        if(ult_valido != NULL) printf("ultimo %s ciao5\n",ult_valido->str);
+                    #endif
+                    #ifdef Debug
+                        printf("ultimo %s\n",ult_valido->str);
+                        if(ult_valido->next != NULL) {
+                            printf("Diverso DA NULL\n");
+                            printf("Prova %s\n",ult_valido->next->str);
+                        }
+                        //printf("ULTIMO\n");
+                        //printf("ultimo %s",ult_valido->str);
+                    #endif
                     node->next = ult_valido->next;
-                    node->prev = ult_valido->next->prev;
+                    #ifdef Debug
+                    printf("Ci siamo\n");
+                    #endif
                     
-                    ult_valido->next->prev = node;
-                    ult_valido->next = node;
-                    if(ult_valido->next == NULL) root->fine_lista = node;
+                    if(ult_valido->next != NULL) {
+                        node->prev = ult_valido->next->prev;
+                        ult_valido->next->prev = node;
+                        ult_valido->next = node;
+                    }
+                    #ifdef Debug
+                    printf("Eccodi\n");
+                    #endif
+                    if(ult_valido->next == NULL) {
+                        node->prev = ult_valido->prev;
+                        ult_valido->prev->next = node;
+                        root->fine_lista = node;
+                    }
                 }else{
                     //insrisco in testa
+                    #ifdef Debug
                     printf("ultimo NULL\n");
+                    #endif
                     node->next = root->radice_lista;
                     if(root->radice_lista!=NULL) root->radice_lista->prev = node;
                     node->prev = NULL;
                     if(root->radice_lista==NULL) root->fine_lista = node;
                     root->radice_lista = node;
                 }
+                #ifdef Debug
                 printf("ESCE\n");
+                #endif
             }
 
 		} else {
 			y->dx = node;
             //QUI VUOL DIRE CHE STA A DX
+            #ifdef Debug
             printf("DX entro\n");
-            if(validazione){
+            #endif
+            if(validazione && conf){
                 if(ult_valido != NULL){
                    
                     node->next = ult_valido;
@@ -866,6 +919,7 @@ int main(void){
     int inserimento = 1;
     int conteggio = 0;
     int primo_inserimento = 0;
+    int confronto_fatto = 0;
     char ver[k+1]; ver[k] = '\0';
 
 
@@ -874,7 +928,9 @@ int main(void){
 
     while(fgets(stringa,10*k,stdin)!=NULL){
         //if(scanf("%s", stringa)!=EOF){}
-        printf("Letto %s",stringa);
+        #ifdef Debug
+            printf("Letto %s",stringa);
+        #endif
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
@@ -895,6 +951,7 @@ int main(void){
                 //strncpy(rif,stringa,k);
                 if(fgets(stringa,10*k,stdin)!=NULL){}
                 conteggio = atoi(&stringa[0]);
+                confronto_fatto = 0;
                 //printf("CONTEGGIO %d\n", conteggio);
             }
             else if(stringa[1] == 'i'){
@@ -910,13 +967,15 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
-                if(primo_inserimento) {
+                if(primo_inserimento && confronto_fatto) {
                     //printf("Prima volta\n");
                     conto_ordinata_filtrato(radice,ver,1);primo_inserimento = 0;}
-                else {
+                else if(confronto_fatto){
                     //printf("NOn prima volta\n");
                     //conto_ordinata(root_filtrato,ver,1); 
                     stampa_lista_filtrato(lista_prova.fine_lista,ver,1);
+                }else{
+                    inOrder(radice);
                 }
 
             }else if(stringa[1] == '2'){
@@ -940,10 +999,12 @@ int main(void){
                 }
             */
             if(inserimento) {
-                printf("Inserimento in mezzo al gioco\n");
+                #ifdef Debug
+                    printf("Inserimento in mezzo al gioco\n");
+                #endif
                 //NodePtr prova = insert(stringa, &radice);
                 //printf("Validazione di %s valido %d", stringa, validazione(stringa,ver));
-                insert(stringa, &radice, validazione(stringa,ver), &lista_prova);
+                insert(stringa, &radice, validazione(stringa,ver), &lista_prova, confronto_fatto);
                 //printf("Inserito nuove stringhe\n");
                 /*
                 if(validazione(stringa,ver)){
@@ -974,7 +1035,8 @@ int main(void){
                         char conf[k+1];
                         confronto(rif,stringa, conf);
                         filtrato(stringa,conf, ver);
-                        
+
+                        confronto_fatto = 1;
                         //printf("CONTEGGIO prima: %D\n", conteggio);
                         conteggio = conteggio - 1;
                         //printf("CONTEGGIO dopo: %D\n", conteggio);
@@ -1013,7 +1075,7 @@ int main(void){
             }
         }else if(inserimento) {
             //printf("Inerito %s prima dell'ins\n", stringa);
-            insert(stringa, &radice,0, &lista_prova);
+            insert(stringa, &radice,0, &lista_prova, confronto_fatto);
             //printf("Inserito nuove stringhe ciao\n");
         }
     }
