@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 //#define Debug 
 
 int k;
@@ -451,8 +450,8 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
         NodePtr node = malloc(sizeof(elemento));
         char *st = malloc(sizeof(char)*k);
         //strncpy(st,stringa,k);
-        //scrittura(stringa,st);
-        memcpy(st,stringa,k);
+        scrittura(stringa,st);
+        //memcpy(st,stringa,k);
 
         node->str = st;
         node->sx = TNULL;
@@ -481,8 +480,8 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
 			y = x;
             
 			//if (strncmp(node->str, x->str,k) < 0) {
-            //if (posizione(node->str, x->str) < 0) {
-            if (memcmp(node->str, x->str,k) < 0) {
+            if (posizione(node->str, x->str) < 0) {
+            //if (memcmp(node->str, x->str,k) < 0) {
 				x = x->sx;
 			} else {
 				x = x->dx;
@@ -503,8 +502,8 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
             #endif
 			*(radicec) = node;
 		//} else if (strncmp(node->str, y->str,k) < 0) {
-       // } else if (posizione(node->str, y->str) < 0) {
-        } else if (memcmp(node->str, y->str,k) < 0) {
+        } else if (posizione(node->str, y->str) < 0) {
+        //} else if (memcmp(node->str, y->str,k) < 0) {
 			y->sx = node;
             //QUI VUOL DIRE CHE STA A SX
             #ifdef Debug
@@ -847,8 +846,8 @@ void inOrder_controllo(NodePtr node, char* parola) {
 		if (node != TNULL && trovata == 0) {
 			inOrder_controllo(node->sx, parola);
 			//if(!strncmp(node->str,parola,k)) trovata = 1;
-            //if(uguale(node->str,parola)) trovata = 1;
-            if(!memcmp(node->str,parola,5)) trovata = 1;
+            if(uguale(node->str,parola)) trovata = 1;
+            //if(!memcmp(node->str,parola,5)) trovata = 1;
 			inOrder_controllo(node->dx, parola);
 		} 
 }
@@ -979,9 +978,9 @@ int main(void){
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
                 if(fgets(stringa,10*k,stdin)!=NULL){}
-                //scrittura(stringa,rif);
+                scrittura(stringa,rif);
                 //strncpy(rif,stringa,k);
-                memcpy(rif,stringa,k);
+                //memcpy(rif,stringa,k);
                 if(fgets(stringa,10*k,stdin)!=NULL){}
                 conteggio = atoi(&stringa[0]);
                 confronto_fatto = 0;
@@ -1032,8 +1031,8 @@ int main(void){
                 trovata = 0;
                 inOrder_controllo(radice, stringa);
                 //if(!strncmp(rif,stringa,k)){
-                //if(uguale(rif,stringa)){
-                if(!memcmp(rif,stringa,k)){
+                if(uguale(rif,stringa)){
+                //if(!memcmp(rif,stringa,k)){
                         printf("ok\n");
                         //fputs("ok\n",stdout);
                         nuova = 0; //FINSICE LA PARTITA
