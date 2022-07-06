@@ -986,32 +986,13 @@ int main(void){
                 
             }
         }else if(nuova){
-            //insrriemnto durante la partita
-            /*
-            if(inserimento) {
-                NodePtr prova = insert(stringa, &radice);
-                //printf("Inserito nuove stringhe\n");
-                if(validazione(stringa,ver)){
-                    inserisci_lista_nuove(&lista_prova, prova);
-                    //stampa_lista(lista_prova);
-
-                }
-            */
             if(inserimento) {
                 #ifdef Debug
                     printf("Inserimento in mezzo al gioco\n");
                 #endif
-                //NodePtr prova = insert(stringa, &radice);
-                //printf("Validazione di %s valido %d", stringa, validazione(stringa,ver));
-                insert(stringa, &radice, validazione(stringa,ver), &lista_prova, confronto_fatto);
-                //printf("Inserito nuove stringhe\n");
-                /*
-                if(validazione(stringa,ver)){
-                    //IDEA è QUELLO DI INSERIRE ELEMENTO NELLA LISTA NEL MENTRE CHE INSERISCO IN RB
-                    inserisci_lista_nuove(&lista_prova, prova);
-                    //stampa_lista(lista_prova);
 
-                }*/
+                insert(stringa, &radice, validazione(stringa,ver), &lista_prova, confronto_fatto);
+
             }else{
 
                 trovata = 0;
