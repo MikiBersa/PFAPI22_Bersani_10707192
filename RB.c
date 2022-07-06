@@ -161,6 +161,7 @@ void inserimento_tree(elemento_nil *lista, char* parola){
         }
     }
     ell->p = y;
+    
     ell->str = st;
     ell->sx = lista->nill;
     ell->dx = lista->nill;
