@@ -51,10 +51,10 @@ void rotazione_sx(elemento *x, elemento_nil* lista){
 void rotazione_dx(elemento *y, elemento_nil* lista){
     elemento * x = y->sx;
     if(x != lista->nill){ //da eliminare
-        printf("Entra il nodo %s in dx_rotate\n", x->str);
+        //printf("Entra il nodo %s in dx_rotate\n", x->str);
         y->sx = x->dx;
         if(x->dx!=lista->nill) x->dx->p = y;
-        printf("Qui ci arrvio\n");
+        //printf("Qui ci arrvio\n");
         x->p = y->p;
         if (y->p==lista->nill) lista->radice = x;
         else if(y==y->p->dx) y->p->dx = x;
@@ -365,14 +365,18 @@ int main(void){
     //elemento_nil lista = {NULL, &nil};
     elemento_nil lista = {&nil, &nil};
     //nil.colore = 0;
-    while(!feof(stdin)){
-        scanf("%s", stringa);
-        printf("Stringa %s\n",stringa);
+    char c[4];
+    if(fgets(c,4,stdin)!=NULL){}
+    k = atoi(&c[0]);
+
+    while(fgets(stringa,10*k,stdin)!=NULL){
+        if(stringa[1] == '2' && stringa[0] == '+') {
+            contt = 0; scrittura_ordinata(lista.radice);
+        }
+        //printf("Stringa %s\n",stringa);
         inserimento_tree(&lista, stringa);
     }
     //rotazioni funzionano
-    contt = 0;
-    scrittura_ordinata(lista.radice);
     //printf("*****************\n");
     //printf("Conteggio %d\n", contt);
     //printf("_______________\n");

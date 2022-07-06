@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "random": "c",
-        "ratio": "c"
+        "ratio": "c",
+        "__node_handle": "c"
     }
 }
