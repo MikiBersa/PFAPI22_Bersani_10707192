@@ -8,6 +8,7 @@
 int k;
 int cont_buone = 0;
 
+
 //FACCIO UN ALBERO RB
 typedef struct el{
     char *str;
