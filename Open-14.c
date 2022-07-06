@@ -175,25 +175,10 @@ void filtrato(char * str1, char * out, char * ver){
             int max = 0;
             int sl = 0;
             diz[num].letto = 1;
-            //printf("Numero %d\n", num);
-            //caret[poss] = num;
-            //poss ++;
+
             for(int j = i+1; j<k;j++){
                 if(str1[j]==str1[i]) {
-                    //prova
-                    /*
-                    if((out[j]!='/')) { 
-                        pos = 1; //mi dice che escludo il non appartenere
-                        max++;
-                    }
-                    if(out[j]=='|') diz[num].no[j]=str1[j];
-                    if(out[j]=='/') {
-                        sl = 1; //mi dice che ho dei valori esatti
-                        diz[num].no[j]=str1[j];
-                    }
-                    if(out[j]=='+') {
-                        ver[j] = str1[j];
-                    }*/
+
                     if(out[j]=='/') {
                         sl = 1; //mi dice che ho dei valori esatti
                         diz[num].no[j]=str1[j];
@@ -862,8 +847,9 @@ void inOrder_controllo(NodePtr node, char* parola) {
 		} 
 }
 
+/*
+//PROVO AD OTTIMIZZARE
 void confronto(char* str2,char* str1, char *out){
-    //char out[k+1]; //DA CONTROLLARE IL FATTO DI FINIRE CON \0
     for(int i = 0; i<=k-1;i++){
         if(str1[i] == str2[i]) out[i] = '+';
         else{
@@ -896,11 +882,52 @@ void confronto(char* str2,char* str1, char *out){
     //printf("%s %s\n",str1, out);
    
     printf("%s\n", out);
+
+}
+*/
+
+//PROVARE A FARE UN UNICO CICLO per ora ci sono 5 cicli
+void confronto(char* str2,char* str1, char *out){
+    //str2 è il riferimento
+    int cont = 0;
+    int giu = 0;
+    char c;
+
+    for(int i = 0; i<=k-1;i++){
+        if(str1[i] == str2[i]) out[i] = '+';
+        else{
+            cont = 0;
+            giu = 0;
+            c = str1[i];
+            
+            for(int j = 0; j<=k-1;j++){
+                if(str1[i] == str2[j]) {
+                    cont ++;
+                    if(i!=j) out[i] = '|'; 
+                    if(str1[j] == str2[j] && out[j] != '+') out[j] = '+';
+                    if(str1[j] == c && out[j] == '+') giu ++;
+                }
+            }
+            if(out[i] != '|') out[i] = '/';
+            else{
+                cont = cont - giu;
+                giu = 0;
+                 for(int l = i-1; l>=0; l--){
+                    if(str1[l] == c && out[l] == '|') giu ++;
+                }
+                if(giu >= cont || cont == 0) out[i] = '/';
+            }
+
+
+        }
+    }
+    
+    out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
    
-    //char * rit = malloc(sizeof(char)*k);
-    //scrittura(out, rit);
-    //strncpy(rit,out,k);
-    //return rit;
+    //printf("%s %s\n",str1, out);
+   
+    printf("%s\n", out);
+
 }
 
 int main(void){
