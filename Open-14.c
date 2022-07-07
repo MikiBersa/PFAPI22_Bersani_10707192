@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 //#define Debug 
+#define DIZ 123
 
 int k;
 int cont_buone = 0;
@@ -33,7 +34,7 @@ typedef struct{
     NodePtr fine_lista;
 }Root;
 
-filtro diz[64];
+filtro diz[123];
 
 NodePtr radice;
 Root lista_prova;
@@ -49,33 +50,40 @@ void init_rb(){
 
 void init(char *ver){
     
-    for(int i = 0; i<64;i++){
-        diz[i].esatto=0;
-        diz[i].letto=0;
-        diz[i].min=0;
-        diz[i].ex = -1;
+    for(int i = 0; i<DIZ;i++){
         diz[i].no = malloc(sizeof(char)*k);
-        for(int j = 0; j<k;j++){
-            //idea è mettere il valore non più 
-            diz[i].no[j] = '.';
-            ver[j]='.';
-        }
     }
 }
 
 void pulisci(char *ver){
-    for(int i = 0; i<64;i++){
+    #ifdef Debug
+        printf("In pulisci\n");
+    #endif
+    for(int i = 0; i<DIZ;i++){
         diz[i].esatto=0;
         diz[i].letto=0;
         diz[i].min=0;
         diz[i].ex = -1;
+        #ifdef Debug
+            printf("DAI valore %d\n", i);
+        #endif
         for(int j = 0; j<k;j++){
+            #ifdef Debug
+                printf("Ci siamo %d\n", j);
+            #endif
             diz[i].no[j] = '.';
+            #ifdef Debug
+                printf("Non problem 1\n");
+            #endif
             ver[j]='.';
         }
+        #ifdef Debug
+            printf("Non problem\n");
+        #endif
     }
 }
 
+/*
 int posizione_diz (char c){
     if(c==45) return 0;
     else if(c==95) return 1;
@@ -97,6 +105,7 @@ char inv_posizione (int n){
     if(n>=38 && n<=63) return (char) (n+59);
     return '.';
 }
+*/
 
 int presente(char c, char *s, int *conteggio){
     int i = 0;
@@ -115,7 +124,7 @@ int presente(char c, char *s, int *conteggio){
 int validazione(char *conf, char * ver, char * rif){
     int conteggio = 0;
     for(int i = 0;i<k;i++){
-        int register num = posizione_diz(conf[i]);
+        int register num = (int) conf[i];
         if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è
         else if(diz[num].ex==0) return 0; //confornto con le posizion obbligate
         else if(diz[num].ex==1){ //non c'è 
@@ -139,7 +148,7 @@ int validazione(char *conf, char * ver, char * rif){
     //ANALISI DELLE PAROLE CHE NON HA QUELLA PAROLA MA CHE ALTRE HANNO
     int conto = 0;
     for(int l = 0; l<k;l++){
-        int register num = posizione_diz(rif[l]);
+        int register num = (int) rif[l];
         if(diz[num].ex==1){ 
             //char car = inv_posizione(l);
             conto = 0;
@@ -167,7 +176,7 @@ void filtrato(char * str1, char * out, char * ver){
     int register num;
     //int poss = 0;
     for(int i = 0; i<k;i++){
-        num = posizione_diz(str1[i]);
+        num = (int) str1[i];
 
         if(!diz[num].letto && diz[num].ex!=0){
             //printf("Dentro a letto\n");
@@ -221,7 +230,7 @@ void filtrato(char * str1, char * out, char * ver){
     //printf("POSIZIONE %d\n", pos-1);
     //for(int i = 0; i<poss-1;i++) {diz[caret[i]].letto = 0;}
     //printf("Ci arrivo\n");
-    for(int i = 0; i<k;i++) {diz[posizione_diz(str1[i])].letto = 0;}
+    for(int i = 0; i<k;i++) {diz[(int) str1[i]].letto = 0;}
     //for(int i = 0; i<64;i++) {diz[i].letto = 0;}
 }
 
@@ -973,9 +982,15 @@ int main(void){
                 inserimento = 0;
                 primo_inserimento = 1;
                 //printf("INSERIMENTO PAROLE FINE\n");
-                //printf("INIZIO_PARTITA in +\n");
+                #ifdef Debug
+                    printf("Dentro\n");
+                    printf("INIZIO_PARTITA in +\n");
+                #endif
                 pulisci(ver); //riazzero il dizionario
                 //inserisco i nuovi elementi 
+                #ifdef Debug
+                    printf("PULITO\n");
+                #endif
                 if(fgets(stringa,10*k,stdin)!=NULL){}
                 scrittura(stringa,rif);
                 //strncpy(rif,stringa,k);
