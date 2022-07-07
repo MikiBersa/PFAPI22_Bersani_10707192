@@ -35,6 +35,7 @@ typedef struct{
 }Root;
 
 filtro diz[123];
+//int diz_rif[123];
 
 NodePtr radice;
 Root lista_prova;
@@ -615,6 +616,7 @@ void inOrder_controllo(NodePtr node, char* parola) {
 			inOrder_controllo(node->dx, parola);
 		} 
 }
+//SI POTREBBE METTERE INSIEME IL CONFRONTO E FILTRO
 
 //PROVARE A FARE UN UNICO CICLO per ora ci sono 5 cicli
 void confronto(char* str2,char* str1, char *out){
@@ -653,9 +655,6 @@ void confronto(char* str2,char* str1, char *out){
     }
     
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
-   
-    //printf("%s %s\n",str1, out);
-   
     printf("%s\n", out);
 
 }
@@ -710,6 +709,8 @@ int main(void){
                 #endif
                 if(fgets(stringa,10*k,stdin)!=NULL){}
                 scrittura(stringa,rif);
+
+                
                 //strncpy(rif,stringa,k);
                 //memcpy(rif,stringa,k);
                 if(fgets(stringa,10*k,stdin)!=NULL){}
@@ -741,13 +742,6 @@ int main(void){
                     inOrder(radice);
                 }
 
-            }else if(stringa[1] == '2'){
-                
-                    printf("Stampo albero\n");
-                    inOrder(radice);
-                    //printf("Stampo lista\n");
-                    //stampa_lista(lista_prova);
-                
             }
         }else if(nuova){
             if(inserimento) {
