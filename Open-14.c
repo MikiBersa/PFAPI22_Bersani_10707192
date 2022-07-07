@@ -98,24 +98,21 @@ char inv_posizione (int n){
     return '.';
 }
 
-int presente(char c, char *s, int tipo){
-    
-    if(tipo == 0) {
-        for(int m = 0;m<k;m++){
-            if(s[m]==c) return 1;
+int presente(char c, char *s, int *conteggio){
+    int i = 0;
+
+    for(int m = 0;m<k;m++){
+        if(s[m]==c) {
+            (*conteggio)++;
+            i = 1;
         }
-        return 0;
-    }else if(tipo == 1){
-        int cont=0;
-        for(int m = 0;m<k;m++){
-            if(s[m]==c) cont++;
-        }
-        return cont;
     }
-    return -1;
+    
+    if(i) return 1;
+    else return 0; 
 }
 
-int validazione(char *conf, char * ver){
+int validazione(char *conf, char * ver, char * rif){
     int conteggio = 0;
     for(int i = 0;i<k;i++){
         int register num = posizione_diz(conf[i]);
@@ -136,23 +133,25 @@ int validazione(char *conf, char * ver){
             }
         }
 
-
+    
     }
-
+    //conosco la parola di riferimento
     //ANALISI DELLE PAROLE CHE NON HA QUELLA PAROLA MA CHE ALTRE HANNO
-    for(int l = 0; l<64;l++){
-        if(diz[l].ex==1){ 
-            char car = inv_posizione(l);
+    int conto = 0;
+    for(int l = 0; l<k;l++){
+        int register num = posizione_diz(rif[l]);
+        if(diz[num].ex==1){ 
+            //char car = inv_posizione(l);
+            conto = 0;
             //strstr(haystack, needle);
             //if(!presente(car,conf,0))  return 0; //proprio non è presente
             //if(strstr(conf,&car) == NULL)  return 0;
-            //printf("Bella\n");
-            if(!presente(car,conf,0))  return 0;
+            if(!presente(rif[l],conf,&conto))  return 0;
             else{
-                if(diz[l].esatto != 0) {
-                    if(presente(car,conf,1)!=diz[l].esatto) return 0;
+                if(diz[num].esatto != 0) {
+                    if(conto!=diz[num].esatto) return 0;
                 }else{
-                    if(diz[l].min != 0 && presente(car,conf,1)<diz[l].min) return 0; //non è del numero minimo
+                    if(diz[num].min != 0 && conto <diz[num].min) return 0; //non è del numero minimo
                 }
             }
             //printf("Ecco\n");
@@ -759,10 +758,10 @@ void deleteNodeHelper(NodePtr* radice, NodePtr z) {
 	}
 
 */
-void conto_ordinata(NodePtr x,char *ver, int i){
+void conto_ordinata(NodePtr x,char *ver, char *rif,int i){
     if(x!=TNULL){    
-        conto_ordinata(x->sx,ver,i);
-        if(validazione(x->str,ver)){
+        conto_ordinata(x->sx,ver,rif,i);
+        if(validazione(x->str,ver,rif)){
             if(i == 0) { x->valida = 0; cont_buone ++; //printf("%s\n", x->str);
             }
             else printf("%s\n", x->str);
@@ -774,13 +773,13 @@ void conto_ordinata(NodePtr x,char *ver, int i){
             //printf("Eliminazione: %s\n", x->str);
 
         }
-        conto_ordinata(x->dx,ver,i);
+        conto_ordinata(x->dx,ver,rif,i);
     }
 }
 
-void stampa_lista_filtrato(NodePtr l,char *ver, int i){
+void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
     while(l!=NULL) {
-        if(validazione(l->str,ver)){
+        if(validazione(l->str,ver, rif)){
             l->valida=1;
             if(i == 0) { cont_buone ++; //printf("%s\n", x->str);
             }
@@ -797,11 +796,11 @@ void stampa_lista_filtrato(NodePtr l,char *ver, int i){
 }
 
 
-void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
+void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
     if(x!=TNULL){  
         //printf("DENTRO\n");  
-        conto_ordinata_filtrato(x->sx,ver,i);
-        if(validazione(x->str,ver)){
+        conto_ordinata_filtrato(x->sx,ver,rif,i);
+        if(validazione(x->str,ver, rif)){
             //printf("Dentro a validazione\n");
             x->valida = 1; 
             if(i == 0) {
@@ -818,7 +817,7 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, int i){
         }else{
             x->valida=0;
         }
-        conto_ordinata_filtrato(x->dx,ver,i);
+        conto_ordinata_filtrato(x->dx,ver,rif,i);
     }
 }
 /*
@@ -1001,11 +1000,11 @@ int main(void){
                 //conto_ordinata(lista,ver,1);
                 if(primo_inserimento && confronto_fatto) {
                     //printf("Prima volta\n");
-                    conto_ordinata_filtrato(radice,ver,1);primo_inserimento = 0;}
+                    conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0;}
                 else if(confronto_fatto){
                     //printf("NOn prima volta\n");
                     //conto_ordinata(root_filtrato,ver,1); 
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,1);
+                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
                 }else{
                     inOrder(radice);
                 }
@@ -1024,7 +1023,7 @@ int main(void){
                     printf("Inserimento in mezzo al gioco\n");
                 #endif
 
-                insert(stringa, &radice, validazione(stringa,ver), &lista_prova, confronto_fatto);
+                insert(stringa, &radice, validazione(stringa,ver, rif), &lista_prova, confronto_fatto);
 
             }else{
 
@@ -1059,12 +1058,12 @@ int main(void){
 
                         if(primo_inserimento) {
                             //printf("Prima volta\n");
-                            conto_ordinata_filtrato(radice,ver,0);primo_inserimento = 0;}
+                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
                             //printf("NOn prima volta\n");
                             //conto_ordinata(root_filtrato,ver,0); 
-                            stampa_lista_filtrato(lista_prova.fine_lista,ver,0);
+                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
@@ -1077,7 +1076,7 @@ int main(void){
                     //filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(radice,ver,0);
+                    conto_ordinata(radice,ver,rif,0);
                     printf("%d\nko\n",cont_buone);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
