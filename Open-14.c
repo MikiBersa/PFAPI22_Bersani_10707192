@@ -67,7 +67,7 @@ void pulisci(char *ver){
         diz[i].letto=0;
         diz[i].min=0;
         diz[i].ex = -1;
-        diz_rif[i].cont = 0;
+        diz_rif[i].cont = 1;
         diz_rif[i].num = 0;
         for(int j = 0; j<k;j++){
             diz[i].no[j] = '.';
@@ -653,29 +653,46 @@ void confronto(char* str2,char* str1, char *out){
 */
 void confronto(char* str2,char* str1, char *out){
     //str2 è il riferimento
-    int diz_letto[123]; 
-    printf("INIZIO SCANNER\n");
+    //printf("INIZIO SCANNER\n");
+    for(int j = 0; j<k;j++){
+        diz_rif[(int) str1[j]].cont = 1;
+    }
+
+    for(int j = 0; j<k;j++){
+        if(str1[j] == str2[j]){
+            out[j] = '+';
+            //printf("Scrivo +\n");
+            diz_rif[(int) str1[j]].cont = diz_rif[(int) str1[j]].cont + 1; 
+            //printf("valore %d letto %c\n", diz_rif[c].cont, c);
+        } 
+    }
     for(int i = 0; i<k;i++){
-        if(diz_letto[(int) str1[i]] != 0 && diz_letto[(int) str1[i]] != 1) diz_letto[(int) str1[i]] = 0;
-        if(str1[i] == str2[i]) out[i] = '+';
-        else if(diz_rif[(int) str1[i]].num == 0) out[i] = '/';
+        int c = (int) str1[i];
+
+        if(diz_rif[c].num == 0) { 
+            //printf("NON C'é %c\n", c);
+            out[i] = '/';
+        }
         else {
-            printf("cont %d\n", diz_rif[(int) str1[i]].cont);
-            if(diz_rif[(int) str1[i]].cont != 0 && !diz_letto[(int) str1[i]]){
-                diz_rif[(int) str1[i]].cont --; 
+            //printf("Letto %d carattere %c cont %d num %d\n", diz_letto[c], c,diz_rif[c].cont, diz_rif[c].num);
+            if(diz_rif[c].cont <= diz_rif[c].num && out[i] != '+'){
+                diz_rif[c].cont = diz_rif[c].cont + 1; 
+                //printf("Conteggio %c %d\n", str1[i], diz_rif[c].cont);
                 out[i] = '|';
-            }else{
+                //printf("Scrivo |\n");
+            }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
                 //if gia letto allora mettere / non posso fare il controllo perchè ho già sovrascritto il dizionaio di ref
                 //PROBLEMA è FAR RITORNARE IL CONTEGGIO UGUALE DI CONT -> CONTROLLARE / |
                 out[i] = '/';
-                if(diz_letto[(int) str1[i]] == 0) diz_rif[(int) str1[i]].cont = diz_rif[(int) str1[i]].num;
-                diz_letto[(int) str1[i]] = 1;
+                //printf("Scrivo /\n");
                 //SEGNALARE CHE è GIà STATA LETTA CON IL DIZIONARIO NORMALE
             }
         }
+        /*
         for(int i = 0; i<k;i++){
             printf("CARATTERE %c num %d cont %d\n", str2[i], diz_rif[(int) str2[i]].num,diz_rif[(int) str2[i]].cont);
         }
+        */
     }
     
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
@@ -737,12 +754,13 @@ int main(void){
                 for(int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++;
-                    diz_rif[(int) rif[i]].cont ++;
                 }
+                //printf("RIF: %s\n", rif);
 
+                /*
                 for(int i = 0; i<k;i++){
                     printf("CARATTERE %c num %d cont %d\n", rif[i], diz_rif[(int) rif[i]].num,diz_rif[(int) rif[i]].cont);
-                }
+                }*/
 
                 //strncpy(rif,stringa,k);
                 //memcpy(rif,stringa,k);
