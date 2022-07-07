@@ -653,7 +653,7 @@ void confronto(char* str2,char* str1, char *out){
 }
 */
 
-void confronto(char* str2,char* str1, char *out){
+void confronto(char* str2,char* str1, char *out, char *ver){
     int c;
     for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO -> poi provare a togliere
@@ -664,7 +664,10 @@ void confronto(char* str2,char* str1, char *out){
         if(str1[j] == str2[j]){
             c = (int) str1[j];
             out[j] = '+';
-            diz_rif[c].cont = diz_rif[c].cont + 1; 
+            diz_rif[c].cont = diz_rif[c].cont + 1;
+            //FILTRATO
+            ver[j] = str1[j]; 
+            diz[c].ex = 1;
         } 
     }
 
@@ -673,6 +676,7 @@ void confronto(char* str2,char* str1, char *out){
 
         if(diz_rif[c].num == 0) { 
             out[i] = '/';
+            diz[c].ex = 0;
         }
         else {
             if(diz_rif[c].cont <= diz_rif[c].num && out[i] != '+'){
@@ -683,7 +687,12 @@ void confronto(char* str2,char* str1, char *out){
             }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
                 out[i] = '/';
             }
+            diz[c].ex = 1;
         }
+
+        //PARTE IL FILTRATO
+        diz[c].no[i]=str1[i];
+        //SISTEMARE I CONTEGGI -> max e min
     }
     
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
