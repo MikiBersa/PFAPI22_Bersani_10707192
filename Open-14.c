@@ -655,9 +655,12 @@ void confronto(char* str2,char* str1, char *out){
 
 void confronto(char* str2,char* str1, char *out, char *ver){
     int c;
+    int diz_conto[DIZ];
+
     for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO -> poi provare a togliere
         diz_rif[(int) str1[j]].cont = 1;
+        diz_conto[(int) str1[j]] = 0;
     }
 
     for(int j = 0; j<k;j++){
@@ -669,6 +672,7 @@ void confronto(char* str2,char* str1, char *out, char *ver){
             ver[j] = str1[j]; 
             diz[c].ex = 1;
         } 
+        diz_conto[c] ++;
     }
 
     for(int i = 0; i<k;i++){
@@ -686,12 +690,13 @@ void confronto(char* str2,char* str1, char *out, char *ver){
                 //printf("Scrivo |\n");
             }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
                 out[i] = '/';
+                //QUI SO DI SICURO CHE C'è IL MASSIMO ESATTO
             }
             diz[c].ex = 1;
         }
 
         //PARTE IL FILTRATO
-        diz[c].no[i]=str1[i];
+        diz[c].no[i]=c;
         //SISTEMARE I CONTEGGI -> max e min
     }
     
@@ -823,8 +828,8 @@ int main(void){
                     //if(controllo(lista,stringa)){
                         
                         char conf[k+1];
-                        confronto(rif,stringa, conf);
-                        filtrato(stringa,conf, ver);
+                        confronto(rif,stringa, conf,ver);
+                        //filtrato(stringa,conf, ver);
 
                         confronto_fatto = 1;
                         //printf("CONTEGGIO prima: %D\n", conteggio);
@@ -848,8 +853,8 @@ int main(void){
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
                     char conf[k+1];
-                    confronto(rif,stringa, conf);
-                    filtrato(stringa,conf, ver);
+                    confronto(rif,stringa, conf,ver);
+                    //filtrato(stringa,conf, ver);
                     //filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
