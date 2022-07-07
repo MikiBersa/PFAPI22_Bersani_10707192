@@ -83,30 +83,6 @@ void pulisci(char *ver){
     }
 }
 
-/*
-int posizione_diz (char c){
-    if(c==45) return 0;
-    else if(c==95) return 1;
-    else if(c>=48 && c<= 57){
-        return c-46;
-    }else if(c>= 65 && c<= 90){
-        return c-53;
-    }else if(c>= 97 && c<= 122){
-        return c-59;
-    }
-    return -1;
-}
-
-char inv_posizione (int n){
-    if(n==0) return '-';
-    if(n==1) return '_';
-    if(n>=2 && n<=11) return (char) (n+46);
-    if(n>=12 && n<=37) return (char) (n+53);
-    if(n>=38 && n<=63) return (char) (n+59);
-    return '.';
-}
-*/
-
 int presente(char c, char *s, int *conteggio){
     int i = 0;
 
@@ -256,36 +232,6 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 
 
 //LISTA
-//POSSO INSERIRE IN ORDINE INVERSO -> così ho inserimento costante perchè li leggo in ordine 
-//PROBLEMA è CON INSERIMENTO DELLE INIZIO E FINE COORDINATE CON RB?
-/*
-void inserisci_lista_nuove(Root *root, NodePtr x){
-    NodePtr puntCorrente, puntPrecedente;
-    puntPrecedente = NULL;
-    puntCorrente = root->fine_lista;
-
-    while(puntCorrente != NULL && strncmp(puntCorrente->str, x->str,k) < 0){
-        //printf("parole conforntate %s\n", puntCorrente->str);
-        puntPrecedente = puntCorrente;
-        puntCorrente = puntPrecedente->prev;
-    }
-    //printf("Precedente %s\n", puntPrecedente->str);
-    //printf("Corrente %s\n", puntCorrente->str);
-    x->next = puntPrecedente;
-    if(root->radice_lista == NULL) x->prev = NULL;
-    else x->prev = puntCorrente;
-
-    if(puntCorrente != NULL) puntCorrente->next = x;
-    else root->radice_lista = x;
-
-    if(puntPrecedente != NULL) puntPrecedente->prev = x;
-    else root->fine_lista = x;
-
-    //printf("Next %s\n", x->next->str);
-    //printf("Prev %s\n", x->prev->str);
-    //printf("COLLEGAMENTO %s", puntPrecedente->prev->str);
-}
-*/
 void inserisci_lista(Root *root, NodePtr x){
     x->next = root->radice_lista;
     if(root->radice_lista!=NULL) root->radice_lista->prev = x;
@@ -317,11 +263,6 @@ void init_lista(Root *l){
 }
 
 //TEAT DI N
-/*
-void stampa_lista(NodePtr l){
-    while(l->next!=NULL) printf("%s", l->str);
-    printf("%s", l->str);
-}*/
 void stampa_lista(Root l){
     elemento *p = l.fine_lista;
     while(p!=NULL) {
@@ -331,40 +272,6 @@ void stampa_lista(Root l){
 }
 
 //RB DEL ALBERO NORMALE
-/*
-NodePtr maximum(NodePtr node) {
-	while (node->dx != TNULL) {
-		node = node->dx;
-	}
-	return node;
-}
-
-NodePtr minimum(NodePtr node) {
-	while (node->sx != TNULL) {
-		node = node->sx;
-	}
-	return node;
-}
-
-NodePtr successor(NodePtr x) {
-		// if the right subtree is not null,
-		// the successor is the leftmost node in the
-		// right subtree
-		if (x->dx != TNULL) {
-			return minimum(x->dx);
-		}
-
-		// else it is the lowest ancestor of x whose
-		// left child is also an ancestor of x.
-		NodePtr y = x->p;
-		while (y != TNULL && x == y->dx) {
-			x = y;
-			y = y->p;
-		}
-		return y;
-}
-*/
-
 void rightRotate(NodePtr x, NodePtr *radicec) {
 		NodePtr y = x->sx;
 		x->sx = y->dx;
@@ -626,147 +533,6 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
     return node;
 }
 
-/*
-void fixDelete(NodePtr x, NodePtr *radice) {
-		NodePtr s;
-		while (x != *(radice) && x->colore == 0) {
-			if (x == x->p->sx) {
-				s = x->p->dx;
-				if (s->colore == 1) {
-					// case 3.1
-					s->colore = 0;
-					x->p->colore = 1;
-					leftRotate(x->p, radice);
-					s = x->p->dx;
-				}
-
-				if (s->sx->colore == 0 && s->dx->colore == 0) {
-					// case 3.2
-					s->colore = 1;
-					x = x->p;
-				} else {
-					if (s->dx->colore == 0) {
-						// case 3.3
-						s->sx->colore = 0;
-						s->colore = 1;
-						rightRotate(s, radice);
-						s = x->p->dx;
-					} 
-
-					// case 3.4
-					s->colore = x->p->colore;
-					x->p->colore = 0;
-					s->dx->colore = 0;
-					leftRotate(x->p, radice);
-					x = *(radice);
-				}
-			} else {
-				s = x->p->sx;
-				if (s->colore == 1) {
-					// case 3.1
-					s->colore = 0;
-					x->p->colore = 1;
-					rightRotate(x->p, radice);
-					s = x->p->sx;
-				}
-
-				if (s->dx->colore == 0 && s->dx->colore == 0) {
-					// case 3.2
-					s->colore = 1;
-					x = x->p;
-				} else {
-					if (s->sx->colore == 0) {
-						// case 3.3
-						s->dx->colore = 0;
-						s->colore = 1;
-						leftRotate(s, radice);
-						s = x->p->sx;
-					} 
-
-					// case 3.4
-					s->colore = x->p->colore;
-					x->p->colore = 0;
-					s->sx->colore = 0;
-					rightRotate(x->p, radice);
-					x = *(radice);
-				}
-			} 
-		}
-		x->colore = 0;
-	}
-
-void rbTransplant(NodePtr u, NodePtr v, NodePtr *radice){
-		if (u->p == NULL) {
-			*(radice) = v;
-		} else if (u == u->p->sx){
-			u->p->sx = v;
-		} else {
-			u->p->dx = v;
-		}
-		v->p = u->p;
-	}
-
-void deleteNodeHelper(NodePtr* radice, NodePtr z) {
-		// find the node containing key
-        
-		NodePtr x, y; 
-		
-        if(s->sx==TNULL || s->dx == TNULL){
-            y = s;
-        }else { 
-            y = successor(s); 
-        }
-        if(y->sx!=TNULL) x = y->sx;
-        else x = y->dx;
-
-        x->p= y->p;
-        
-        if(y->p==TNULL) *(radice) = x;
-        else if(y==y->p->sx) y->p->sx = x;
-        else y->p->dx = x;
-        if(y!=s) {
-            strncpy(s->str,y->str,k);
-        }
-        free(s);
-		if (y->colore == 0){
-			fixDelete(x, radice);
-		}
-        */
-       /*
-       NodePtr x, y; 
-       //NodePtr z = TNULL;
-       y = z;
-		int y_original_color = y->colore;
-		if (z->sx == TNULL) {
-			x = z->dx;
-			rbTransplant(z, z->dx, radice);
-		} else if (z->dx == TNULL) {
-			x = z->sx;
-			rbTransplant(z, z->sx, radice);
-		} else {
-			y = minimum(z->dx);
-			y_original_color = y->colore;
-			x = y->dx;
-			if (y->p == z) {
-				x->p = y;
-			} else {
-				rbTransplant(y, y->dx, radice);
-				y->dx = z->dx;
-				y->dx->p = y;
-			}
-
-			rbTransplant(z, y, radice);
-			y->sx = z->sx;
-			y->sx->p = y;
-			y->colore = z->colore;
-		}
-		free(z);
-		if (y_original_color == 0){
-			fixDelete(x, radice);
-		}
-	}
-
-*/
 void conto_ordinata(NodePtr x,char *ver, char *rif,int i){
     if(x!=TNULL){    
         conto_ordinata(x->sx,ver,rif,i);
@@ -829,16 +595,6 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
         conto_ordinata_filtrato(x->dx,ver,rif,i);
     }
 }
-/*
-void conto_ordinata_filtrato_2(NodePtr x){
-    if(x!=TNULL){  
-        //printf("DENTRO\n");  
-        conto_ordinata_filtrato_2(x->sx);
-        inserisci_lista(&lista_prova,x);
-        conto_ordinata_filtrato_2(x->dx);
-    }
-}
-*/
 
 void inOrder(NodePtr node) {
 		if (node != TNULL) {
@@ -859,45 +615,6 @@ void inOrder_controllo(NodePtr node, char* parola) {
 			inOrder_controllo(node->dx, parola);
 		} 
 }
-
-/*
-//PROVO AD OTTIMIZZARE
-void confronto(char* str2,char* str1, char *out){
-    for(int i = 0; i<=k-1;i++){
-        if(str1[i] == str2[i]) out[i] = '+';
-        else{
-            for(int j = 0; j<=k-1;j++){
-                if(str1[i] == str2[j] && i!=j) { out[i] = '|'; break;}
-            }
-            if(out[i] != '|') out[i] = '/';
-        }
-    }
-
-    for(int i = 0; i<=k-1; i++){
-        if(out[i]=='|'){
-            int cont = 0;
-            int giu = 0;
-            char c = str1[i];
-            for(int j = 0; j<=k-1;j++){
-                if(str2[j]== str1[i]) cont ++;
-                if(str1[j] == c && out[j] == '+') giu ++;
-            }
-            cont = cont - giu;
-            giu = 0;
-            for(int l = i-1; l>=0; l--){
-                if(str1[l] == c && out[l] == '|') giu ++;
-            }
-            if(giu >= cont || cont == 0) out[i] = '/';
-        }
-    }
-    out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
-   
-    //printf("%s %s\n",str1, out);
-   
-    printf("%s\n", out);
-
-}
-*/
 
 //PROVARE A FARE UN UNICO CICLO per ora ci sono 5 cicli
 void confronto(char* str2,char* str1, char *out){
