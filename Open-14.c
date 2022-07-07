@@ -546,6 +546,26 @@ void inOrder_controllo(NodePtr node, char* parola) {
 }
 
 
+void scrivi(char *ver){
+    printf("---------------\n");
+    printf("Verificato: %s \n", ver);
+    for(int i = 0;i<DIZ;i++){
+        if(diz[i].ex != -1){
+            printf("carattere pos %d: esiste %d  car: %c\n", i,diz[i].ex, (char) i);
+            printf("esatto: %d\n", diz[i].esatto);
+            printf("min: %d\n", diz[i].min);
+            printf("letto: %d\n", diz[i].letto);
+            printf("Permesso:\n");
+            printf("NON permesso:\n");
+            for(int j = 0; j<k;j++){
+                printf("%c",diz[i].no[j]);
+            }
+            printf("\n");
+            printf("_________________\n");
+        }
+    }
+}
+
 void filtrato(char * str1, char * out, char * ver){
     //int caret[k];
     //printf("CIAO\n");;
@@ -669,10 +689,10 @@ void confronto(char* str2,char* str1, char *out, char *ver){
             out[j] = '+';
             diz_rif[c].cont = diz_rif[c].cont + 1;
             //FILTRATO
-            ver[j] = str1[j]; 
+            ver[j] = (char) str1[j]; 
             diz[c].ex = 1;
         } 
-        diz_conto[c] ++;
+        diz_conto[c] = diz_conto[c] + 1;
     }
 
     for(int i = 0; i<k;i++){
@@ -691,12 +711,15 @@ void confronto(char* str2,char* str1, char *out, char *ver){
             }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
                 out[i] = '/';
                 //QUI SO DI SICURO CHE C'è IL MASSIMO ESATTO
+                printf("Conteggio %d\n", diz_conto[c]);
+                diz[c].esatto = diz_conto[c];
             }
             diz[c].ex = 1;
+            if(diz[c].esatto == 0) diz[c].min = diz_conto[c];
         }
 
         //PARTE IL FILTRATO
-        diz[c].no[i]=c;
+        if(ver[i] != str1[i]) diz[c].no[i]=(char) c;
         //SISTEMARE I CONTEGGI -> max e min
     }
     
@@ -849,6 +872,7 @@ int main(void){
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
+                        scrivi(ver);
 
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
