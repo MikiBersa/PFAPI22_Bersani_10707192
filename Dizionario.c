@@ -14,8 +14,10 @@ typedef struct{
 filtro diz[123];
 
 int main(){
+    int ciao[5];
     char str1[5] = "ciao";
     diz[(int) str1[0]].esatto = 24;
-    printf("Valore %d", diz['c'].esatto);
+    printf("Valore %d\n", diz['c'].esatto);
+    printf("Valore 2 %d\n", ciao[0]);
     return 0;
 }

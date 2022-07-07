@@ -34,8 +34,13 @@ typedef struct{
     NodePtr fine_lista;
 }Root;
 
+typedef struct{
+    int num;
+    int cont;
+}scan;
+
 filtro diz[123];
-//int diz_rif[123];
+scan diz_rif[123];
 
 NodePtr radice;
 Root lista_prova;
@@ -57,30 +62,17 @@ void init(char *ver){
 }
 
 void pulisci(char *ver){
-    #ifdef Debug
-        printf("In pulisci\n");
-    #endif
     for(int i = 0; i<DIZ;i++){
         diz[i].esatto=0;
         diz[i].letto=0;
         diz[i].min=0;
         diz[i].ex = -1;
-        #ifdef Debug
-            printf("DAI valore %d\n", i);
-        #endif
+        diz_rif[i].cont = 0;
+        diz_rif[i].num = 0;
         for(int j = 0; j<k;j++){
-            #ifdef Debug
-                printf("Ci siamo %d\n", j);
-            #endif
             diz[i].no[j] = '.';
-            #ifdef Debug
-                printf("Non problem 1\n");
-            #endif
             ver[j]='.';
         }
-        #ifdef Debug
-            printf("Non problem\n");
-        #endif
     }
 }
 
@@ -616,9 +608,9 @@ void inOrder_controllo(NodePtr node, char* parola) {
 			inOrder_controllo(node->dx, parola);
 		} 
 }
-//SI POTREBBE METTERE INSIEME IL CONFRONTO E FILTRO
 
-//PROVARE A FARE UN UNICO CICLO per ora ci sono 5 cicli
+/*
+//SI POTREBBE METTERE INSIEME IL CONFRONTO E FILTRO
 void confronto(char* str2,char* str1, char *out){
     //str2 è il riferimento
     int cont = 0;
@@ -658,7 +650,38 @@ void confronto(char* str2,char* str1, char *out){
     printf("%s\n", out);
 
 }
+*/
+void confronto(char* str2,char* str1, char *out){
+    //str2 è il riferimento
+    int diz_letto[123]; 
+    printf("INIZIO SCANNER\n");
+    for(int i = 0; i<k;i++){
+        if(diz_letto[(int) str1[i]] != 0 && diz_letto[(int) str1[i]] != 1) diz_letto[(int) str1[i]] = 0;
+        if(str1[i] == str2[i]) out[i] = '+';
+        else if(diz_rif[(int) str1[i]].num == 0) out[i] = '/';
+        else {
+            printf("cont %d\n", diz_rif[(int) str1[i]].cont);
+            if(diz_rif[(int) str1[i]].cont != 0 && !diz_letto[(int) str1[i]]){
+                diz_rif[(int) str1[i]].cont --; 
+                out[i] = '|';
+            }else{
+                //if gia letto allora mettere / non posso fare il controllo perchè ho già sovrascritto il dizionaio di ref
+                //PROBLEMA è FAR RITORNARE IL CONTEGGIO UGUALE DI CONT -> CONTROLLARE / |
+                out[i] = '/';
+                if(diz_letto[(int) str1[i]] == 0) diz_rif[(int) str1[i]].cont = diz_rif[(int) str1[i]].num;
+                diz_letto[(int) str1[i]] = 1;
+                //SEGNALARE CHE è GIà STATA LETTA CON IL DIZIONARIO NORMALE
+            }
+        }
+        for(int i = 0; i<k;i++){
+            printf("CARATTERE %c num %d cont %d\n", str2[i], diz_rif[(int) str2[i]].num,diz_rif[(int) str2[i]].cont);
+        }
+    }
+    
+    out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
+    printf("%s\n", out);
 
+}
 int main(void){
     //elemento * lista = NULL;
     char c[4];
@@ -708,9 +731,19 @@ int main(void){
                     printf("PULITO\n");
                 #endif
                 if(fgets(stringa,10*k,stdin)!=NULL){}
-                scrittura(stringa,rif);
 
+                //scrittura(stringa,rif);
                 
+                for(int i = 0; i<k;i++){
+                    rif[i] = stringa[i];
+                    diz_rif[(int) rif[i]].num ++;
+                    diz_rif[(int) rif[i]].cont ++;
+                }
+
+                for(int i = 0; i<k;i++){
+                    printf("CARATTERE %c num %d cont %d\n", rif[i], diz_rif[(int) rif[i]].num,diz_rif[(int) rif[i]].cont);
+                }
+
                 //strncpy(rif,stringa,k);
                 //memcpy(rif,stringa,k);
                 if(fgets(stringa,10*k,stdin)!=NULL){}
