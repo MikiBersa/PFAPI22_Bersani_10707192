@@ -91,6 +91,7 @@ int presente(char c, char *s, int *conteggio){
     else return 0; 
 }
 
+/*
 int validazione(char *conf, char * ver, char * rif){
     int conteggio = 0;
     for(int i = 0;i<k;i++){
@@ -135,6 +136,42 @@ int validazione(char *conf, char * ver, char * rif){
             }
             //printf("Ecco\n");
         }
+    }
+
+    return 1;
+}
+*/
+int validazione(char *conf, char * ver, char * rif, int *car_cont){
+    int conto = 0;
+
+    for(int i = 0;i<k;i++){
+        int register num = (int) conf[i];
+        int register num2 = (int) rif[i];
+
+        if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è
+        else if(diz[num].ex==0) return 0; //confornto con le posizion obbligate
+        else if(diz[num].ex==1){ //non c'è 
+            if(diz[num].no[i]==conf[i]) return 0; //posizione sbagliata
+
+
+            if(diz[num].esatto!=0 && diz[num].esatto != diz_rif[num].num) return 0;
+            else if(diz[num].esatto==0){
+            if(diz[num].min!=0 && car_cont[num] <  diz[num].min) return 0;
+            }
+
+            
+        } 
+        if(diz[num2].ex == 1){
+            conto = 0;
+            if(!presente(rif[i],conf,&conto))  return 0;
+            else{
+                if(diz[num2].esatto != 0) {
+                    if(conto!=diz[num2].esatto) return 0;
+                }else{
+                    if(diz[num2].min != 0 && conto <diz[num2].min) return 0; //non è del numero minimo
+                }
+            }
+        }   
     }
 
     return 1;
@@ -464,10 +501,10 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
     return node;
 }
 
-void conto_ordinata(NodePtr x,char *ver, char *rif,int i){
+void conto_ordinata(NodePtr x,char *ver, char *rif,int i, int *car_cont){
     if(x!=TNULL){    
-        conto_ordinata(x->sx,ver,rif,i);
-        if(validazione(x->str,ver,rif)){
+        conto_ordinata(x->sx,ver,rif,i, car_cont);
+        if(validazione(x->str,ver,rif, car_cont)){
             if(i == 0) { x->valida = 0; cont_buone ++; //printf("%s\n", x->str);
             }
             else printf("%s\n", x->str);
@@ -479,13 +516,13 @@ void conto_ordinata(NodePtr x,char *ver, char *rif,int i){
             //printf("Eliminazione: %s\n", x->str);
 
         }
-        conto_ordinata(x->dx,ver,rif,i);
+        conto_ordinata(x->dx,ver,rif,i, car_cont);
     }
 }
 
-void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
+void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i, int *car_cont){
     while(l!=NULL) {
-        if(validazione(l->str,ver, rif)){
+        if(validazione(l->str,ver, rif,car_cont)){
             l->valida=1;
             if(i == 0) { cont_buone ++; //printf("%s\n", x->str);
             }
@@ -502,11 +539,11 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
 }
 
 
-void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
+void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i, int *car_cont){
     if(x!=TNULL){  
         //printf("DENTRO\n");  
-        conto_ordinata_filtrato(x->sx,ver,rif,i);
-        if(validazione(x->str,ver, rif)){
+        conto_ordinata_filtrato(x->sx,ver,rif,i,car_cont);
+        if(validazione(x->str,ver, rif,car_cont)){
             //printf("Dentro a validazione\n");
             x->valida = 1; 
             if(i == 0) {
@@ -523,7 +560,7 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
         }else{
             x->valida=0;
         }
-        conto_ordinata_filtrato(x->dx,ver,rif,i);
+        conto_ordinata_filtrato(x->dx,ver,rif,i,car_cont);
     }
 }
 
@@ -675,12 +712,12 @@ void confronto(char* str2,char* str1, char *out){
 
 void confronto(char* str2,char* str1, char *out, char *ver){
     int c;
-    int diz_conto[DIZ];
+    int diz_conto[DIZ]={0};
 
+    //DA PENSARCI COME TOGLIERLO
     for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO -> poi provare a togliere
         diz_rif[(int) str1[j]].cont = 1;
-        diz_conto[(int) str1[j]] = 0;
     }
 
     for(int j = 0; j<k;j++){
@@ -727,6 +764,7 @@ void confronto(char* str2,char* str1, char *out, char *ver){
     printf("%s\n", out);
 
 }
+
 int main(void){
     //elemento * lista = NULL;
     char c[4];
@@ -812,28 +850,37 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 //scrivi();
                 //conto_ordinata(lista,ver,1);
+                int car_cont[123]={0};
+                for(int i = 0; i<k;i++){
+                    car_cont[(int) stringa[i]] ++;
+                }
                 if(primo_inserimento && confronto_fatto) {
                     //printf("Prima volta\n");
-                    conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0;}
+                    conto_ordinata_filtrato(radice,ver,rif,1, car_cont);primo_inserimento = 0;}
                 else if(confronto_fatto){
                     //printf("NOn prima volta\n");
                     //conto_ordinata(root_filtrato,ver,1); 
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
+                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1, car_cont);
                 }else{
                     inOrder(radice);
                 }
 
             }
         }else if(nuova){
+            int car_cont[123]={0};
+            for(int i = 0; i<k;i++){
+                car_cont[(int) stringa[i]] ++;
+            }
+
             if(inserimento) {
                 #ifdef Debug
                     printf("Inserimento in mezzo al gioco\n");
                 #endif
 
-                insert(stringa, &radice, validazione(stringa,ver, rif), &lista_prova, confronto_fatto);
+                insert(stringa, &radice, validazione(stringa,ver, rif, car_cont), &lista_prova, confronto_fatto);
 
             }else{
-
+                
                 trovata = 0;
                 inOrder_controllo(radice, stringa);
                 //if(!strncmp(rif,stringa,k)){
@@ -865,12 +912,12 @@ int main(void){
 
                         if(primo_inserimento) {
                             //printf("Prima volta\n");
-                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
+                            conto_ordinata_filtrato(radice,ver,rif,0,car_cont);primo_inserimento = 0;}
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
                             //printf("NOn prima volta\n");
                             //conto_ordinata(root_filtrato,ver,0); 
-                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0,car_cont);
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
@@ -886,7 +933,7 @@ int main(void){
                     //filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
-                    conto_ordinata(radice,ver,rif,0);
+                    conto_ordinata(radice,ver,rif,0,car_cont);
                     printf("%d\nko\n",cont_buone);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
