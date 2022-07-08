@@ -32003,6 +32003,7 @@ Cllmm
 NAmNm
 16
 mGNCC
++2
 dmCbm
 CNGGm
 bmmNG
@@ -32017,5 +32018,5 @@ NAmNC
 NAbNm
 GAmNm
 AAmNm
-+stampa_filtrate
++2
 NAmNm

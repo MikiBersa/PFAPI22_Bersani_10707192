@@ -5,7 +5,6 @@
 
 int k;
 int cont_buone = 0;
-int trovata = 0;
 
 
 //FACCIO UN ALBERO RB
@@ -140,6 +139,69 @@ int validazione(char *conf, char * ver, char * rif){
     return 1;
 }
 
+void filtrato(char * str1, char * out, char * ver){
+    //int caret[k];
+    //printf("CIAO\n");;
+    int register num;
+    //int poss = 0;
+    for(int i = 0; i<k;i++){
+        num = (int) str1[i];
+
+        if(!diz[num].letto && diz[num].ex!=0){
+            //printf("Dentro a letto\n");
+            int pos = 0;
+            int max = 0;
+            int sl = 0;
+            diz[num].letto = 1;
+
+            for(int j = i+1; j<k;j++){
+                if(str1[j]==str1[i]) {
+
+                    if(out[j]=='/') {
+                        sl = 1; //mi dice che ho dei valori esatti
+                        diz[num].no[j]=str1[j];
+                    }else{
+                        pos = 1; //mi dice che escludo il non appartenere
+                        max++;
+                        if(out[j]=='+') ver[j] = str1[j]; 
+                        else diz[num].no[j]=str1[j];
+                    
+                    }
+                }
+            }
+            if(out[i]=='+') {
+                ver[i] = str1[i];
+                
+                diz[num].ex = 1;
+                if(sl && pos){
+                    diz[num].esatto = max+1;
+                }
+
+                if((max+1) > diz[num].min) diz[num].min = max+1;
+            }
+            else if(out[i]=='/'){
+                if(pos) {
+                    diz[num].no[i]=str1[i];
+                    diz[num].esatto = max;
+                    diz[num].ex = 1;
+                }else diz[num].ex = 0;
+            }else if(out[i]=='|'){
+                diz[num].ex = 1;
+                if(!sl) {
+                    if((max+1) > diz[num].min) diz[num].min = max+1; //aggiorno dopo altre letture
+                }
+                else {diz[num].esatto = max+1;}
+                diz[num].no[i]=str1[i];
+            }
+        }
+    }
+    //poss++;
+    //printf("POSIZIONE %d\n", pos-1);
+    //for(int i = 0; i<poss-1;i++) {diz[caret[i]].letto = 0;}
+    //printf("Ci arrivo\n");
+    for(int i = 0; i<k;i++) {diz[(int) str1[i]].letto = 0;}
+    //for(int i = 0; i<64;i++) {diz[i].letto = 0;}
+}
 
 int uguale(char *c, char *p){
     for(int i = 0;i<k;i++)
@@ -535,6 +597,8 @@ void inOrder(NodePtr node) {
 		} 
 }
 
+int trovata = 0;
+
 void inOrder_controllo(NodePtr node, char* parola) {
 		if (node != TNULL && trovata == 0) {
 			inOrder_controllo(node->sx, parola);
@@ -545,91 +609,6 @@ void inOrder_controllo(NodePtr node, char* parola) {
 		} 
 }
 
-
-void scrivi(char *ver){
-    printf("---------------\n");
-    printf("Verificato: %s \n", ver);
-    for(int i = 0;i<DIZ;i++){
-        if(diz[i].ex != -1){
-            printf("carattere pos %d: esiste %d  car: %c\n", i,diz[i].ex, (char) i);
-            printf("esatto: %d\n", diz[i].esatto);
-            printf("min: %d\n", diz[i].min);
-            printf("letto: %d\n", diz[i].letto);
-            printf("Permesso:\n");
-            printf("NON permesso:\n");
-            for(int j = 0; j<k;j++){
-                printf("%c",diz[i].no[j]);
-            }
-            printf("\n");
-            printf("_________________\n");
-        }
-    }
-}
-/*
-void filtrato(char * str1, char * out, char * ver){
-    //int caret[k];
-    //printf("CIAO\n");;
-    int register num;
-    //int poss = 0;
-    for(int i = 0; i<k;i++){
-        num = (int) str1[i];
-
-        if(!diz[num].letto && diz[num].ex!=0){
-            //printf("Dentro a letto\n");
-            int pos = 0;
-            int max = 0;
-            int sl = 0;
-            diz[num].letto = 1;
-
-            for(int j = i+1; j<k;j++){
-                if(str1[j]==str1[i]) {
-
-                    if(out[j]=='/') {
-                        sl = 1; //mi dice che ho dei valori esatti
-                        diz[num].no[j]=str1[j];
-                    }else{
-                        pos = 1; //mi dice che escludo il non appartenere
-                        max++;
-                        if(out[j]=='+') ver[j] = str1[j]; 
-                        else diz[num].no[j]=str1[j];
-                    
-                    }
-                }
-            }
-            if(out[i]=='+') {
-                ver[i] = str1[i];
-                
-                diz[num].ex = 1;
-                if(sl && pos){
-                    diz[num].esatto = max+1;
-                }
-
-                if((max+1) > diz[num].min) diz[num].min = max+1;
-            }
-            else if(out[i]=='/'){
-                if(pos) {
-                    diz[num].no[i]=str1[i];
-                    diz[num].esatto = max;
-                    diz[num].ex = 1;
-                }else diz[num].ex = 0;
-            }else if(out[i]=='|'){
-                diz[num].ex = 1;
-                if(!sl) {
-                    if((max+1) > diz[num].min) diz[num].min = max+1; //aggiorno dopo altre letture
-                }
-                else {diz[num].esatto = max+1;}
-                diz[num].no[i]=str1[i];
-            }
-        }
-    }
-    //poss++;
-    //printf("POSIZIONE %d\n", pos-1);
-    //for(int i = 0; i<poss-1;i++) {diz[caret[i]].letto = 0;}
-    //printf("Ci arrivo\n");
-    for(int i = 0; i<k;i++) {diz[(int) str1[i]].letto = 0;}
-    //for(int i = 0; i<64;i++) {diz[i].letto = 0;}
-}
-*/
 /*
 //SI POTREBBE METTERE INSIEME IL CONFRONTO E FILTRO
 void confronto(char* str2,char* str1, char *out){
@@ -672,62 +651,78 @@ void confronto(char* str2,char* str1, char *out){
 
 }
 */
-
-void confronto(char* str2,char* str1, char *out, char *ver){
-    int c;
-    int diz_conto[DIZ];
-
+void confronto(char* str2,char* str1, char *out){
+    //str2 è il riferimento
+    //printf("INIZIO SCANNER\n");
     for(int j = 0; j<k;j++){
-        //AZZERO PER PORTARE IN PARI IL TUTTO -> poi provare a togliere
-        diz_rif[(int) str1[j]].cont = 1;
-        diz_conto[(int) str1[j]] = 0;
+        int c = (int) str1[j];    
+        diz_rif[c].cont = 1;
+
     }
-
+    
     for(int j = 0; j<k;j++){
-        c = (int) str1[j];
-        diz_conto[c] = diz_conto[c] + 1;
+        int c = (int) str1[j];  
         if(str1[j] == str2[j]){
             out[j] = '+';
-            diz_rif[c].cont = diz_rif[c].cont + 1;
-            //FILTRATO
-            ver[j] = (char) str1[j]; 
-            diz[c].ex = 1;
-
-            if(diz_conto[c] > diz[c].min) diz[c].min = diz_conto[c];
+            //printf("Scrivo +\n");
+            diz_rif[c].cont = diz_rif[c].cont + 1; 
+            //printf("valore %d letto %c\n", diz_rif[c].cont, c);
         } 
     }
-
     for(int i = 0; i<k;i++){
-        c = (int) str1[i];
+        int c = (int) str1[i];
 
         if(diz_rif[c].num == 0) { 
+            //printf("NON C'é %c\n", c);
             out[i] = '/';
-            diz[c].ex = 0;
         }
         else {
+            //printf("Letto %d carattere %c cont %d num %d\n", diz_letto[c], c,diz_rif[c].cont, diz_rif[c].num);
             if(diz_rif[c].cont <= diz_rif[c].num && out[i] != '+'){
                 diz_rif[c].cont = diz_rif[c].cont + 1; 
                 //printf("Conteggio %c %d\n", str1[i], diz_rif[c].cont);
                 out[i] = '|';
                 //printf("Scrivo |\n");
             }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
+                //if gia letto allora mettere / non posso fare il controllo perchè ho già sovrascritto il dizionaio di ref
+                //PROBLEMA è FAR RITORNARE IL CONTEGGIO UGUALE DI CONT -> CONTROLLARE / |
                 out[i] = '/';
-                //QUI SO DI SICURO CHE C'è IL MASSIMO ESATTO
-                //printf("Conteggio %d\n", diz_conto[c]);
-                diz[c].esatto = diz_rif[c].num;
+                //printf("Scrivo /\n");
+                //SEGNALARE CHE è GIà STATA LETTA CON IL DIZIONARIO NORMALE
             }
-            diz[c].ex = 1;
-            if(diz[c].esatto == 0 && diz_conto[c] > diz[c].min) diz[c].min = diz_conto[c];
         }
-
-        //PARTE IL FILTRATO
-        if(ver[i] != str1[i]) diz[c].no[i]=(char) c;
+        /*
+        for(int i = 0; i<k;i++){
+            printf("CARATTERE %c num %d cont %d\n", str2[i], diz_rif[(int) str2[i]].num,diz_rif[(int) str2[i]].cont);
+        }
+        */
     }
     
     out[k] ='\0'; // VERIFICARE CON IL DIFF VEDERE COSA VUOLE
     printf("%s\n", out);
 
 }
+
+void scrivi(char *ver){
+    printf("---------------\n");
+    printf("Verificato: %s \n", ver);
+    for(int i = 0;i<DIZ;i++){
+        if(diz[i].ex != -1){
+            printf("carattere pos %d: esiste %d  car: %c\n", i,diz[i].ex, (char) i);
+            printf("esatto: %d\n", diz[i].esatto);
+            printf("min: %d\n", diz[i].min);
+            printf("letto: %d\n", diz[i].letto);
+            printf("Permesso:\n");
+            printf("NON permesso:\n");
+            for(int j = 0; j<k;j++){
+                printf("%c",diz[i].no[j]);
+            }
+            printf("\n");
+            printf("_________________\n");
+        }
+    }
+}
+
 int main(void){
     //elemento * lista = NULL;
     char c[4];
@@ -752,9 +747,9 @@ int main(void){
 
     while(fgets(stringa,10*k,stdin)!=NULL){
         //if(scanf("%s", stringa)!=EOF){}
-        #ifdef Debug2
-           printf("Letto %s",stringa);
-        #endif
+        //#ifdef Debug
+            printf("Letto %s",stringa);
+        //#endif
         //printf("Inserimento: %d\n", inserimento_tree(&lista,stringa));
         if(stringa[0] == '+'){
             if(stringa[1] == 'n'){
@@ -783,10 +778,9 @@ int main(void){
                 for(int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++;
+                    diz_rif[(int) rif[i]].cont = 1;
                 }
-                #ifdef Debug2
-                    printf("RIF: %s\n", rif);
-                #endif
+                printf("RIF: %s\n", rif);
 
                 /*
                 for(int i = 0; i<k;i++){
@@ -854,8 +848,8 @@ int main(void){
                     //if(controllo(lista,stringa)){
                         
                         char conf[k+1];
-                        confronto(rif,stringa, conf,ver);
-                        //filtrato(stringa,conf, ver);
+                        confronto(rif,stringa, conf);
+                        filtrato(stringa,conf, ver);
 
                         confronto_fatto = 1;
                         //printf("CONTEGGIO prima: %D\n", conteggio);
@@ -875,15 +869,13 @@ int main(void){
                             //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
-                        #ifdef Debug2
-                            scrivi(ver);
-                        #endif
+                        scrivi(ver);
 
                 }else{
                     //printf("CONTEGGIO in ko: %D\n", conteggio);
                     char conf[k+1];
-                    confronto(rif,stringa, conf,ver);
-                    //filtrato(stringa,conf, ver);
+                    confronto(rif,stringa, conf);
+                    filtrato(stringa,conf, ver);
                     //filtrato(stringa,confronto(rif,stringa), ver);
                     //SCRIVERE IL CONTEGGIO DELLE FILTRATE BUONE
                     cont_buone = 0;
