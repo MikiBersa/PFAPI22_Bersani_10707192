@@ -713,7 +713,6 @@ void confronto(char* str2,char* str1, char *out, char *ver){
             }else if(diz_rif[c].cont > diz_rif[c].num && out[i] != '+') {
                 out[i] = '/';
                 //QUI SO DI SICURO CHE C'è IL MASSIMO ESATTO
-                //printf("Conteggio %d\n", diz_conto[c]);
                 diz[c].esatto = diz_rif[c].num;
             }
             diz[c].ex = 1;
