@@ -144,6 +144,11 @@ int validazione(char *conf, char * ver, char * rif){
 int validazione(char *conf, char * ver, char * rif){
     int conteggio = 0;
     int conto = 0;
+    int diz_conte[123]= {0};
+
+    for(int j = 0;j<k;j++) {
+        diz_conte[(int) conf[j]] ++;
+    }
 
     for(int i = 0;i<k;i++){
         int register num = (int) conf[i];
@@ -161,9 +166,9 @@ int validazione(char *conf, char * ver, char * rif){
                     conteggio ++;
             }
 
-            if(diz[num].esatto!=0 && diz[num].esatto != conteggio) return 0;
+            if(diz[num].esatto!=0 && diz[num].esatto != diz_conte[num]) return 0;
             else if(diz[num].esatto==0){
-            if(diz[num].min!=0 && conteggio <  diz[num].min) return 0;
+            if(diz[num].min!=0 && diz_conte[num] <  diz[num].min) return 0;
             }
 
             
@@ -719,12 +724,11 @@ void confronto(char* str2,char* str1, char *out){
 
 void confronto(char* str2,char* str1, char *out, char *ver){
     int c;
-    int diz_conto[DIZ];
+    int diz_conto[DIZ] = {0};
 
     for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO -> poi provare a togliere
         diz_rif[(int) str1[j]].cont = 1;
-        diz_conto[(int) str1[j]] = 0;
     }
 
     for(int j = 0; j<k;j++){
