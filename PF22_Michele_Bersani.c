@@ -72,7 +72,7 @@ void init_rb(){
 
 //creo lo spazio per memorizzare dove i carattere non possono stare -> provare con i numeri interi
 //in primi ho scelto di creare un array di caratteri perchè pesa poco 1B per ogni carattere
-void init(char *ver){
+void init(){
     
     for(int i = 0; i<DIZ;i++){
         diz[i].no = malloc(sizeof(char)*k);
@@ -80,18 +80,6 @@ void init(char *ver){
 }
 
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
-int posizione_diz (char c){
-    if(c==45) return 0;
-    else if(c==95) return 1;
-    else if(c>=48 && c<= 57){
-        return c-46;
-    }else if(c>= 65 && c<= 90){
-        return c-53;
-    }else if(c>= 97 && c<= 122){
-        return c-59;
-    }
-    return -1;
-}
 void pulisci(char *ver){
     for(int i = 0; i<DIZ;i++){
         if(i>=45){
@@ -558,7 +546,7 @@ int main(void){
 
 
     init_rb(); //inizializzo RB
-    init(ver); //preparo il dizionario
+    init(); //preparo il dizionario
 
     while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
         if(stringa[0] == '+'){ //caso comandi
