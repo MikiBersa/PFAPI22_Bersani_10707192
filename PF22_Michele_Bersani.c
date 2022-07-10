@@ -80,17 +80,33 @@ void init(char *ver){
 }
 
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
+int posizione_diz (char c){
+    if(c==45) return 0;
+    else if(c==95) return 1;
+    else if(c>=48 && c<= 57){
+        return c-46;
+    }else if(c>= 65 && c<= 90){
+        return c-53;
+    }else if(c>= 97 && c<= 122){
+        return c-59;
+    }
+    return -1;
+}
 void pulisci(char *ver){
     for(int i = 0; i<DIZ;i++){
-        diz[i].esatto=0;
-        diz[i].min=0;
-        diz[i].ex = -1;
-        diz_rif[i].cont = 1;
-        diz_rif[i].num = 0;
-        for(int j = 0; j<k;j++){
-            diz[i].no[j] = '.';
-            ver[j]='.'; //posti ammissibili del carattere ed obbligati
+        if(i>=45){
+            diz[i].esatto=0;
+            diz[i].min=0;
+            diz[i].ex = -1;
+            diz_rif[i].cont = 1;
+            diz_rif[i].num = 0;
+            for(int j = 0; j<k;j++){
+                diz[i].no[j] = '.';
+            }
         }
+    }
+    for(int j = 0; j<k;j++){
+        ver[j]='.'; //posti ammissibili del carattere ed obbligati
     }
 }
 
@@ -544,7 +560,7 @@ int main(void){
     init_rb(); //inizializzo RB
     init(ver); //preparo il dizionario
 
-    while(fgets(stringa,10*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
+    while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
         if(stringa[0] == '+'){ //caso comandi
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
@@ -560,14 +576,14 @@ int main(void){
 
                 pulisci(ver); //riazzero il dizionario
 
-                if(fgets(stringa,10*k,stdin)!=NULL){} //leggo la parola di riferimento
+                if(fgets(stringa,5*k,stdin)!=NULL){} //leggo la parola di riferimento
                 
                 for(int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++; //conto la presenza dei carattere nella parola di riferimento
                 }
 
-                if(fgets(stringa,10*k,stdin)!=NULL){}
+                if(fgets(stringa,5*k,stdin)!=NULL){}
                 conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
                 confronto_fatto = 0;
 
@@ -647,6 +663,5 @@ int main(void){
         }
     }
 
-    
     return 0;
 }
