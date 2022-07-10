@@ -391,28 +391,6 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
 }
 
 //funzione che conta le parole con i requisiti giusti visti dal confronto
-//POSSO FARE LA SCRITTURA DALAL LISTA E SE QUESTA PAROLA è VALIDA LA SCRIVO NEL POSTO GIUSTO
-//complessità TETA(N*K^2) devo comunque verficare la validazioni a tutti gli elementi perchè questa ultima parola può modificare i requisiti
-//QUI FARLO CON LA LISTA
-void conto_ordinata(NodePtr x,char *ver, char *rif,int i){
-    if(x!=TNULL){    
-        conto_ordinata(x->sx,ver,rif,i);
-        if(validazione(x->str,ver,rif)){
-            if(i == 0) { x->valida = 0; cont_buone ++; //printf("%s\n", x->str);
-            }
-            else printf("%s\n", x->str);
-        }else{
-            //elimino nell'albero
-            //deleteNodeHelper(&root_filtrato,x);
-            x->valida = 0;
-            cancella(&lista_prova, x);
-            //printf("Eliminazione: %s\n", x->str);
-
-        }
-        conto_ordinata(x->dx,ver,rif,i);
-    }
-}
-
 //stampo le parole filtrate anche qui devo comunque riverificare le vecchie valide perchè la nuova parole potrebbe cambiare i requisiti
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
 //fa anche il conteggio
@@ -619,8 +597,7 @@ int main(void){
                     printf("not_exists\n"); //non trovata
                 }else if(conteggio != 1 ){ 
                         
-                        char conf[k+1]; //creo array di supporto per il confronto in cui mettere elemento fuori
-                        //SI PUò ANCHE ELIMINARE NON SERVE
+                        char conf[k+1]; //creo array di supporto per il confronto in cui mettere elemento fuori 
                         confronto(rif,stringa, conf,ver);
                         confronto_fatto = 1;
                         conteggio = conteggio - 1; //aggiorno il conteggio
@@ -633,7 +610,6 @@ int main(void){
                         else {
                              //confronto fatto con lista già creata
                             stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
-                            //conto_ordinata(lista_filtrata,&lista_filtrata,ver,0); //faccio il conteggio sul nuovo bst
                         }
                         printf("%d\n",cont_buone);
 
@@ -641,7 +617,8 @@ int main(void){
                     char conf[k+1];
                     confronto(rif,stringa, conf,ver);
                     cont_buone = 0;
-                    conto_ordinata(radice,ver,rif,0);
+                    //conto_ordinata(radice,ver,rif,0);
+                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                     printf("%d\nko\n",cont_buone);
                     nuova = 0; //FINSICE LA PARTITA
                     conteggio = 0;
@@ -654,6 +631,7 @@ int main(void){
             insert(stringa, &radice,0, &lista_prova, confronto_fatto);
         }
     }
+
     
     return 0;
 }
