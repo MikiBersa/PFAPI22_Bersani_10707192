@@ -596,13 +596,12 @@ int main(void){
                 }
             }
             else if(stringa[1] == 's' && stringa[2] == 't'){
-                if(primo_inserimento && confronto_fatto) {
+                if(confronto_fatto) {
                     //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                    conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0;}
-                else if(confronto_fatto){
+                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
                     //confronto fatto con lista già creata
                     //stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
-                    stampa_lista_filtrato_solo(lista_prova.fine_lista);
+                    else stampa_lista_filtrato_solo(lista_prova.fine_lista);
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
                     inOrder(radice);
@@ -639,7 +638,7 @@ int main(void){
                             conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
-                             //confronto fatto con lista già creata
+                             //confronto fatto con lista già creata, qui devo fare una nuova validazione perchè ho letto una nuova parola
                             stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                         }
                         printf("%d\n",cont_buone);
