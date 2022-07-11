@@ -298,7 +298,7 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 
 //INSERIMENTO DI UN NUOVO NODO IN RB E SE è VALIDO ANCHE NELLA LISTA (VEDA INSERIMENTO DURANTE LA PARTITA)
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
-NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
+void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
         char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
         scrittura(stringa,st); //trasferisco la parola di puntatore
@@ -399,14 +399,13 @@ NodePtr insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int
 		}
 		if (node->p == NULL){
 			node->colore = 0;
-			return node;
+			return;
 		}
 
 		if (node->p->p == NULL) {
-			return node;
+			return;
         }
 		fixInsert(node, radicec);
-    return node;
 }
 
 //funzione che conta le parole con i requisiti giusti visti dal confronto
