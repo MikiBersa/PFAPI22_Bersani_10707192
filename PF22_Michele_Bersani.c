@@ -13,6 +13,7 @@ PROBLEMA:
     sto cercando un modo per ridurre il tempo di esecuzione che per ora non ho trovato
 */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -147,6 +148,7 @@ int validazione(char *conf, char * ver, char * rif){
         } 
 
         //VERFICO CON CARATTERI PRESENTI NELLA PAROLA DI RIFERIMENTO appresi durante il confronto
+        
         if(diz[num2].ex == 1){
             conto = 0;
             if(!presente(rif[i],conf,&conto))  return 0;
@@ -157,7 +159,7 @@ int validazione(char *conf, char * ver, char * rif){
                     if(diz[num2].min != 0 && conto <diz[num2].min) return 0; //non è del numero minimo
                 }
             }
-        }   
+        } 
     }
 
     return 1;
@@ -301,8 +303,12 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
         char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
-        scrittura(stringa,st); //trasferisco la parola di puntatore
 
+        NodePtr y = NULL;
+		NodePtr x = *(radicec);
+        NodePtr register ult_valido = NULL;
+
+        scrittura(stringa,st); //trasferisco la parola di puntatore
         node->str = st;
         node->sx = TNULL;
 		node->dx = TNULL;
@@ -311,10 +317,6 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
         //0 di default se parte da zero il gioco 
         
         node->p = NULL;
-
-        NodePtr y = NULL;
-		NodePtr x = *(radicec);
-        NodePtr register ult_valido = NULL;
 
 		while (x != TNULL) {
 
@@ -354,11 +356,11 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
                         root->fine_lista = node;
                     }
                 }else{
-                    //insrisco in testa
+                    //inserisco in testa
                     node->next = root->radice_lista;
-                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
                     node->prev = NULL;
-                    if(root->radice_lista==NULL) root->fine_lista = node;
+                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
+                    else root->fine_lista = node;
                     root->radice_lista = node;
                 }
 
@@ -388,9 +390,8 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
                     node->next = root->radice_lista;
                     node->prev = NULL;
 
-                    if(root->radice_lista!=NULL) {root->radice_lista->prev = node;}
-
-                    if(root->radice_lista==NULL) root->fine_lista = node;
+                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
+                    else root->fine_lista = node;
 
                     root->radice_lista = node;
 
@@ -426,6 +427,17 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
             cancella(&lista_prova, l);
         }
 
+        l = l->prev;
+    }
+}
+
+//funzione che stamap solo le parole valide con i requisiti appresi finora
+//viene fatta scorrere la lista complessità max n 
+void stampa_lista_filtrato_solo(NodePtr l){
+    while(l!=NULL) {
+        if(l->valida){
+            printf("%s\n", l->str);
+        }
         l = l->prev;
     }
 }
@@ -478,7 +490,7 @@ void inOrder_controllo(NodePtr node, char* parola) {
 void confronto(char* str2,char* str1, char *out, char *ver){
     int c; //memorizza il carattere letto
     int diz_conto[DIZ] = {0}; //conteggio di quante volte lo stesso carattere si presentano nella parola
-
+    
     for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO
         diz_rif[(int) str1[j]].cont = 1;
@@ -552,7 +564,7 @@ int main(void){
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
                 //svuoto la lista proveniente dalla vecchia partita
-                if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
+                //if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
 
                 lista_prova.radice_lista=NULL;
                 lista_prova.fine_lista=NULL;
@@ -589,7 +601,8 @@ int main(void){
                     conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0;}
                 else if(confronto_fatto){
                     //confronto fatto con lista già creata
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
+                    //stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
+                    stampa_lista_filtrato_solo(lista_prova.fine_lista);
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
                     inOrder(radice);
