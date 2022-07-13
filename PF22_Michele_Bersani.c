@@ -91,14 +91,12 @@ void init_diz(char *ver){
 void pulisci(char *ver){
     for(int i = 0; i<DIZ;i++){
         if(i>=45 && diz[i].ex!=-1){
-            
-                diz[i].esatto=0;
-                diz[i].min=0;
-                diz[i].ex = -1;
-                for(int j = 0; j<k;j++){
-                    diz[i].no[j] = '.';
-                }
-            
+            diz[i].esatto=0;
+            diz[i].min=0;
+            diz[i].ex = -1;
+            for(int j = 0; j<k;j++){
+                diz[i].no[j] = '.';
+            }
         }
         diz_rif[i].cont = 1;
         diz_rif[i].num = 0;
