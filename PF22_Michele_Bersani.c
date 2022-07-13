@@ -73,26 +73,35 @@ void init_rb(){
 
 //creo lo spazio per memorizzare dove i carattere non possono stare -> provare con i numeri interi
 //in primi ho scelto di creare un array di caratteri perchè pesa poco 1B per ogni carattere
-void init(){
-    
+void init_diz(char *ver){
     for(int i = 0; i<DIZ;i++){
-        diz[i].no = malloc(sizeof(char)*k);
+        if(i>=45){
+            diz[i].esatto=0;
+            diz[i].min=0;
+            diz[i].ex = -1;
+            diz[i].no = malloc(sizeof(char)*k);
+            for(int j = 0; j<k;j++){
+                diz[i].no[j] = '.';
+            }
+        }else continue;
     }
 }
 
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
 void pulisci(char *ver){
     for(int i = 0; i<DIZ;i++){
-        if(i>=45){
-            diz[i].esatto=0;
-            diz[i].min=0;
-            diz[i].ex = -1;
-            diz_rif[i].cont = 1;
-            diz_rif[i].num = 0;
-            for(int j = 0; j<k;j++){
-                diz[i].no[j] = '.';
-            }
+        if(i>=45 && diz[i].ex!=-1){
+            
+                diz[i].esatto=0;
+                diz[i].min=0;
+                diz[i].ex = -1;
+                for(int j = 0; j<k;j++){
+                    diz[i].no[j] = '.';
+                }
+            
         }
+        diz_rif[i].cont = 1;
+        diz_rif[i].num = 0;
     }
     for(int j = 0; j<k;j++){
         ver[j]='.'; //posti ammissibili del carattere ed obbligati
@@ -131,7 +140,7 @@ int validazione(char *conf, char * ver, char * rif){
         else if(diz[num].ex==1){ //vado a vedere le altre caratteristiche
             if(diz[num].no[i]==conf[i]) return 0; //posizione non ammessa
             
-            //VERIFICO QUENATE VOLTE SI PRESENTA QUELLA LETTERA
+            //VERIFICO QUANTE VOLTE SI PRESENTA QUELLA LETTERA
             conteggio = 0;
             for(int j = 0;j<k;j++) {
                 if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
@@ -513,7 +522,6 @@ void confronto(char* str2,char* str1, char *out, char *ver){
 
     for(int i = 0; i<k;i++){
         c = (int) str1[i];
-
         if(diz_rif[c].num == 0) { 
             out[i] = '/'; //non esiste
             diz[c].ex = 0;
@@ -547,7 +555,7 @@ int main(void){
 
     char stringa[k]; //array di supporto per le parole lette
     char rif[k]; //memorizzo la parola di riferimento
-    rif[0] = '&';
+    //rif[0] = '&';
     int nuova = 0; //mi identifica inizio di una partita
     int inserimento = 1; //mi identifica se devo fare un inserimento di nuove patole
     int conteggio = 0;  //mi dice con quante parole devo confrontare la massimo 
@@ -557,7 +565,7 @@ int main(void){
 
 
     init_rb(); //inizializzo RB
-    init(); //preparo il dizionario
+    init_diz(ver); //preparo il dizionario
 
     while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
         if(stringa[0] == '+'){ //caso comandi
