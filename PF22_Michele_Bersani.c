@@ -140,7 +140,7 @@ int validazione(char *conf, char * ver, char * rif){
             
             //VERIFICO QUANTE VOLTE SI PRESENTA QUELLA LETTERA
             conteggio = 0;
-            for(int j = 0;j<k;j++) {
+            for(int j = 0;j<k;j++) {   
                 if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
                     conteggio ++;
             }
