@@ -26,6 +26,7 @@ int trovata = 0; //variabile di supporto per vedere se la parola letta durante l
 
 //FACCIO UN ALBERO RB
 typedef struct el{
+    //char str[5]; //memorizzo la parola / stringa
     char *str; //memorizzo la parola / stringa
     int colore; //0 è nero 1 è rosso
     int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
@@ -317,6 +318,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
         scrittura(stringa,st); //trasferisco la parola di puntatore
         node->str = st;
+        //for(int i = 0; i<k;i++) node->str[i] = stringa[i];
         node->sx = TNULL;
 		node->dx = TNULL;
 		node->colore = 1; // nuovo nodo di rosso

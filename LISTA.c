@@ -222,11 +222,10 @@ void insert_litsa(char * stringa,NodePtr *radicec,int validazione,Root *root,int
     NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
     char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
 
-    NodePtr punt, puntCorrente, puntPrecedente;
+    NodePtr puntCorrente, puntPrecedente;
     puntPrecedente = NULL;
     puntCorrente = *radicec;
     NodePtr register ult_valido = NULL;
-    NodePtr register dopo_valido = NULL;
 
     scrittura(stringa,st); //trasferisco la parola di puntatore
     node->str = st;
@@ -431,8 +430,9 @@ int main(void){
     char ver[k+1]; ver[k] = '\0'; //stringa per le posizioni obbligatorie apprese
 
 
-    init_rb(); //inizializzo RB
+    //init_rb(); //inizializzo RB
     init_diz(ver); //preparo il dizionario
+    radice = NULL;
 
     while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
         if(stringa[0] == '+'){ //caso comandi
