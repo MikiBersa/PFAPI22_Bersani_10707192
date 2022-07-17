@@ -32,7 +32,7 @@ typedef struct el{
     struct el *dx; //filgio dx di RB
     //LISTA
     struct el *next; //per la lista di parole valide -> successivo
-    struct el *prev; //per la lista di parole valide -> precedente
+    //struct el *prev; //per la lista di parole valide -> precedente
 } elemento; //nodo del RB e anche della lista
 
 typedef struct{
@@ -58,7 +58,7 @@ filtro diz[123]; //dizionario della memoria dei carattere appresi e delle loro p
 scan diz_rif[123]; //memorizzo i carattere della parola di riferimento con le loro occorrenze
 
 NodePtr radice; //definisco il puntatore alla radice
-Root lista_prova; //puntatore alla testa della lista
+NodePtr lista_prova; //puntatore alla testa della lista
 NodePtr TNULL; //TNILL per il RB
 
 
@@ -187,29 +187,38 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 
 //LISTA INSERIMENTO IN TESTA IN ORDINE DECRESCENTE siccome vado a leggere le parola in ordine crescende lessicografico
 //per avere complessità costante nell'inserimento
-void inserisci_lista(Root *root, NodePtr x){
-    x->next = root->radice_lista;
-    if(root->radice_lista!=NULL) root->radice_lista->prev = x;
-    if(root->radice_lista==NULL) root->fine_lista = x;
-    root->radice_lista = x;
-    x->prev = NULL;
+//INSERIMENTO ALL'INIZIO
+void inserisci_lista(NodePtr *root, NodePtr x, NodePtr ultimo){
+    //INSERIMENTO A UNA DIREZIONE
+    x->next = NULL;
+    if(ultimo!=NULL) ultimo->next = x;
+    else *(root) = x;
 }
 
 //costante eliminazione in quanto gli passo il nodo stesso
-void cancella(Root *root, NodePtr x){
+void cancella(NodePtr *root, NodePtr x, NodePtr prec){
+    if(prec != NULL){
+        prec->next = x->next;
+    }else{
+        *(root) = x->next;
+    }
+    /*
     if(x->prev!=NULL) x->prev->next = x->next;
     else (*root).radice_lista = x->next;
     if(x->next != NULL) x->next->prev = x->prev;
     else (*root).fine_lista = x->prev;
+    */
 }
 
 //pulisco la lista prima di ogni partita visto che la parola di riferimento cambia
-void init_lista(Root *l){
-    NodePtr p = l->radice_lista;
+void init_lista(NodePtr *l){
+    NodePtr p = *l;
+    NodePtr prec = NULL;
     //PULIZIA DEI NODI 
     while(p!=NULL) {
         p->valida = 0;
-        cancella(&lista_prova, p); 
+        cancella(&lista_prova, p, prec);
+        prec = p; 
         p = p->next;
     }
 }
@@ -218,7 +227,7 @@ void init_lista(Root *l){
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
 //FACCIO CON LA LISTA
 //void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
-void insert_litsa(char * stringa,NodePtr *radicec,int validazione,Root *root,int conf){
+void insert_litsa(char * stringa,NodePtr *radicec,int validazione,NodePtr *root,int conf){
     NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
     char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
 
@@ -249,23 +258,13 @@ void insert_litsa(char * stringa,NodePtr *radicec,int validazione,Root *root,int
 
     //INSERIMENTO DELLA PAROLA DELLA SECONDA LISTA con +inserisci_inizio
     if(validazione && conf){
-        if(ult_valido != NULL){
-            node->next = ult_valido; //precede 
-            node->prev = ult_valido->prev;
-            ult_valido->prev = node;
+        node->next = ult_valido->next; //precede 
 
-            if(ult_valido->prev != NULL){
-                ult_valido->prev->next = node;
-            }else{
-                //OCCHIO A INIZIO E FINE DELLA LISTA
-                root->radice_lista = node;
-            }
+        if(ult_valido!= NULL){
+            ult_valido->next = node;
         }else{
-            //inserimento da capo OCCHIO AL PUNTATORE DI INIZIO E FINE
-            node->prev = NULL;
-            node->next = NULL;
-            root->fine_lista = node;
-            root->radice_lista = node;
+                //OCCHIO A INIZIO E FINE DELLA LISTA
+            *(root) = node;
         }
     }
 }
@@ -275,9 +274,11 @@ void insert_litsa(char * stringa,NodePtr *radicec,int validazione,Root *root,int
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
 //fa anche il conteggio
 void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
+    NodePtr prec = NULL;
     while(l!=NULL) {
         if(validazione(l->str,ver, rif)){
             l->valida=1;
+            prec = l;
             if(i == 0) { cont_buone ++; //printf("%s\n", x->str);
             }
             else {
@@ -286,10 +287,10 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
             }
         }else{
             l->valida=0;
-            cancella(&lista_prova, l);
+            cancella(&lista_prova, l, prec);
         }
 
-        l = l->prev;
+        l = l->next;
     }
 }
 
@@ -301,16 +302,19 @@ void stampa_lista_filtrato_solo(NodePtr l){
             //printf("%s\n", l->str);
             puts(l->str);
         }
-        l = l->prev;
+        l = l->next;
     }
 }
 
 //avendo letto una sola parola devo leggere tutte le parole e vedere se sono valide se sì inserisco nella lista
 //complessità teta(n*k^2) con n totale delle parole inserite all'inizio
+//PRIMO INSERIMENTO CARICO LA LISTA DELLA PAROLE VALIDE, prima la lista è vuota
 void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
+    NodePtr ultimo = NULL;
     while(x!=NULL) {
         if(validazione(x->str,ver, rif)){
             x->valida = 1; 
+            ultimo = x;
             if(i == 0) {
                 cont_buone ++;
             }
@@ -318,9 +322,9 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
                 //printf("%s\n", x->str);
                 puts(x->str);
             }
-            //ricordo che vado a leggere le parole in ordine crescente e nella lista le metto in ordine decrescente così comeplssità costante
+            //ricordo che vado a leggere le parole in ordine CRESCENTE e nella lista le metto in ordine decrescente così comeplssità costante
             //nell'inerimento e costante per leggere dalla fine visto che ho creato un puntatore alla fine
-            inserisci_lista(&lista_prova,x);
+            inserisci_lista(&lista_prova,x, ultimo);
             
         }else{
             x->valida=0;
@@ -336,7 +340,7 @@ void inOrder(NodePtr l) {
     while(l!=NULL) {
             //printf("%s\n", l->str);
         puts(l->str);
-        l = l->prev;
+        l = l->dx;
     }
     /*
 		if (node != TNULL) {
@@ -348,6 +352,22 @@ void inOrder(NodePtr l) {
     */
 }
 
+void stampa(NodePtr l) {
+    //scrittura normale
+    while(l!=NULL) {
+            //printf("%s\n", l->str);
+        puts(l->str);
+        l = l->dx;
+    }
+}
+void stampa_valida(NodePtr l) {
+    //scrittura normale
+    while(l!=NULL) {
+            //printf("%s\n", l->str);
+        puts(l->str);
+        l = l->next;
+    }
+}
 //verifico che la parola letta durante la partita faccia parte della parole ammissibili
 //complessità teta(n*k) caso pesso se non è presente
 int inOrder_controllo(NodePtr l, char* parola) {
@@ -439,10 +459,9 @@ int main(void){
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
                 //svuoto la lista proveniente dalla vecchia partita
-                //if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
+                if(lista_prova!= NULL) init_lista(&lista_prova);
 
-                lista_prova.radice_lista=NULL;
-                lista_prova.fine_lista=NULL;
+                lista_prova = NULL;
 
                 nuova = 1;
                 inserimento = 0;
@@ -476,7 +495,7 @@ int main(void){
                     if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
                     //confronto fatto con lista già creata
                     //stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,1);
-                    else stampa_lista_filtrato_solo(lista_prova.fine_lista);
+                    else stampa_lista_filtrato_solo(lista_prova);
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
                     inOrder(radice);
@@ -491,15 +510,14 @@ int main(void){
 
             }else{
 
-                trovata = 0;
-                inOrder_controllo(radice, stringa); //controllo la presenza nelle parole ammissibili
+                //trovata = inOrder_controllo(radice, stringa); //controllo la presenza nelle parole ammissibili
                 if(uguale(rif,stringa)){
                         //printf("ok\n"); //uguale 
                         puts("ok");
                         nuova = 0; //FINSICE LA PARTITA
                         conteggio = 0; 
                         primo_inserimento = 1;
-                }else if(!trovata){
+                }else if(!inOrder_controllo(radice, stringa)){
                     //printf("not_exists\n"); //non trovata
                     puts("not_exists");
                 }else if(conteggio != 1 ){ 
@@ -516,16 +534,18 @@ int main(void){
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
                         else {
                              //confronto fatto con lista già creata, qui devo fare una nuova validazione perchè ho letto una nuova parola
-                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                            stampa_lista_filtrato(lista_prova,ver,rif,0);
                         }
                         printf("%d\n",cont_buone);
+                        printf("STAMPO LA LISTA VALIDA\n");
+                        stampa_valida(lista_prova);
 
                 }else{
                     char conf[k+1];
                     confronto(rif,stringa, conf,ver);
                     cont_buone = 0;
                     //conto_ordinata(radice,ver,rif,0);
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                    stampa_lista_filtrato(lista_prova,ver,rif,0);
                     printf("%d\n",cont_buone);
                     puts("ko");
                     nuova = 0; //FINSICE LA PARTITA
@@ -538,7 +558,10 @@ int main(void){
             //unserimento prima di ogni partita o alla fine qui imposto di default validazione a 0 perchè non conosco la patola di riferimento
             insert_litsa(stringa, &radice,0, &lista_prova, confronto_fatto);
         }
+        //insert_litsa(stringa, &radice,0, &lista_prova, confronto_fatto);
     }
 
+    printf("STAMPO LA LISTA\n");
+    stampa(radice);
     return 0;
 }
