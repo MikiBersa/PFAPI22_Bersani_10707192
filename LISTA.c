@@ -314,7 +314,11 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
     while(x!=NULL) {
         if(validazione(x->str,ver, rif)){
             x->valida = 1; 
-            ultimo = x;
+            /*
+            printf("Valida %s\n", x->str);
+            if(ultimo!=NULL) printf("Ultimo %s\n", ultimo->str);
+            else printf("Ultimo NULL\n");
+            */
             if(i == 0) {
                 cont_buone ++;
             }
@@ -325,6 +329,7 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
             //ricordo che vado a leggere le parole in ordine CRESCENTE e nella lista le metto in ordine decrescente così comeplssità costante
             //nell'inerimento e costante per leggere dalla fine visto che ho creato un puntatore alla fine
             inserisci_lista(&lista_prova,x, ultimo);
+            ultimo = x;
             
         }else{
             x->valida=0;
@@ -529,6 +534,7 @@ int main(void){
                         cont_buone = 0;
 
                         if(primo_inserimento) {
+                            //printf("Primo inserimento\n");
                             //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
                             conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
                             //conto_ordinata_filtrato(lista.radice,&lista_filtrata,ver,0);primo_inserimento = 0;}
@@ -537,8 +543,8 @@ int main(void){
                             stampa_lista_filtrato(lista_prova,ver,rif,0);
                         }
                         printf("%d\n",cont_buone);
-                        printf("STAMPO LA LISTA VALIDA\n");
-                        stampa_valida(lista_prova);
+                        //printf("STAMPO LA LISTA VALIDA\n");
+                        //stampa_valida(lista_prova);
 
                 }else{
                     char conf[k+1];
@@ -561,7 +567,7 @@ int main(void){
         //insert_litsa(stringa, &radice,0, &lista_prova, confronto_fatto);
     }
 
-    printf("STAMPO LA LISTA\n");
-    stampa(radice);
+    //printf("STAMPO LA LISTA\n");
+    //stampa(radice);
     return 0;
 }
