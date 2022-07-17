@@ -55,6 +55,7 @@ typedef struct{
 }scan; 
 
 filtro diz[123]; //dizionario della memoria dei carattere appresi e delle loro posizioni utile per il conteggio e +stampa_filtrate
+NodePtr diz_lung[123] = {NULL};
 scan diz_rif[123]; //memorizzo i carattere della parola di riferimento con le loro occorrenze
 
 NodePtr radice; //definisco il puntatore alla radice
@@ -241,6 +242,20 @@ void insert_litsa(char * stringa,NodePtr *radicec,int validazione,NodePtr *root,
 	node->dx = NULL; //successivo
     node->valida = validazione; //così lo tengo traccia per dopo
 
+    if(diz_lung[(int) stringa[0]]==NULL) {
+        diz_lung[(int) stringa[0]] = node;
+        printf("Inserito %s in %c\n", stringa, stringa[0]);
+    }
+    else{
+        if(posizione(node->str, diz_lung[(int) stringa[0]]->str) < 0){
+            diz_lung[(int) stringa[0]] = node;
+            printf("Inserito dopo %s in %c\n", stringa, stringa[0]);
+        }
+    }
+
+    puntCorrente = diz_lung[(int) stringa[0]];
+    printf("puntCorrente %s della parola %s\n", puntCorrente->str, stringa);
+    
     while(puntCorrente!=NULL && posizione(node->str, puntCorrente->str) > 0){
         //ricordo che li scorro in ordine alfabertico dal più piccolo al più grande 
         if(puntCorrente->valida) {
@@ -567,7 +582,12 @@ int main(void){
         //insert_litsa(stringa, &radice,0, &lista_prova, confronto_fatto);
     }
 
-    //printf("STAMPO LA LISTA\n");
-    //stampa(radice);
+    printf("STAMPO LA LISTA\n");
+    stampa(radice);
+    printf("STAMPO I PRIMI\n");
+    for(int i = 0; i<123;i++){
+        if(diz_lung[i]!=NULL) printf("%s carattere %c\n", diz_lung[i]->str, diz_lung[i]->str[0]);
+        else printf("NULLO carattere %c\n", (char) i);
+    }
     return 0;
 }
