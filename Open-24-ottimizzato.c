@@ -34,6 +34,7 @@ typedef struct el{
     struct el *p; //padre di RB
     struct el *next; //per la lista di parole valide -> successivo
     struct el *prev; //per la lista di parole valide -> precedente
+    struct el *av; //per la ricerca più veloce se la parola è ammissibile
 } elemento; //nodo del RB e anche della lista
 
 typedef struct{
@@ -61,6 +62,9 @@ scan diz_rif[123]; //memorizzo i carattere della parola di riferimento con le lo
 NodePtr radice; //definisco il puntatore alla radice
 Root lista_prova; //puntatore alla testa della lista
 NodePtr TNULL; //TNILL per il RB
+NodePtr lista_controllo = NULL; //testa della lista di controllo
+
+NodePtr diz_lung[123] = {NULL}; //MANTIENE LA POSIZIONE DELL'INIZIO DELLE SINGOLE SEZIONI
 
 //inizializzo il TNILL utile per RB
 void init_rb(){
@@ -326,6 +330,16 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
         
         node->p = NULL;
 
+        if(diz_lung[(int) stringa[0]]== NULL) {
+            diz_lung[(int) stringa[0]] = node;
+            //printf("Inserito %s in %c\n", stringa, stringa[0]);
+        }else{
+            if(posizione(node->str, diz_lung[(int) stringa[0]]->str) < 0){
+                diz_lung[(int) stringa[0]] = node;
+               // printf("Inserito dopo %s in %c\n", stringa, stringa[0]);
+            }
+        }
+
 		while (x != TNULL) {
 
             if(x->valida) {
@@ -491,6 +505,11 @@ void inOrder(NodePtr node) {
 
 //verifico che la parola letta durante la partita faccia parte della parole ammissibili
 //complessità teta(n*k) caso pesso se non è presente
+//GLI PASSO IL NODO DA DOVE PARTIRE
+/*
+diz_lung
+*/
+//SOSTITUIRE IL OREDER THREE WALK CON UNA FINZO INSERIMENTO IN BST se non si trova il posto all'ora non c'è
 void inOrder_controllo(NodePtr node, char* parola) {
 		if (node != TNULL && trovata == 0) {
 			inOrder_controllo(node->sx, parola);
@@ -611,10 +630,10 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 if(confronto_fatto) {
                     //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                    //if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
+                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
                     //confronto fatto con lista già creata
-                    //else stampa_lista_filtrato_solo(lista_prova.fine_lista);
-                    printf("Si confronto\n");
+                    else stampa_lista_filtrato_solo(lista_prova.fine_lista);
+                    //printf("Si confronto\n");
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
                     inOrder(radice);
@@ -630,7 +649,8 @@ int main(void){
             }else{
 
                 trovata = 0;
-                inOrder_controllo(radice, stringa); //controllo la presenza nelle parole ammissibili
+                //inOrder_controllo(radice, stringa); //controllo la presenza nelle parole ammissibili
+                inOrder_controllo(diz_lung[(int) stringa[0]], stringa);
                 if(uguale(rif,stringa)){
                         //printf("ok\n"); //uguale 
                         puts("ok");
@@ -650,21 +670,20 @@ int main(void){
 
                         if(primo_inserimento) {
                             //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                            //conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
-                            printf("primo ins\n");
-                        }else {
+                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
+                            //printf("primo ins\n");
+                        else {
                              //confronto fatto con lista già creata, qui devo fare una nuova validazione perchè ho letto una nuova parola
-                            //stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
-                            printf("NON primo ins\n");
+                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                            //printf("NON primo ins\n");
                         }
-                        //printf("%d\n",cont_buone);
+                        printf("%d\n",cont_buone);
 
                 }else{
                     
                     char conf[k+1];
                     confronto(rif,stringa, conf,ver);
                     cont_buone = 0;
-                    //conto_ordinata(radice,ver,rif,0);
                     stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                     printf("%d\n",cont_buone);
                     
@@ -678,8 +697,16 @@ int main(void){
         }else if(inserimento) {
             //unserimento prima di ogni partita o alla fine qui imposto di default validazione a 0 perchè non conosco la patola di riferimento
             insert(stringa, &radice,0, &lista_prova, confronto_fatto);
+            //printf("STAMPO ALBERO\n");
+            //inOrder(diz_lung[(int) stringa[0]]);
         }
     }
 
+    printf("STAMPO GLI ELEMENTI DIZIONARIO\n");
+    for(int i = 0; i<123; i++) printf("Carattere %c parola %s\n", (char) i, diz_lung[i]->str);
+    printf("STAMPO RADICE d\n");
+    //IDEA è PUNTARE ALLA PAROLA CHE INIZIA PER QUELLA LETTERA E POI FACCIO LA LETTURA FINO A CHE NON VIENE TROVATA O 
+    //SE LEGGE UNA PAROLA CHE INIZIA CON LA LETTERA SUCCESSIVA 
+    inOrder(diz_lung[(int) 'd']);
     return 0;
 }
