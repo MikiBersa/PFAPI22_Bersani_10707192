@@ -417,6 +417,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		fixInsert(node, radicec);
 }
 
+
 //funzione che conta le parole con i requisiti giusti visti dal confronto
 //stampo le parole filtrate anche qui devo comunque riverificare le vecchie valide perchè la nuova parole potrebbe cambiare i requisiti
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
