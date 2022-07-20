@@ -23,10 +23,17 @@ unsigned short int k; //lunghezza delle stringhe
 int cont_buone = 0; //conteggio delle parole valide
 int trovata = 0; //variabile di supporto per vedere se la parola letta durante la partita fa parte delle parole ammissibili
 
+/*
+    IDEE PER RIDURRE LA MEMORIA:
+    1) TOGLIERE IL PUNTATORE IN AVANTI DEL NODO
+    2) RIPORTARE IL DIZIONARIO DA 123 A 64 ELEMENTI CON LE FUNZIONI DI ACCESSO (OCCHIO AI TEMPI)
+    3) evitare le malloc o mettere dei valori fissi
+*/
 
 //FACCIO UN ALBERO RB
 typedef struct el{
-    char str[20]; //memorizzo la parola / stringa
+    //DA NOTARE CHE SE METTO A MANO STR[20] STO DENTRO ALLA MEMORIA
+    char *str; //memorizzo la parola / stringa
     unsigned short int colore; //0 è nero 1 è rosso
     unsigned short int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
     struct el *sx; //filgio sx di RB
@@ -76,13 +83,13 @@ void init_rb(){
 //creo lo spazio per memorizzare dove i carattere non possono stare -> provare con i numeri interi
 //in primi ho scelto di creare un array di caratteri perchè pesa poco 1B per ogni carattere
 void init_diz(char *ver){
-    for(int i = 0; i<DIZ;i++){
+    for(unsigned short int i = 0; i<DIZ;i++){
         if(i>=45){
             diz[i].esatto=0;
             diz[i].min=0;
             diz[i].ex = -1;
             diz[i].no = malloc(sizeof(char)*k);
-            for(int j = 0; j<k;j++){
+            for(unsigned short int j = 0; j<k;j++){
                 diz[i].no[j] = '.';
             }
         }else continue;
@@ -91,19 +98,19 @@ void init_diz(char *ver){
 
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
 void pulisci(char *ver){
-    for(int i = 0; i<DIZ;i++){
+    for(unsigned short int i = 0; i<DIZ;i++){
         if(i>=45 && diz[i].ex!=-1){
             diz[i].esatto=0;
             diz[i].min=0;
             diz[i].ex = -1;
-            for(int j = 0; j<k;j++){
+            for(unsigned short int j = 0; j<k;j++){
                 diz[i].no[j] = '.';
             }
         }
         diz_rif[i].cont = 1;
         diz_rif[i].num = 0;
     }
-    for(int j = 0; j<k;j++){
+    for(unsigned short int j = 0; j<k;j++){
         ver[j]='.'; //posti ammissibili del carattere ed obbligati
     }
 }
@@ -111,7 +118,7 @@ void pulisci(char *ver){
 //funzione di supporto per verificare se un carattere è presente in una stringa e in che quantità
 //sostituisco le funzioni delle libreria string.h perchè sembrano lente
 int presente(char c, char *s,  unsigned short int *conteggio){
-    int i = 0;
+    unsigned short int i = 0;
 
     for(int m = 0;m<k;m++){
         if(s[m]==c) {
@@ -311,15 +318,15 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
 void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
-        //char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
+        char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
 
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
         NodePtr register ult_valido = NULL;
 
-        //scrittura(stringa,st); //trasferisco la parola di puntatore
-        //node->str = st;
-        for(int i = 0; i<k;i++) node->str[i] = stringa[i];
+        scrittura(stringa,st); //trasferisco la parola di puntatore
+        node->str = st;
+        //for(unsigned short int i = 0; i<k;i++) node->str[i] = stringa[i];
         node->sx = TNULL;
 		node->dx = TNULL;
 		node->colore = 1; // nuovo nodo di rosso
@@ -579,6 +586,16 @@ int main(void){
     unsigned short int confronto_fatto = 0; //il confronto è stato fatto
     char ver[k+1]; ver[k] = '\0'; //stringa per le posizioni obbligatorie apprese
 
+    /*
+    printf("Dimensione in Byte\n");
+    printf("Valore struct el %lu\n", sizeof(elemento));
+    printf("Valore filtro %lu\n", sizeof(filtro));
+    printf("Valore puntatore struct el %lu\n", sizeof(NodePtr));
+    printf("Valore scan %lu\n", sizeof(scan));
+    printf("Valore puntatore carattere %lu\n", sizeof(char *));
+    printf("Valore Root %lu\n", sizeof(Root));
+    printf("Valore intero %lu\n", sizeof(int));
+    */
 
     init_rb(); //inizializzo RB
     init_diz(ver); //preparo il dizionario
