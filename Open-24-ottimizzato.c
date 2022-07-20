@@ -19,7 +19,7 @@ PROBLEMA:
 
 #define DIZ 123 //uso 123 elementi così posso accedere al carattere direttamente (122 è la z ultimo carattere ammissibile)
 
-int k; //lunghezza delle stringhe
+unsigned short int k; //lunghezza delle stringhe
 int cont_buone = 0; //conteggio delle parole valide
 int trovata = 0; //variabile di supporto per vedere se la parola letta durante la partita fa parte delle parole ammissibili
 
@@ -27,8 +27,8 @@ int trovata = 0; //variabile di supporto per vedere se la parola letta durante l
 //FACCIO UN ALBERO RB
 typedef struct el{
     char str[20]; //memorizzo la parola / stringa
-    int colore; //0 è nero 1 è rosso
-    int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
+    unsigned short int colore; //0 è nero 1 è rosso
+    unsigned short int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
     struct el *sx; //filgio sx di RB
     struct el *dx; //filgio dx di RB
     struct el *p; //padre di RB
@@ -37,10 +37,10 @@ typedef struct el{
 } elemento; //nodo del RB e anche della lista
 
 typedef struct{
-    int ex; //esiste il carattere nella parola di riferimento
+    short int ex; //esiste il carattere nella parola di riferimento
     char *no; //posizioni in cui il carattere non può stare 
-    int esatto; //numero esatto del carattere nella parola di riferimento
-    int min; //numero minimo del carattere nella parola di riferimento
+    unsigned short int esatto; //numero esatto del carattere nella parola di riferimento
+    unsigned short int min; //numero minimo del carattere nella parola di riferimento
 }filtro; //typedef per il dizionario ogni elemento del dizionario è una lettera
 
 typedef elemento *NodePtr; //puntatore ai nodi di RB
@@ -51,9 +51,9 @@ typedef struct{
 }Root; //testa della lista che punta al primo elemento ed all'ultimo
 
 typedef struct{
-    int num; //n° di volte che quella lettera compare nella parola di riferimento
-    int cont; //utile dopo per capire quali parole c'è da filtrare
-}scan; 
+    unsigned short int num; //n° di volte che quella lettera compare nella parola di riferimento
+    unsigned short int cont; //utile dopo per capire quali parole c'è da filtrare
+}scan;
 
 filtro diz[123]; //dizionario della memoria dei carattere appresi e delle loro posizioni utile per il conteggio e +stampa_filtrate
 scan diz_rif[123]; //memorizzo i carattere della parola di riferimento con le loro occorrenze
@@ -110,7 +110,7 @@ void pulisci(char *ver){
 
 //funzione di supporto per verificare se un carattere è presente in una stringa e in che quantità
 //sostituisco le funzioni delle libreria string.h perchè sembrano lente
-int presente(char c, char *s, int *conteggio){
+int presente(char c, char *s,  unsigned short int *conteggio){
     int i = 0;
 
     for(int m = 0;m<k;m++){
@@ -128,12 +128,12 @@ int presente(char c, char *s, int *conteggio){
 //utile per conteggio e +stampa_filtrate
 //complessità visto che il k è costante la complessità di questa funzione è costante sarebbe teta k^2
 int validazione(char *conf, char * ver, char * rif){
-    int conteggio = 0;
-    int conto = 0;
+    unsigned short int conteggio = 0;
+    unsigned short int conto = 0;
 
     for(int i = 0;i<k;i++){
-        int register num = (int) conf[i]; //uso il register per mantenere la variabile in un registro della cpu così c'è l'ha sempre pronta
-        int register num2 = (int) rif[i];
+        unsigned short int register num = (int) conf[i]; //uso il register per mantenere la variabile in un registro della cpu così c'è l'ha sempre pronta
+        unsigned short int register num2 = (int) rif[i];
 
         if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è un carattere obbligatorio in quella posizione ma non vi è quel carattere
         else if(diz[num].ex==0) return 0; //non c'è nella parola di riferimento
@@ -142,7 +142,7 @@ int validazione(char *conf, char * ver, char * rif){
             
             //VERIFICO QUANTE VOLTE SI PRESENTA QUELLA LETTERA
             conteggio = 0;
-            for(int j = 0;j<k;j++) {
+            for(unsigned short int j = 0;j<k;j++) {
                 if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
                     conteggio ++;
             }
@@ -176,12 +176,12 @@ int validazione(char *conf, char * ver, char * rif){
 
 
 int uguale(char *c, char *p){
-    for(int i = 0;i<k;i++)
+    for(unsigned short int i = 0;i<k;i++)
         if(c[i] != p[i]) return 0;
     return 1;
 }
 int posizione(char* c1, char *c2){ //c2 la testa
-    for(int i = 0; i<k;i++){
+    for(unsigned short int i = 0; i<k;i++){
         if(c1[i] > c2[i]) return 1; //destra
         else if(c1[i] < c2[i]) return -1; //sinistra
     }
@@ -190,7 +190,7 @@ int posizione(char* c1, char *c2){ //c2 la testa
 
 
 void scrittura(char* c1, char *c2){ //da c1 a c2
-    for(int i = 0; i<k;i++){
+    for(unsigned short int i = 0; i<k;i++){
         c2[i] = c1[i];
     }
 }
@@ -501,7 +501,7 @@ diz_lung
 
 int inOrder_controllo(NodePtr node, char* parola) {
 	while(node != TNULL){
-        int pos = posizione(parola, node->str);
+        short int pos = posizione(parola, node->str);
         if(!pos) return 1;
         else if(pos < 0) node = node->sx;
         else if(pos > 0) node = node->dx;
@@ -512,16 +512,16 @@ int inOrder_controllo(NodePtr node, char* parola) {
 
 //QUI CREO LA STRINGA RICHIESTA CON I + / |
 void confronto(char* str2,char* str1, char *out, char *ver){
-    int c; //memorizza il carattere letto
-    int diz_conto[DIZ] = {0}; //conteggio di quante volte lo stesso carattere si presentano nella parola
+    unsigned short int c; //memorizza il carattere letto
+    unsigned short int diz_conto[DIZ] = {0}; //conteggio di quante volte lo stesso carattere si presentano nella parola
     
-    for(int j = 0; j<k;j++){
+    for(unsigned short int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO
         diz_rif[(int) str1[j]].cont = 1;
     }
 
-    for(int j = 0; j<k;j++){
-        c = (int) str1[j]; //str1 è la parola che leggo
+    for(unsigned short int j = 0; j<k;j++){
+        c = (unsigned short int) str1[j]; //str1 è la parola che leggo
         diz_conto[c] = diz_conto[c] + 1;
         if(str1[j] == str2[j]){ //str2 parola di riferimento
             out[j] = '+'; //posizione corretta e giusto carattere
@@ -535,8 +535,8 @@ void confronto(char* str2,char* str1, char *out, char *ver){
         } 
     }
 
-    for(int i = 0; i<k;i++){
-        c = (int) str1[i];
+    for(unsigned short int i = 0; i<k;i++){
+        c = (unsigned short int) str1[i];
         if(diz_rif[c].num == 0) { 
             out[i] = '/'; //non esiste
             diz[c].ex = 0;
@@ -572,11 +572,11 @@ int main(void){
     char stringa[k]; //array di supporto per le parole lette
     char rif[k]; //memorizzo la parola di riferimento
     //rif[0] = '&';
-    int nuova = 0; //mi identifica inizio di una partita
-    int inserimento = 1; //mi identifica se devo fare un inserimento di nuove patole
-    int conteggio = 0;  //mi dice con quante parole devo confrontare la massimo 
-    int primo_inserimento = 0; //letto la prima parola da confrontare
-    int confronto_fatto = 0; //il confronto è stato fatto
+    unsigned short int nuova = 0; //mi identifica inizio di una partita
+    unsigned short int inserimento = 1; //mi identifica se devo fare un inserimento di nuove patole
+    unsigned short int conteggio = 0;  //mi dice con quante parole devo confrontare la massimo 
+    unsigned short int primo_inserimento = 0; //letto la prima parola da confrontare
+    unsigned short int confronto_fatto = 0; //il confronto è stato fatto
     char ver[k+1]; ver[k] = '\0'; //stringa per le posizioni obbligatorie apprese
 
 
@@ -588,7 +588,7 @@ int main(void){
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
                 //svuoto la lista proveniente dalla vecchia partita
-                //if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
+                if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
 
                 lista_prova.radice_lista=NULL;
                 lista_prova.fine_lista=NULL;
@@ -601,7 +601,7 @@ int main(void){
 
                 if(fgets(stringa,5*k,stdin)!=NULL){} //leggo la parola di riferimento
                 
-                for(int i = 0; i<k;i++){
+                for(unsigned short int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++; //conto la presenza dei carattere nella parola di riferimento
                 }
