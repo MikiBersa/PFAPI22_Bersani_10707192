@@ -1,11 +1,3 @@
-Dimensione
-Valore struct el 64
-Valore filtro 24
-Valore puntatore struct el 8
-Valore scan 4
-Valore puntatore carattere 8
-Valore Root 16
-Valore intero 4
 ////+
 612
 not_exists

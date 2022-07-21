@@ -115,29 +115,6 @@ void pulisci(char *ver){
     }
 }
 
-//FUNZIONI PER ACCEDERE AL DIZIONARIO
-int posizione_diz (char c){
-    if(c==45) return 0;
-    else if(c==95) return 1;
-    else if(c>=48 && c<= 57){
-        return c-46;
-    }else if(c>= 65 && c<= 90){
-        return c-53;
-    }else if(c>= 97 && c<= 122){
-        return c-59;
-    }
-    return -1;
-}
-
-char inv_posizione (int n){
-    if(n==0) return '-';
-    if(n==1) return '_';
-    if(n>=2 && n<=11) return (char) (n+46);
-    if(n>=12 && n<=37) return (char) (n+53);
-    if(n>=38 && n<=63) return (char) (n+59);
-    return '.';
-}
-
 //funzione di supporto per verificare se un carattere è presente in una stringa e in che quantità
 //sostituisco le funzioni delle libreria string.h perchè sembrano lente
 int presente(char c, char *s,  unsigned short int *conteggio){
