@@ -30,17 +30,19 @@ int trovata = 0; //variabile di supporto per vedere se la parola letta durante l
     3) evitare le malloc o mettere dei valori fissi
 */
 
+//ORA PROVO A CREARE UNA LISTA MONODIMENSIONALE -> solo con il next e faccio spostare il puntatore alla fine della lista
+//per avere inserimento a tempo costante in fondo alla coda
+
 //FACCIO UN ALBERO RB
 typedef struct el{
     //DA NOTARE CHE SE METTO A MANO STR[20] STO DENTRO ALLA MEMORIA
-    char *str; //memorizzo la parola / stringa
+    char str[100]; //memorizzo la parola / stringa
     unsigned short int colore; //0 è nero 1 è rosso
     unsigned short int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
     struct el *sx; //filgio sx di RB
     struct el *dx; //filgio dx di RB
     struct el *p; //padre di RB
     struct el *next; //per la lista di parole valide -> successivo
-    struct el *prev; //per la lista di parole valide -> precedente
 } elemento; //nodo del RB e anche della lista
 
 typedef struct{
@@ -95,7 +97,12 @@ void init_diz(char *ver){
         }else continue;
     }
 }
-
+void stampa_nodo(NodePtr nodo){
+    while(nodo != NULL){
+        printf("%s\n", nodo->str);
+        nodo = nodo->next;
+    }
+}
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
 void pulisci(char *ver){
     for(unsigned short int i = 0; i<DIZ;i++){
@@ -206,19 +213,24 @@ void scrittura(char* c1, char *c2){ //da c1 a c2
 //LISTA INSERIMENTO IN TESTA IN ORDINE DECRESCENTE siccome vado a leggere le parola in ordine crescende lessicografico
 //per avere complessità costante nell'inserimento
 void inserisci_lista(Root *root, NodePtr x){
-    x->next = root->radice_lista;
-    if(root->radice_lista!=NULL) root->radice_lista->prev = x;
-    if(root->radice_lista==NULL) root->fine_lista = x;
-    root->radice_lista = x;
-    x->prev = NULL;
+    //lo fa in ordine quindi uso la fine
+    x->next = NULL;
+    if(root->radice_lista == NULL) root->radice_lista = x;
+    else root->fine_lista->next = x;
+    root->fine_lista = x;
 }
 
 //costante eliminazione in quanto gli passo il nodo stesso
-void cancella(Root *root, NodePtr x){
-    if(x->prev!=NULL) x->prev->next = x->next;
-    else (*root).radice_lista = x->next;
-    if(x->next != NULL) x->next->prev = x->prev;
-    else (*root).fine_lista = x->prev;
+void cancella(Root *root, NodePtr x, NodePtr prima){
+    if(prima != NULL){ 
+        prima->next = x->next;
+        if(x->next == NULL) root->fine_lista = prima;
+    }
+    else {
+        root->radice_lista = x->next;
+        if(x->next == NULL) root->fine_lista = x->next;
+    }
+    
 }
 
 //pulisco la lista prima di ogni partita visto che la parola di riferimento cambia
@@ -227,7 +239,7 @@ void init_lista(Root *l){
     //PULIZIA DEI NODI 
     while(p!=NULL) {
         p->valida = 0;
-        cancella(&lista_prova, p); 
+        cancella(&lista_prova, p, NULL); 
         p = p->next;
     }
 }
@@ -318,15 +330,16 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
 void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
-        char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
+        //char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
 
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
         NodePtr register ult_valido = NULL;
+        NodePtr register ult_valido_prima = NULL;
 
-        scrittura(stringa,st); //trasferisco la parola di puntatore
-        node->str = st;
-        //for(unsigned short int i = 0; i<k;i++) node->str[i] = stringa[i];
+        //scrittura(stringa,st); //trasferisco la parola di puntatore
+        //node->str = st;
+        for(unsigned short int i = 0; i<k;i++) node->str[i] = stringa[i];
         node->sx = TNULL;
 		node->dx = TNULL;
 		node->colore = 1; // nuovo nodo di rosso
@@ -338,6 +351,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		while (x != TNULL) {
 
             if(x->valida) {
+                ult_valido_prima = ult_valido;
                 ult_valido = x; //vado a vedere ultimo valido così da inserire la parola in maniera corretta nella lista
             }
 
@@ -352,32 +366,29 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
 		node->p = y;
 
+        /*
+        printf("%s valida %d\n", stringa, validazione);
+        if(ult_valido_prima != NULL && ult_valido != NULL) printf("Ultimo prima %s ultimo %s\n", ult_valido_prima->str, ult_valido->str);
+        */
+
 		if (y == NULL) {
 			*(radicec) = node;
         } else if (posizione(node->str, y->str) < 0) {
 			y->sx = node;
-            //QUI VUOL DIRE CHE STA A SX
+            //QUI VUOL DIRE CHE STA A SX QUINDI PRIMA DELL'ULTIMO
             if(validazione && conf){
-
+                //printf("SX %s\n", stringa);
                 if(ult_valido != NULL){
-                    node->next = ult_valido->next;
+                    node->next = ult_valido; 
+                    if(ult_valido_prima!=NULL) ult_valido_prima->next = node;
+                    else root->radice_lista = node;
+                    
+                    if(ult_valido->next == NULL) root->fine_lista = ult_valido;
 
-                    if(ult_valido->next != NULL) {
-                        node->prev = ult_valido->next->prev;
-                        ult_valido->next->prev = node;
-                        ult_valido->next = node;
-                    }
-                    if(ult_valido->next == NULL) {
-                        node->prev = ult_valido->prev;
-                        ult_valido->prev->next = node;
-                        root->fine_lista = node;
-                    }
-                }else{
-                    //inserisco in testa
-                    node->next = root->radice_lista;
-                    node->prev = NULL;
-                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
-                    else root->fine_lista = node;
+                }else{ //tutte e due NULL
+                    //inserisco in coda
+                    node->next = NULL;
+                    root->fine_lista = node;
                     root->radice_lista = node;
                 }
 
@@ -385,34 +396,24 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
 		} else {
 			y->dx = node;
-            //QUI VUOL DIRE CHE STA A DX
+            //QUI VUOL DIRE CHE STA A DX QUINDI DOPO L'ULTIMO
             if(validazione && conf){
+                //printf("DX %s\n", stringa);
                 if(ult_valido != NULL){
-                   
-                    node->next = ult_valido;
-                    node->prev = ult_valido->prev;
+                    //printf("ULT VALIDO %s\n", ult_valido->str);
+                    node->next = ult_valido->next; 
+                    if(ult_valido->next == NULL) root->fine_lista = node;
+                    ult_valido->next = node;
                 
-                    if(ult_valido->prev == NULL){
-                        //in testa alla lista
-                        root->radice_lista = node;
-                        root->fine_lista = ult_valido;
-                    }
-                    else{
-                        ult_valido->prev->next = node;
-                        ult_valido->prev = node;
-                    }
+
                 }else{
-                    //insrisco in testa
-                    
-                    node->next = root->radice_lista;
-                    node->prev = NULL;
-
-                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
-                    else root->fine_lista = node;
-
+                    //inserisco in coda
+                    node->next = NULL;
+                    root->fine_lista = node;
                     root->radice_lista = node;
-
                 }
+
+                
             } 
 		}
 		if (node->p == NULL){
@@ -424,6 +425,10 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 			return;
         }
 		fixInsert(node, radicec);
+        /*
+        printf("------STAMPA LISTA-----\n");
+        stampa_nodo(root->radice_lista);
+        */
 }
 
 
@@ -432,6 +437,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
 //fa anche il conteggio
 void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
+    NodePtr prima = NULL;
     while(l!=NULL) {
         if(validazione(l->str,ver, rif)){
             l->valida=1;
@@ -443,10 +449,11 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
             }
         }else{
             l->valida=0;
-            cancella(&lista_prova, l);
+            //printf("cancello %s\n", l->str);
+            cancella(&lista_prova, l, prima);
         }
-
-        l = l->prev;
+        prima = l;
+        l = l->next;
     }
 }
 
@@ -458,7 +465,7 @@ void stampa_lista_filtrato_solo(NodePtr l){
             //printf("%s\n", l->str);
             puts(l->str);
         }
-        l = l->prev;
+        l = l->next;
     }
 }
 
@@ -601,6 +608,7 @@ int main(void){
     init_diz(ver); //preparo il dizionario
 
     while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
+        //printf("Letto %s", stringa);
         if(stringa[0] == '+'){ //caso comandi
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
@@ -641,7 +649,7 @@ int main(void){
                     //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
                     if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
                     //confronto fatto con lista già creata
-                    else stampa_lista_filtrato_solo(lista_prova.fine_lista);
+                    else stampa_lista_filtrato_solo(lista_prova.radice_lista);
                     //printf("Si confronto\n");
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
@@ -679,22 +687,30 @@ int main(void){
 
                         if(primo_inserimento) {
                             //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
+                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;
                             //printf("primo ins\n");
-                        else {
+                        }else {
                              //confronto fatto con lista già creata, qui devo fare una nuova validazione perchè ho letto una nuova parola
-                            stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                            stampa_lista_filtrato(lista_prova.radice_lista,ver,rif,0);
                             //printf("NON primo ins\n");
                         }
                         printf("%d\n",cont_buone);
+                        /*
+                        printf("------STAMPA LISTA-----\n");
+                        stampa_nodo(lista_prova.radice_lista);
+                        */
+                        //printf("LISTA\n");
+                        //stampa_nodo(lista_prova.radice_lista);
 
                 }else{
                     
                     char conf[k+1];
                     confronto(rif,stringa, conf,ver);
                     cont_buone = 0;
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                    stampa_lista_filtrato(lista_prova.radice_lista,ver,rif,0);
                     printf("%d\n",cont_buone);
+                    //printf("------STAMPA LISTA-----\n");
+                    //stampa_nodo(lista_prova.radice_lista);
                     
                     puts("ko");
                     nuova = 0; //FINSICE LA PARTITA

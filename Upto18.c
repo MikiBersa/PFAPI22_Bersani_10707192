@@ -61,7 +61,6 @@ scan diz_rif[123]; //memorizzo i carattere della parola di riferimento con le lo
 NodePtr radice; //definisco il puntatore alla radice
 Root lista_prova; //puntatore alla testa della lista
 NodePtr TNULL; //TNILL per il RB
-NodePtr lista_controllo = NULL; //testa della lista di controllo
 
 
 //inizializzo il TNILL utile per RB
@@ -92,7 +91,7 @@ void init_diz(char *ver){
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
 void pulisci(char *ver){
     for(int i = 0; i<DIZ;i++){
-        if(i>=45 && diz[i].ex!=-1){
+        if(i>=45){
             diz[i].esatto=0;
             diz[i].min=0;
             diz[i].ex = -1;
@@ -588,7 +587,9 @@ int main(void){
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
                 //svuoto la lista proveniente dalla vecchia partita
-                //if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
+                if(lista_prova.radice_lista!=NULL || lista_prova.fine_lista != NULL) init_lista(&lista_prova);
+                
+                //puts(stringa);
 
                 lista_prova.radice_lista=NULL;
                 lista_prova.fine_lista=NULL;
@@ -609,6 +610,7 @@ int main(void){
                 if(fgets(stringa,5*k,stdin)!=NULL){}
                 conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
                 confronto_fatto = 0;
+
 
             }
             else if(stringa[1] == 'i'){
