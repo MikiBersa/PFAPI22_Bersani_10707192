@@ -24,6 +24,7 @@ int cont_buone = 0; //conteggio delle parole valide
 int trovata = 0; //variabile di supporto per vedere se la parola letta durante la partita fa parte delle parole ammissibili
 
 
+
 //FACCIO UN ALBERO RB
 typedef struct el{
     char str[20]; //memorizzo la parola / stringa
