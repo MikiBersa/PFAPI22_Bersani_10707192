@@ -13,6 +13,7 @@ PROBLEMA:
     sto cercando un modo per ridurre il tempo di esecuzione che per ora non ho trovato
 */
 
+//26_up
 
 #include <stdio.h>
 #include <stdlib.h>
