@@ -455,6 +455,7 @@ void stampa_lista_filtrato_solo(NodePtr l){
     }
 }
 
+
 //avendo letto una sola parola devo leggere tutte le parole e vedere se sono valide se sì inserisco nella lista
 //complessità teta(n*k^2) con n totale delle parole inserite all'inizio
 void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i){
@@ -674,6 +675,7 @@ int main(void){
                         }
                         printf("%d\n",cont_buone);
 
+
                 }else{
                     
                     char conf[k+1];
@@ -696,5 +698,6 @@ int main(void){
             //inOrder(diz_lung[(int) stringa[0]]);
         }
     }
+
     return 0;
 }
