@@ -316,7 +316,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
         NodePtr register ult_valido = NULL;
-
+        short int posi = 2;
         //scrittura(stringa,st); //trasferisco la parola di puntatore
         //node->str = st;
         for(int i = 0; i<k;i++) node->str[i] = stringa[i];
@@ -338,8 +338,10 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
             if (posizione(node->str, x->str) < 0) {
 				x = x->sx;
+                if(y == ult_valido) posi = -1;
 			} else {
 				x = x->dx;
+                if(y == ult_valido) posi = 1;
 			}
 		}
 
@@ -348,10 +350,16 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		if (y == NULL) {
 			*(radicec) = node;
         } else if (posizione(node->str, y->str) < 0) {
-			y->sx = node;
+            #ifdef debug2
+            if(ult_valido!=NULL) printf("confronto padre %s sx %s ultimo %s posi %d\n",y->str, node->str, ult_valido->str, posi);
+			else printf("confronto padre %s sx %s ultimo NULL posi %d\n",y->str, node->str, posi);
+            #endif
+            y->sx = node;
             //QUI VUOL DIRE CHE STA A SX
             if(validazione && conf){
-
+                #ifdef debug2
+                printf("SX %s\n", node->str);
+                #endif
                 if(ult_valido != NULL){
                     node->next = ult_valido->next;
 
@@ -367,44 +375,116 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
                     }
                 }else{
                     //inserisco in testa
+                    #ifdef debug2
+                    printf("ULTIMO NULL\n");
+                    printf("%s puntato da root\n", root->radice_lista->str);
+                    printf("%s puntato da root fine\n", root->fine_lista->str);
+                    #endif
+                    //HO INVERTITO I PUNTATORI
+                    node->next = NULL;
+                    node->prev = root->fine_lista;
+
+                    if(root->fine_lista!=NULL) root->fine_lista->next = node;
+                    else root->radice_lista = node;
+                    root->fine_lista = node;
+                    
+                    /*
                     node->next = root->radice_lista;
                     node->prev = NULL;
                     if(root->radice_lista!=NULL) root->radice_lista->prev = node;
                     else root->fine_lista = node;
                     root->radice_lista = node;
+                    */
                 }
 
             }
 
 		} else {
+            #ifdef debug2
+            if(ult_valido!=NULL) printf("confronto padre %s dx %s ultimo %s posi %d\n",y->str, node->str, ult_valido->str, posi);
+			else printf("confronto padre %s dx %s ultimo NULL posi %d\n",y->str, node->str, posi);
+            #endif
 			y->dx = node;
             //QUI VUOL DIRE CHE STA A DX
             if(validazione && conf){
-                if(ult_valido != NULL){
-                   
-                    node->next = ult_valido;
-                    node->prev = ult_valido->prev;
-                
-                    if(ult_valido->prev == NULL){
-                        //in testa alla lista
-                        root->radice_lista = node;
-                        root->fine_lista = ult_valido;
-                    }
-                    else{
-                        ult_valido->prev->next = node;
-                        ult_valido->prev = node;
-                    }
-                }else{
-                    //insrisco in testa
+                #ifdef debug2
+                printf("DX %s posi %d\n", node->str, posi);
+                #endif
+                if(posi == 1){
+                    if(ult_valido != NULL){
+                        #ifdef debug2
+                        printf("ultimo %s\n", ult_valido->str);
+                        printf("%s puntato da root\n", root->radice_lista->str);
+                        printf("%s puntato da root fine\n", root->fine_lista->str);
+                        #endif
+                        node->next = ult_valido;
+                        node->prev = ult_valido->prev;
                     
-                    node->next = root->radice_lista;
-                    node->prev = NULL;
+                        if(ult_valido->prev == NULL){
+                            //in testa alla lista
+                            root->radice_lista = node;
+                            root->fine_lista = ult_valido;
+                        }
+                        else{
+                            ult_valido->prev->next = node;
+                            ult_valido->prev = node;
+                        }
+                    }else{
+                        //insrisco in testa
+                        
+                        node->next = root->radice_lista;
+                        node->prev = NULL;
 
-                    if(root->radice_lista!=NULL) root->radice_lista->prev = node;
-                    else root->fine_lista = node;
+                        if(root->radice_lista!=NULL) root->radice_lista->prev = node;
+                        else root->fine_lista = node;
 
-                    root->radice_lista = node;
+                        root->radice_lista = node;
 
+                    }
+                }else if(posi == -1){
+                        #ifdef debug2
+                        printf("Ultimo valido %s in posi %d\n", ult_valido->str, posi);
+                        #endif
+                        if(ult_valido != NULL){
+                            node->next = ult_valido->next;
+
+                            if(ult_valido->next != NULL) {
+                                node->prev = ult_valido->next->prev;
+                                ult_valido->next->prev = node;
+                                ult_valido->next = node;
+                            }
+                            if(ult_valido->next == NULL) {
+                                #ifdef debug2
+                                printf("Next nullo\n");
+                                #endif
+                                node->prev = ult_valido;
+                                ult_valido->next = node;
+                                root->fine_lista = node;
+                            }
+                    }else{
+                        //inserisco in testa
+                        #ifdef debug2
+                        printf("ULTIMO NULL\n");
+                        printf("%s puntato da root\n", root->radice_lista->str);
+                        printf("%s puntato da root fine\n", root->fine_lista->str);
+                        #endif
+                        //HO INVERTITO I PUNTATORI
+                        node->next = NULL;
+                        node->prev = root->fine_lista;
+
+                        if(root->fine_lista!=NULL) root->fine_lista->next = node;
+                        else root->radice_lista = node;
+                        root->fine_lista = node;
+                        
+                        /*
+                        node->next = root->radice_lista;
+                        node->prev = NULL;
+                        if(root->radice_lista!=NULL) root->radice_lista->prev = node;
+                        else root->fine_lista = node;
+                        root->radice_lista = node;
+                        */
+                    }
+                    
                 }
             } 
 		}
@@ -584,7 +664,8 @@ int main(void){
     init_rb(); //inizializzo RB
     init_diz(ver); //preparo il dizionario
 
-    while(fgets(stringa,5*k,stdin)!=NULL){ //uso fgets più veloce di fscanf
+    while(!feof(stdin)){ //uso fgets più veloce di fscanf
+        if(scanf("%s", stringa));
         if(stringa[0] == '+'){ //caso comandi
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
@@ -602,16 +683,24 @@ int main(void){
 
                 pulisci(ver); //riazzero il dizionario
 
-                if(fgets(stringa,5*k,stdin)!=NULL){} //leggo la parola di riferimento
+                if(scanf("%s", stringa)); //leggo la parola di riferimento
                 
+                //printf("Stampo riferimento stringa %s\n", stringa);
+
                 for(int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++; //conto la presenza dei carattere nella parola di riferimento
                 }
 
-                if(fgets(stringa,5*k,stdin)!=NULL){}
-                conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
+                //printf("Larghezza %d\n", k);
+                //printf("Stampo riferimento %s\n", rif);
+
+                //if(fgets(stringa,5*k,stdin)!=NULL){}
+                //conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
+                if(scanf("%d", &conteggio));
                 confronto_fatto = 0;
+
+                //printf("Stampo conteggio %d\n", conteggio);
 
 
             }
@@ -626,10 +715,14 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 if(confronto_fatto) {
                     //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; }
+                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; 
+                        //printf("Si confronto primo ins\n");
+                    }
                     //confronto fatto con lista già creata
-                    else stampa_lista_filtrato_solo(lista_prova.fine_lista);
-                    //printf("Si confronto\n");
+                    else{ 
+                        stampa_lista_filtrato_solo(lista_prova.fine_lista);
+                        //printf("Si confronto NON primo ins\n");
+                    }
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
                     inOrder(radice);
