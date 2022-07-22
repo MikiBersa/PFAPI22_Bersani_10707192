@@ -18,16 +18,20 @@ PROBLEMA:
 #include <stdlib.h>
 
 #define DIZ 123 //uso 123 elementi così posso accedere al carattere direttamente (122 è la z ultimo carattere ammissibile)
+#define debug2 
 
-unsigned short int k; //lunghezza delle stringhe
-unsigned short int cont_buone = 0; //conteggio delle parole valide
-unsigned short int trovata = 0; //variabile di supporto per vedere se la parola letta durante la partita fa parte delle parole ammissibili
+int k; //lunghezza delle stringhe
+int cont_buone = 0; //conteggio delle parole valide
+int trovata = 0; //variabile di supporto per vedere se la parola letta durante la partita fa parte delle parole ammissibili
+
+
 
 //FACCIO UN ALBERO RB
 typedef struct el{
-    char str[20]; //memorizzo la parola / stringa
-    unsigned short int colore; //0 è nero 1 è rosso
-    unsigned short int valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
+    char str[21]; //memorizzo la parola / stringa
+    unsigned short colore; //0 è nero 1 è rosso
+    unsigned short valida; //così so che è valida, cioè rispecchia i requisiti per il +stampa_filtrate e il conteggio
+    unsigned short pres[2]; //presente uno valido mia convenzione 0 è sx e 1 è dx
     struct el *sx; //filgio sx di RB
     struct el *dx; //filgio dx di RB
     struct el *p; //padre di RB
@@ -36,10 +40,10 @@ typedef struct el{
 } elemento; //nodo del RB e anche della lista
 
 typedef struct{
-    short int ex; //esiste il carattere nella parola di riferimento
+    int ex; //esiste il carattere nella parola di riferimento
     char *no; //posizioni in cui il carattere non può stare 
-    unsigned short int esatto; //numero esatto del carattere nella parola di riferimento
-    unsigned short int min; //numero minimo del carattere nella parola di riferimento
+    int esatto; //numero esatto del carattere nella parola di riferimento
+    int min; //numero minimo del carattere nella parola di riferimento
 }filtro; //typedef per il dizionario ogni elemento del dizionario è una lettera
 
 typedef elemento *NodePtr; //puntatore ai nodi di RB
@@ -74,13 +78,13 @@ void init_rb(){
 //creo lo spazio per memorizzare dove i carattere non possono stare -> provare con i numeri interi
 //in primi ho scelto di creare un array di caratteri perchè pesa poco 1B per ogni carattere
 void init_diz(char *ver){
-    for(unsigned short int i = 0; i<DIZ;i++){
+    for(int i = 0; i<DIZ;i++){
         if(i>=45){
             diz[i].esatto=0;
             diz[i].min=0;
             diz[i].ex = -1;
             diz[i].no = malloc(sizeof(char)*k);
-            for(unsigned short int j = 0; j<k;j++){
+            for(int j = 0; j<k;j++){
                 diz[i].no[j] = '.';
             }
         }else continue;
@@ -89,27 +93,27 @@ void init_diz(char *ver){
 
 //pulisco il dizionario ad ogni inizio partita perchè la parola di riferimento cambia
 void pulisci(char *ver){
-    for(unsigned short int i = 0; i<DIZ;i++){
+    for(int i = 0; i<DIZ;i++){
         if(i>=45){
             diz[i].esatto=0;
             diz[i].min=0;
             diz[i].ex = -1;
-            for(unsigned short int j = 0; j<k;j++){
+            for(int j = 0; j<k;j++){
                 diz[i].no[j] = '.';
             }
         }
         diz_rif[i].cont = 1;
         diz_rif[i].num = 0;
     }
-    for(unsigned short int j = 0; j<k;j++){
+    for(int j = 0; j<k;j++){
         ver[j]='.'; //posti ammissibili del carattere ed obbligati
     }
 }
 
 //funzione di supporto per verificare se un carattere è presente in una stringa e in che quantità
 //sostituisco le funzioni delle libreria string.h perchè sembrano lente
-int presente(char c, char *s, unsigned short int *conteggio){
-    unsigned short int i = 0;
+int presente(char c, char *s, int *conteggio){
+    int i = 0;
 
     for(int m = 0;m<k;m++){
         if(s[m]==c) {
@@ -126,12 +130,12 @@ int presente(char c, char *s, unsigned short int *conteggio){
 //utile per conteggio e +stampa_filtrate
 //complessità visto che il k è costante la complessità di questa funzione è costante sarebbe teta k^2
 int validazione(char *conf, char * ver, char * rif){
-    unsigned short int conteggio = 0;
-    unsigned short int conto = 0;
+    int conteggio = 0;
+    int conto = 0;
 
     for(int i = 0;i<k;i++){
-        unsigned short int register num = (int) conf[i]; //uso il register per mantenere la variabile in un registro della cpu così c'è l'ha sempre pronta
-        unsigned short int register num2 = (int) rif[i];
+        int register num = (int) conf[i]; //uso il register per mantenere la variabile in un registro della cpu così c'è l'ha sempre pronta
+        int register num2 = (int) rif[i];
 
         if(conf[i]!=ver[i] && ver[i]!='.') return 0; //vuol dire che c'è un carattere obbligatorio in quella posizione ma non vi è quel carattere
         else if(diz[num].ex==0) return 0; //non c'è nella parola di riferimento
@@ -140,7 +144,7 @@ int validazione(char *conf, char * ver, char * rif){
             
             //VERIFICO QUANTE VOLTE SI PRESENTA QUELLA LETTERA
             conteggio = 0;
-            for(unsigned short int j = 0;j<k;j++) {
+            for(int j = 0;j<k;j++) {
                 if(conf[j]==conf[i]) //ci sono altre lettere nella parola come quella
                     conteggio ++;
             }
@@ -174,12 +178,12 @@ int validazione(char *conf, char * ver, char * rif){
 
 
 int uguale(char *c, char *p){
-    for(unsigned short int i = 0;i<k;i++)
+    for(int i = 0;i<k;i++)
         if(c[i] != p[i]) return 0;
     return 1;
 }
 int posizione(char* c1, char *c2){ //c2 la testa
-    for(unsigned short int i = 0; i<k;i++){
+    for(int i = 0; i<k;i++){
         if(c1[i] > c2[i]) return 1; //destra
         else if(c1[i] < c2[i]) return -1; //sinistra
     }
@@ -188,7 +192,7 @@ int posizione(char* c1, char *c2){ //c2 la testa
 
 
 void scrittura(char* c1, char *c2){ //da c1 a c2
-    for(unsigned short int i = 0; i<k;i++){
+    for(int i = 0; i<k;i++){
         c2[i] = c1[i];
     }
 }
@@ -305,21 +309,45 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 		(*(radicec))->colore = 0;
 	}
 
+NodePtr trovato(NodePtr partenza, short int direzione){
+    if(direzione == 1){
+        //tutto a sx
+        while(partenza != TNULL){
+            if(partenza->valida) return partenza;
+            if(partenza->pres[0]) partenza = partenza->sx;
+            else if(partenza->pres[1]) partenza = partenza->dx;
+        }
+    }else if(direzione == -1){
+        //tutto a dx
+        while(partenza != TNULL){
+            if(partenza->valida) return partenza;
+            if(partenza->pres[1]) partenza = partenza->dx;
+            else if(partenza->pres[0]) partenza = partenza->sx;
+        }
+    }
+    return NULL;
+}
+
 //INSERIMENTO DI UN NUOVO NODO IN RB E SE è VALIDO ANCHE NELLA LISTA (VEDA INSERIMENTO DURANTE LA PARTITA)
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
-void insert(char *stringa, NodePtr *radicec, unsigned short int validazione, Root *root, unsigned short int conf) {
+void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
         NodePtr node = malloc(sizeof(elemento)); //creo il posto per il nodo in memoria
         //char *st = malloc(sizeof(char)*k); //creo il posto per la parola nel nodo
 
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
         NodePtr register ult_valido = NULL;
+        NodePtr register nodo_rap = NULL;
+
         short int posi = 2;
+        short int sup = 2;
         //scrittura(stringa,st); //trasferisco la parola di puntatore
         //node->str = st;
-        for(unsigned short int i = 0; i<k;i++) node->str[i] = stringa[i];
+        for(int i = 0; i<k;i++) node->str[i] = stringa[i];
         node->sx = TNULL;
 		node->dx = TNULL;
+        node->pres[0] = 0;
+        node->pres[1] = 0;
 		node->colore = 1; // nuovo nodo di rosso
         node->valida = validazione; //così lo tengo traccia per dopo
         //0 di default se parte da zero il gioco 
@@ -338,22 +366,33 @@ void insert(char *stringa, NodePtr *radicec, unsigned short int validazione, Roo
 
             if (posizione(node->str, x->str) < 0) {
 				x = x->sx;
+                if(sup == 2) sup = 1;
                 if(y == ult_valido) posi = -1;
+                if(y->pres[1] && sup == 1) nodo_rap = y;
+                if(validazione) y->pres[0] = 1;
 			} else {
 				x = x->dx;
+                if(sup == 2) sup = -1;
                 if(y == ult_valido) posi = 1;
+                if(y->pres[0]  && sup == -1) nodo_rap = y;
+                if(validazione) y->pres[1] = 1;
 			}
 		}
 
 		node->p = y;
+        //if(nodo_rap != NULL) printf("parola %s NODO DI SUPPROTO %s\n", stringa,nodo_rap->str);
 
 		if (y == NULL) {
 			*(radicec) = node;
+            #ifdef debug2
+            printf("RADICE RB stringa %s sup %d\n", stringa, sup);
+            #endif
         } else if (posizione(node->str, y->str) < 0) {
             #ifdef debug2
-            if(ult_valido!=NULL) printf("confronto padre %s sx %s ultimo %s posi %d\n",y->str, node->str, ult_valido->str, posi);
-			else printf("confronto padre %s sx %s ultimo NULL posi %d\n",y->str, node->str, posi);
+            if(ult_valido!=NULL) printf("confronto padre %s sx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, ult_valido->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
+			else printf("confronto padre %s sx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
             #endif
+
             y->sx = node;
             //QUI VUOL DIRE CHE STA A SX
             if(ult_valido == NULL && validazione && conf){
@@ -363,26 +402,36 @@ void insert(char *stringa, NodePtr *radicec, unsigned short int validazione, Roo
                     printf("%s puntato da root\n", root->radice_lista->str);
                     printf("%s puntato da root fine\n", root->fine_lista->str);
                     #endif
-                    //HO INVERTITO I PUNTATORI
-                    node->next = NULL;
-                    node->prev = root->fine_lista;
+                    
+                    if(nodo_rap !=NULL){
+                        //NodePtr trov = trovato(nodo_rap, sup);
+                        //if(trov != NULL) printf("trovato %s\n", trov->str);
+                        //else printf("------NULL-----\n");
+                    }
+                        node->next = NULL;
+                        node->prev = root->fine_lista;
 
-                    if(root->fine_lista!=NULL) root->fine_lista->next = node;
-                    else root->radice_lista = node;
-                    root->fine_lista = node;
+                        if(root->fine_lista!=NULL) root->fine_lista->next = node;
+                        else root->radice_lista = node;
+                        root->fine_lista = node;
+                    
                 
                 }
 
         }else{
             #ifdef debug2
-            if(ult_valido!=NULL) printf("confronto padre %s dx %s ultimo %s posi %d\n",y->str, node->str, ult_valido->str, posi);
-			else printf("confronto padre %s dx %s ultimo NULL posi %d\n",y->str, node->str, posi);
+            if(ult_valido!=NULL) printf("confronto padre %s dx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, ult_valido->str, posi ,y->pres[0], y->pres[1], node->str, validazione, sup);
+			else printf("confronto padre %s dx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
             #endif
 			y->dx = node;
             //QUI VUOL DIRE CHE STA A DX
             if(ult_valido == NULL && validazione && conf){
                         //insrisco in testa
-                        
+                if(nodo_rap !=NULL){
+                    //NodePtr trov = trovato(nodo_rap, sup);
+                    //if(trov != NULL) printf("trovato %s\n", trov->str);
+                    //else printf("------NULL-----\n");
+                }
                 node->next = root->radice_lista;
                 node->prev = NULL;
 
@@ -397,7 +446,11 @@ void insert(char *stringa, NodePtr *radicec, unsigned short int validazione, Roo
 
         //POSIZIONE DELLA LISTA non gestisco ult_valido == NULL 
         //IL CONFRONTO MI DA L'IDEA CHE DEVO INSERIRE NELLA LISTA
-        //validazione mi dice se quel elemento particolare valore
+        //validazione mi dice se quel elemento particolare va
+
+        //ORA CON IL CASO NULL
+
+        //SENZA NULL
         if(ult_valido != NULL && validazione && conf){
             if(posi == 1){
                 //sta alla destra di ultimo e quindi a sinistra della lista siccome è il più grande
@@ -437,7 +490,7 @@ void insert(char *stringa, NodePtr *radicec, unsigned short int validazione, Roo
 //stampo le parole filtrate anche qui devo comunque riverificare le vecchie valide perchè la nuova parole potrebbe cambiare i requisiti
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
 //fa anche il conteggio
-void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,unsigned short int i){
+void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
     while(l!=NULL) {
         if(validazione(l->str,ver, rif)){
             l->valida=1;
@@ -471,9 +524,9 @@ void stampa_lista_filtrato_solo(NodePtr l){
 
 //avendo letto una sola parola devo leggere tutte le parole e vedere se sono valide se sì inserisco nella lista
 //complessità teta(n*k^2) con n totale delle parole inserite all'inizio
-void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,unsigned short int i){
+void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,int i, unsigned short int ins){
     if(x!=TNULL){  
-        conto_ordinata_filtrato(x->sx,ver,rif,i);
+        conto_ordinata_filtrato(x->sx,ver,rif,i, ins);
         if(validazione(x->str,ver, rif)){
             x->valida = 1; 
             if(i == 0) {
@@ -485,12 +538,12 @@ void conto_ordinata_filtrato(NodePtr x,char *ver, char *rif,unsigned short int i
             }
             //ricordo che vado a leggere le parole in ordine crescente e nella lista le metto in ordine decrescente così comeplssità costante
             //nell'inerimento e costante per leggere dalla fine visto che ho creato un puntatore alla fine
-            inserisci_lista(&lista_prova,x);
+            if(ins) inserisci_lista(&lista_prova,x);
             
         }else{
             x->valida=0;
         }
-        conto_ordinata_filtrato(x->dx,ver,rif,i);
+        conto_ordinata_filtrato(x->dx,ver,rif,i, ins);
     }
 }
 
@@ -515,7 +568,7 @@ diz_lung
 
 int inOrder_controllo(NodePtr node, char* parola) {
 	while(node != TNULL){
-        short int pos = posizione(parola, node->str);
+        int pos = posizione(parola, node->str);
         if(!pos) return 1;
         else if(pos < 0) node = node->sx;
         else if(pos > 0) node = node->dx;
@@ -526,16 +579,16 @@ int inOrder_controllo(NodePtr node, char* parola) {
 
 //QUI CREO LA STRINGA RICHIESTA CON I + / |
 void confronto(char* str2,char* str1, char *out, char *ver){
-    unsigned short int c; //memorizza il carattere letto
-    unsigned short int diz_conto[DIZ] = {0}; //conteggio di quante volte lo stesso carattere si presentano nella parola
+    int c; //memorizza il carattere letto
+    int diz_conto[DIZ] = {0}; //conteggio di quante volte lo stesso carattere si presentano nella parola
     
-    for(unsigned short int j = 0; j<k;j++){
+    for(int j = 0; j<k;j++){
         //AZZERO PER PORTARE IN PARI IL TUTTO
         diz_rif[(int) str1[j]].cont = 1;
     }
 
-    for(unsigned short int j = 0; j<k;j++){
-        c = (unsigned short int) str1[j]; //str1 è la parola che leggo
+    for(int j = 0; j<k;j++){
+        c = (int) str1[j]; //str1 è la parola che leggo
         diz_conto[c] = diz_conto[c] + 1;
         if(str1[j] == str2[j]){ //str2 parola di riferimento
             out[j] = '+'; //posizione corretta e giusto carattere
@@ -549,8 +602,8 @@ void confronto(char* str2,char* str1, char *out, char *ver){
         } 
     }
 
-    for(unsigned short int i = 0; i<k;i++){
-        c = (unsigned short int) str1[i];
+    for(int i = 0; i<k;i++){
+        c = (int) str1[i];
         if(diz_rif[c].num == 0) { 
             out[i] = '/'; //non esiste
             diz[c].ex = 0;
@@ -586,11 +639,11 @@ int main(void){
     char stringa[k]; //array di supporto per le parole lette
     char rif[k]; //memorizzo la parola di riferimento
     //rif[0] = '&';
-    unsigned short int nuova = 0; //mi identifica inizio di una partita
-    unsigned short int inserimento = 1; //mi identifica se devo fare un inserimento di nuove patole
-    unsigned short int conteggio = 0;  //mi dice con quante parole devo confrontare la massimo 
-    unsigned short int primo_inserimento = 0; //letto la prima parola da confrontare
-    unsigned short int confronto_fatto = 0; //il confronto è stato fatto
+    int nuova = 0; //mi identifica inizio di una partita
+    int inserimento = 1; //mi identifica se devo fare un inserimento di nuove patole
+    int conteggio = 0;  //mi dice con quante parole devo confrontare la massimo 
+    int primo_inserimento = 0; //letto la prima parola da confrontare
+    int confronto_fatto = 0; //il confronto è stato fatto
     char ver[k+1]; ver[k] = '\0'; //stringa per le posizioni obbligatorie apprese
 
 
@@ -620,7 +673,7 @@ int main(void){
                 
                 //printf("Stampo riferimento stringa %s\n", stringa);
 
-                for(unsigned short int i = 0; i<k;i++){
+                for(int i = 0; i<k;i++){
                     rif[i] = stringa[i];
                     diz_rif[(int) rif[i]].num ++; //conto la presenza dei carattere nella parola di riferimento
                 }
@@ -630,7 +683,7 @@ int main(void){
 
                 //if(fgets(stringa,5*k,stdin)!=NULL){}
                 //conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
-                if(scanf("%hd", &conteggio));
+                if(scanf("%d", &conteggio));
                 confronto_fatto = 0;
 
                 //printf("Stampo conteggio %d\n", conteggio);
@@ -648,7 +701,7 @@ int main(void){
             else if(stringa[1] == 's' && stringa[2] == 't'){
                 if(confronto_fatto) {
                     //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1);primo_inserimento = 0; 
+                    if(primo_inserimento){ conto_ordinata_filtrato(radice,ver,rif,1,1);primo_inserimento = 0; 
                         //printf("Si confronto primo ins\n");
                     }
                     //confronto fatto con lista già creata
@@ -692,9 +745,9 @@ int main(void){
 
                         if(primo_inserimento) {
                             //confronto fatto ma non ancora creato la lista caso in cui confronto la prima parola della nuova partita con la parola di riferimento
-                            conto_ordinata_filtrato(radice,ver,rif,0);primo_inserimento = 0;}
+                            conto_ordinata_filtrato(radice,ver,rif,0,1);primo_inserimento = 0;
                             //printf("primo ins\n");
-                        else {
+                        }else {
                              //confronto fatto con lista già creata, qui devo fare una nuova validazione perchè ho letto una nuova parola
                             stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                             //printf("NON primo ins\n");
@@ -707,7 +760,10 @@ int main(void){
                     char conf[k+1];
                     confronto(rif,stringa, conf,ver);
                     cont_buone = 0;
-                    stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
+                    //UNA SOLA PAROLA LETTA ED è KO
+                    if(confronto_fatto == 0){
+                        conto_ordinata_filtrato(radice,ver,rif,0,0);
+                    }else stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                     printf("%d\n",cont_buone);
                     
                     puts("ko");
