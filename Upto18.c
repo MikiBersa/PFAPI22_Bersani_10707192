@@ -540,8 +540,34 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
 //CICLO PER METTERE A POSTO LE PAROLE a più distanza
 void list_insertion_sort(Root * root){
-    if(root->fine_lista != NULL){
-        
+    if(root->radice_lista != NULL){
+        //printf("QUA CI SIAMO\n");
+        NodePtr curr = root->fine_lista->next;
+        //printf("QUA CI SIAMO 2\n");
+        while(curr != NULL){
+            NodePtr i = curr;
+            //c1 < c2 -1 se c1 > c2 1
+            while(i->prev != NULL && posizione(i->prev->str, i->str) == 1){
+                //inverto i con i->next
+
+                //DA FARE LO SWAP
+                /*
+                i->next->prev = i->prev;
+                i->prev = i->next;
+                //printf("QUA CI SIAMO 3 %s\n", i->next->prev->str);
+                if(i->next->prev != NULL) i->next->prev->next = i->next;
+                else root->radice_lista = i->next;
+
+                i->next = i->next->next; //qui mette NULL
+                if(i->next != NULL) i->next->prev = i;
+                else root->fine_lista = i;
+                i->prev->next = i;
+                */
+
+                i = i->prev;
+            }
+            curr = curr->next;
+        }
     }
 }
 
@@ -777,11 +803,13 @@ int main(void){
                     //confronto fatto con lista già creata
                     else{ 
                         //controllo_pos
+                        list_insertion_sort(&lista_prova);
                         stampa_lista_filtrato_solo(lista_prova.fine_lista);
                         //printf("Si confronto NON primo ins\n");
                     }
                 }else{
                     //SE NON HO ANCORA FATTO UN CONFRONTO STAMPO DIRETTAMENTE TUTTE LE PAROLE DAL RB
+                    //printf("STAMPO ALBERO\n");
                     inOrder(radice);
                 }
 
