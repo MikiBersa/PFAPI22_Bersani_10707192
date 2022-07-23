@@ -538,19 +538,20 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		fixInsert(node, radicec);
 }
 
-//CICLO PER METTERE A POSTO LE PAROLE a più distanza
+//CICLO PER METTERE A POSTO LE PAROLE a più distanza -> SE FUNZIONA TOLGO IL correzione della posizione
 void list_insertion_sort(Root * root){
     if(root->radice_lista != NULL){
         //printf("QUA CI SIAMO\n");
-        NodePtr curr = root->fine_lista->next;
+        NodePtr curr = root->radice_lista->next;
         //printf("QUA CI SIAMO 2\n");
         while(curr != NULL){
             NodePtr i = curr;
             //c1 < c2 -1 se c1 > c2 1
-            while(i->prev != NULL && posizione(i->prev->str, i->str) == 1){
+            while(i->prev != NULL && posizione(i->prev->str, curr->str) == -1){
                 //inverto i con i->next
-
-                //DA FARE LO SWAP
+                i = i->prev;
+            }
+             //DA FARE LO SWAP
                 /*
                 i->next->prev = i->prev;
                 i->prev = i->next;
@@ -563,9 +564,7 @@ void list_insertion_sort(Root * root){
                 else root->fine_lista = i;
                 i->prev->next = i;
                 */
-
-                i = i->prev;
-            }
+            
             curr = curr->next;
         }
     }
