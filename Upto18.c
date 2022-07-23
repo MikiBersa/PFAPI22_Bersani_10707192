@@ -331,20 +331,22 @@ NodePtr trovato(NodePtr partenza, short int direzione){
 }*/
 
 //CONTROLLO POSIZIONE DELLA LISTA
-void posizione_control(NodePtr cont){
+void posizione_control(NodePtr cont, Root *radice){
     //OCCHIO QUI VADO A PUNTARE UNA PARTE SBAGLIATA
-    if(cont->next != NULL  && posizione(cont->str, cont->next->str)==-1 && cont->next != NULL){
+    if(cont->next != NULL  && posizione(cont->str, cont->next->str)==-1 && cont->prev != NULL){
         //inversione
-        printf("DENTRO -1\n");
+        //printf("DENTRO -1\n");
         cont->next->prev = cont->prev;
         cont->prev = cont->next;
         cont->next->prev->next = cont->next;
-        cont->next = cont->next->next;
-        cont->next->prev = cont;
+        cont->next = cont->next->next; //qui mette NULL
+        if(cont->next != NULL) cont->next->prev = cont;
+        else radice->fine_lista = cont;
         cont->prev->next = cont;
 
     }else if(cont->prev !=  NULL && posizione(cont->str, cont->prev->str)==1 && cont->next != NULL){
         //inversione
+        /*
         printf("DENTRO 1 %s %s %s\n", cont->prev->next->str,cont->next->prev->str,cont->prev->str);
         printf("%s\n", cont->str);
         printf("%s\n", cont->prev->str);
@@ -352,24 +354,25 @@ void posizione_control(NodePtr cont){
         printf("%s\n", cont->next->str);
         printf("%s\n", cont->prev->prev->str); //NULL
         printf("%s\n", cont->next->next->str);
-
+        */
         cont->prev->next = cont->next;
         cont->next->prev = cont->prev;
         cont->next = cont->prev;
-        printf("%s\n", cont->prev->str);
+        //printf("%s\n", cont->prev->str);
 
-        printf("IN MEZZO\n");
-        cont->prev = cont->next->prev;
-        printf("%s\n", cont->next->prev->str);
-        printf("IN MEZZO1\n");
+        //printf("IN MEZZO\n");
+        cont->prev = cont->next->prev; //qui di NULL a cont->prev
+        //printf("%s\n", cont->next->prev->str);
+        //printf("IN MEZZO1\n");
         cont->next->prev = cont;
-        printf("IN MEZZO2\n");
-        printf("%s\n", cont->str);
-        printf("%s\n", cont->prev->str); //NULL
-        printf("%s\n", cont->prev->next->str);
+        //printf("IN MEZZO2\n");
+        //printf("%s\n", cont->str);
+        //printf("%s\n", cont->prev->str); //NULL
+        //printf("%s\n", cont->prev->next->str);
 
-        cont->prev->next = cont; // questo non lo trova
-        printf("FINE\n");
+        if(cont->prev != NULL) cont->prev->next = cont; // questo non lo trova
+        else radice->radice_lista = cont;
+        //printf("FINE\n");
 
     }
 }
@@ -520,7 +523,7 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
             }
 
             //metto in posizione giusta
-            posizione_control(node);
+            posizione_control(node, root);
         }
 
 
@@ -535,6 +538,12 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		fixInsert(node, radicec);
 }
 
+//CICLO PER METTERE A POSTO LE PAROLE a più distanza
+void list_insertion_sort(Root * root){
+    if(root->fine_lista != NULL){
+        
+    }
+}
 
 //funzione che conta le parole con i requisiti giusti visti dal confronto
 //stampo le parole filtrate anche qui devo comunque riverificare le vecchie valide perchè la nuova parole potrebbe cambiare i requisiti
@@ -548,6 +557,7 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
             }
             else {
                 //printf("%s\n", l->str);
+                //controllo posizione corretta
                 puts(l->str);
             }
         }else{
@@ -766,6 +776,7 @@ int main(void){
                     }
                     //confronto fatto con lista già creata
                     else{ 
+                        //controllo_pos
                         stampa_lista_filtrato_solo(lista_prova.fine_lista);
                         //printf("Si confronto NON primo ins\n");
                     }
