@@ -19,7 +19,7 @@ PROBLEMA:
 #include <stdlib.h>
 
 #define DIZ 123 //uso 123 elementi così posso accedere al carattere direttamente (122 è la z ultimo carattere ammissibile)
-#define debug2 
+//#define debug2 
 
 int k; //lunghezza delle stringhe
 int cont_buone = 0; //conteggio delle parole valide
@@ -310,6 +310,7 @@ void fixInsert(NodePtr z, NodePtr *radicec){
 		(*(radicec))->colore = 0;
 	}
 
+/*
 NodePtr trovato(NodePtr partenza, short int direzione){
     if(direzione == 1){
         //tutto a sx
@@ -327,8 +328,51 @@ NodePtr trovato(NodePtr partenza, short int direzione){
         }
     }
     return NULL;
-}
+}*/
 
+//CONTROLLO POSIZIONE DELLA LISTA
+void posizione_control(NodePtr cont){
+    //OCCHIO QUI VADO A PUNTARE UNA PARTE SBAGLIATA
+    if(cont->next != NULL  && posizione(cont->str, cont->next->str)==-1 && cont->next != NULL){
+        //inversione
+        printf("DENTRO -1\n");
+        cont->next->prev = cont->prev;
+        cont->prev = cont->next;
+        cont->next->prev->next = cont->next;
+        cont->next = cont->next->next;
+        cont->next->prev = cont;
+        cont->prev->next = cont;
+
+    }else if(cont->prev !=  NULL && posizione(cont->str, cont->prev->str)==1 && cont->next != NULL){
+        //inversione
+        printf("DENTRO 1 %s %s %s\n", cont->prev->next->str,cont->next->prev->str,cont->prev->str);
+        printf("%s\n", cont->str);
+        printf("%s\n", cont->prev->str);
+        printf("%s\n", cont->prev->next->str);
+        printf("%s\n", cont->next->str);
+        printf("%s\n", cont->prev->prev->str); //NULL
+        printf("%s\n", cont->next->next->str);
+
+        cont->prev->next = cont->next;
+        cont->next->prev = cont->prev;
+        cont->next = cont->prev;
+        printf("%s\n", cont->prev->str);
+
+        printf("IN MEZZO\n");
+        cont->prev = cont->next->prev;
+        printf("%s\n", cont->next->prev->str);
+        printf("IN MEZZO1\n");
+        cont->next->prev = cont;
+        printf("IN MEZZO2\n");
+        printf("%s\n", cont->str);
+        printf("%s\n", cont->prev->str); //NULL
+        printf("%s\n", cont->prev->next->str);
+
+        cont->prev->next = cont; // questo non lo trova
+        printf("FINE\n");
+
+    }
+}
 //INSERIMENTO DI UN NUOVO NODO IN RB E SE è VALIDO ANCHE NELLA LISTA (VEDA INSERIMENTO DURANTE LA PARTITA)
 //non considerando il fix_insert complessità costante con fix_insert teta di ln(n)
 void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int conf) {
@@ -338,10 +382,10 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
         NodePtr y = NULL;
 		NodePtr x = *(radicec);
         NodePtr register ult_valido = NULL;
-        NodePtr register nodo_rap = NULL;
+        //NodePtr register nodo_rap = NULL;
 
         short int posi = 2;
-        short int sup = 2;
+        //short int sup = 2;
         //scrittura(stringa,st); //trasferisco la parola di puntatore
         //node->str = st;
         for(int i = 0; i<k;i++) node->str[i] = stringa[i];
@@ -367,31 +411,32 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
             if (posizione(node->str, x->str) < 0) {
 				x = x->sx;
-                if(sup == 2) sup = 1;
+                //if(sup == 2) sup = -1;
                 if(y == ult_valido) posi = -1;
-                if(y->pres[1] && sup == 1) nodo_rap = y;
-                if(validazione) y->pres[0] = 1;
+                //if(y->pres[0] && sup == -1) nodo_rap = y;
+                //if(validazione) y->pres[0] = 1;
 			} else {
 				x = x->dx;
-                if(sup == 2) sup = -1;
+                //if(sup == 2) sup = 1;
                 if(y == ult_valido) posi = 1;
-                if(y->pres[0]  && sup == -1) nodo_rap = y;
-                if(validazione) y->pres[1] = 1;
+                //if(y->pres[1]  && sup == 1) nodo_rap = y;
+                //if(validazione) y->pres[1] = 1;
 			}
 		}
 
 		node->p = y;
         //if(nodo_rap != NULL) printf("parola %s NODO DI SUPPROTO %s\n", stringa,nodo_rap->str);
+        //if((*radicec) != NULL) printf("RADICE %s\n", (*radicec)->str);
 
 		if (y == NULL) {
 			*(radicec) = node;
             #ifdef debug2
-            printf("RADICE RB stringa %s sup %d\n", stringa, sup);
+            printf("RADICE RB stringa %s sup %d\n", node->str, sup);
             #endif
         } else if (posizione(node->str, y->str) < 0) {
             #ifdef debug2
-            if(ult_valido!=NULL) printf("confronto padre %s sx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, ult_valido->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
-			else printf("confronto padre %s sx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
+            if(ult_valido!=NULL) printf("confronto padre %s sx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d con radice %s\n",y->str, node->str, ult_valido->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup, (*radicec)->str);
+			else printf("confronto padre %s sx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d con radice %s\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup,(*radicec)->str);
             #endif
 
             y->sx = node;
@@ -404,11 +449,11 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
                     printf("%s puntato da root fine\n", root->fine_lista->str);
                     #endif
                     
-                    if(nodo_rap !=NULL){
+                    //if(nodo_rap !=NULL){
                         //NodePtr trov = trovato(nodo_rap, sup);
                         //if(trov != NULL) printf("trovato %s\n", trov->str);
                         //else printf("------NULL-----\n");
-                    }
+                    //}
                         node->next = NULL;
                         node->prev = root->fine_lista;
 
@@ -421,18 +466,18 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
         }else{
             #ifdef debug2
-            if(ult_valido!=NULL) printf("confronto padre %s dx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, ult_valido->str, posi ,y->pres[0], y->pres[1], node->str, validazione, sup);
-			else printf("confronto padre %s dx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup);
+            if(ult_valido!=NULL) printf("confronto padre %s dx %s ultimo %s posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d con radice %s\n",y->str, node->str, ult_valido->str, posi ,y->pres[0], y->pres[1], node->str, validazione, sup,(*radicec)->str);
+			else printf("confronto padre %s dx %s ultimo NULL posi %d pres sx %d dx %d validazione parola %s: %d sup radice %d con radice %s\n",y->str, node->str, posi, y->pres[0], y->pres[1], node->str, validazione, sup,(*radicec)->str);
             #endif
 			y->dx = node;
             //QUI VUOL DIRE CHE STA A DX
             if(ult_valido == NULL && validazione && conf){
                         //insrisco in testa
-                if(nodo_rap !=NULL){
+                //if(nodo_rap !=NULL){
                     //NodePtr trov = trovato(nodo_rap, sup);
                     //if(trov != NULL) printf("trovato %s\n", trov->str);
                     //else printf("------NULL-----\n");
-                }
+               //}
                 node->next = root->radice_lista;
                 node->prev = NULL;
 
@@ -473,7 +518,11 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 
                 ult_valido->next = node;
             }
+
+            //metto in posizione giusta
+            posizione_control(node);
         }
+
 
 		if (node->p == NULL){
 			node->colore = 0;
@@ -556,6 +605,15 @@ void inOrder(NodePtr node) {
 			//printf("%s\n", node->str);
             puts(node->str);
 			inOrder(node->dx);
+		} 
+}
+
+void inOrder_2(NodePtr node) {
+		if (node != TNULL) {
+			inOrder_2(node->sx);
+			printf("next %s parola %s valido %d prev %s\n", node->next->str,node->str, node->valida, node->prev->str);
+            //puts(node->str);
+			inOrder_2(node->dx);
 		} 
 }
 
@@ -652,7 +710,8 @@ int main(void){
     init_diz(ver); //preparo il dizionario
 
     while(!feof(stdin)){ //uso fgets più veloce di fscanf
-        if(scanf("%s", stringa));
+        if(scanf("%s", stringa)){}
+        //printf("LETTO %s\n", stringa);
         if(stringa[0] == '+'){ //caso comandi
             if(stringa[1] == 'n'){
                 //INIZIO DI UNA NUOVA PARTITA
@@ -670,7 +729,7 @@ int main(void){
 
                 pulisci(ver); //riazzero il dizionario
 
-                if(scanf("%s", stringa)); //leggo la parola di riferimento
+                if(scanf("%s", stringa)){} //leggo la parola di riferimento
                 
                 //printf("Stampo riferimento stringa %s\n", stringa);
 
@@ -684,7 +743,7 @@ int main(void){
 
                 //if(fgets(stringa,5*k,stdin)!=NULL){}
                 //conteggio = atoi(&stringa[0]); //conosco quante volte devo al massimo confrontare
-                if(scanf("%d", &conteggio));
+                if(scanf("%d", &conteggio)){}
                 confronto_fatto = 0;
 
                 //printf("Stampo conteggio %d\n", conteggio);
@@ -753,6 +812,8 @@ int main(void){
                             stampa_lista_filtrato(lista_prova.fine_lista,ver,rif,0);
                             //printf("NON primo ins\n");
                         }
+                        //printf("-----STAMPO ALBERO----\n");
+                        //inOrder_2(radice);
                         printf("%d\n",cont_buone);
 
 
