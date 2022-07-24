@@ -538,6 +538,46 @@ void insert(char *stringa, NodePtr *radicec, int validazione, Root *root, int co
 		fixInsert(node, radicec);
 }
 
+
+//INSERTION FATTO CON LA LISTA
+void insertion_sort(Root * root){
+    NodePtr curr = root->radice_lista->next;
+
+    while(curr!=NULL){
+        NodePtr i = curr->prev;
+        NodePtr dopo = curr->next;
+        //int posi = posizione(curr->str, i->str); 
+
+        if(posizione(curr->str, i->str) == -1){ //c1 minore di c2
+            curr = dopo;
+            continue;
+        }
+        while(i!=NULL && posizione(curr->str, i->str) == 1){
+            i = i->prev;
+        }
+        //cancellazione
+        curr->prev->next = curr->next;
+        if(curr->next != NULL) curr->next->prev = curr->prev;
+        else root->fine_lista = curr->prev;
+
+        //inserimento
+        if(i!=NULL){
+            curr->next=i->next;
+            curr->prev = i;
+            i->next->prev = curr;
+            i->next = curr;
+        }else{
+            curr->next = root->radice_lista;
+            curr->prev = NULL;
+            root->radice_lista->prev = curr;
+            root->radice_lista = curr;
+        }
+        curr = dopo;
+    }
+
+    return;
+}
+/*
 //CICLO PER METTERE A POSTO LE PAROLE a più distanza -> SE FUNZIONA TOLGO IL correzione della posizione
 void list_insertion_sort(Root * root){
     if(root->radice_lista != NULL){
@@ -552,7 +592,7 @@ void list_insertion_sort(Root * root){
                 i = i->prev;
             }
              //DA FARE LO SWAP
-                /*
+                
                 i->next->prev = i->prev;
                 i->prev = i->next;
                 //printf("QUA CI SIAMO 3 %s\n", i->next->prev->str);
@@ -563,13 +603,13 @@ void list_insertion_sort(Root * root){
                 if(i->next != NULL) i->next->prev = i;
                 else root->fine_lista = i;
                 i->prev->next = i;
-                */
+                
             
             curr = curr->next;
         }
     }
 }
-
+*/
 //funzione che conta le parole con i requisiti giusti visti dal confronto
 //stampo le parole filtrate anche qui devo comunque riverificare le vecchie valide perchè la nuova parole potrebbe cambiare i requisiti
 //complessità teta(n*k^2) con n che diminuisce sempre di più perchè vengono filtrate fino a 1
@@ -802,7 +842,7 @@ int main(void){
                     //confronto fatto con lista già creata
                     else{ 
                         //controllo_pos
-                        list_insertion_sort(&lista_prova);
+                        insertion_sort(&lista_prova);
                         stampa_lista_filtrato_solo(lista_prova.fine_lista);
                         //printf("Si confronto NON primo ins\n");
                     }
