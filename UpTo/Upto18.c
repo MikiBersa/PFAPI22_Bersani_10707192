@@ -621,6 +621,7 @@ void stampa_lista_filtrato(NodePtr l,char *ver, char *rif,int i){
             if(i == 0) { cont_buone ++; //printf("%s\n", x->str);
             }
             else {
+                
                 //printf("%s\n", l->str);
                 //controllo posizione corretta
                 puts(l->str);
